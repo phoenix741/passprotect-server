@@ -1,0 +1,15 @@
+.hg
+.idea
+bower_components
+mongodb
+node_modules
+.directory
+.dockerignore
+.editorconfig
+.eslintignore
+.eslintrc.json
+.hgflow
+.hgignore
+docker-compose*
+Dockerfile*
+Makefile

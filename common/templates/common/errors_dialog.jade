@@ -1,0 +1,8 @@
+.modal-content
+	h5= title || t('alert.unknown_error.title')
+
+	p!= message
+
+.modal-footer
+	button.modal-action.modal-close.waves-effect.waves-green.btn-flat(type='button')= t('alert.unknown_error.close')
+

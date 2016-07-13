@@ -1,0 +1,25 @@
+- itemId: AboutMenu
+  title: app.menu.about
+  url: /about
+  navigationTrigger: page:about
+
+- itemId: ItemsListMenu
+  title: app.menu.items
+  condition: '!!data.user'
+  url: /items
+  navigationTrigger: items:list
+  navigationParams: null
+
+- itemId: LogoutMenu
+  title: app.menu.logout
+  condition: '!!data.user'
+  url: /logout
+  navigationTrigger: logout
+  navigationParams: null
+
+- itemId: ConnectMenu
+  title: app.menu.connect
+  condition: '!data.user'
+  url: '#'
+  navigationTrigger: login
+  navigationParams: null

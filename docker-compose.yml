@@ -1,0 +1,33 @@
+version: '2'
+services:
+    nodejs:
+        build:
+          context: ./
+          dockerfile: Dockerfile.nodejs
+        image: docker.shadoware.org/passprotect-server:1.0.0
+        expose:
+            - 3000
+        links:
+            - mongodb
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - NODE_ENV=production
+            - DEBUG=App:*
+    nginx:
+        build:
+          context: ./
+          dockerfile: Dockerfile.nginx
+        image: docker.shadoware.org/passprotect-client:1.0.0
+        links:
+            - nodejs
+        environment:
+            - UPSTREAM_SERVER=nodejs
+            - UPSTREAM_PORT=3000
+        ports:
+            - '8080:80'
+    mongodb:
+        image: docker.shadoware.org/database/mongodb:3.2.7
+        ports:
+            - '27017:27017'
+        volumes:
+            - './mongodb:/data'

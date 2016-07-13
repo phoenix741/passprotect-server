@@ -1,0 +1,10 @@
+FROM nginx:alpine
+MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
+
+COPY docker/nginx-default.conf /etc/nginx/conf.d/default.template
+COPY docker/nginx-proxy.conf /etc/nginx/proxy.conf
+
+COPY dist/prod /usr/share/nginx/html
+COPY doc /usr/share/nginx/html/api/doc
+
+CMD ["/bin/sh", "-c", "envsubst '$UPSTREAM_SERVER $UPSTREAM_PORT' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]

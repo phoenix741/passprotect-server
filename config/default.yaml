@@ -1,0 +1,14 @@
+config:
+    mongodb:
+        host: ~
+        user: ~
+        password: ~
+        options: ~
+
+    jwt:
+        secret: 'dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r'
+
+    crypto:
+        cypherAlgorithm: 'AES-256-CTR'
+        hashAlgorithm: 'sha256'
+        sessionKey: 'xtipKI38GUCvE5cNGtTJxa1wQFvCicF5GDLTWyaBAb5RQqQ8rRBR1yVEq7Jg10cu'

@@ -1,0 +1,64 @@
+{
+  "list": {
+	"type": {
+	  "card": "Carte de paiement",
+	  "password": "Mot de passe",
+	  "text": "Général"
+	}
+  },
+  "item": {
+	"form": {
+	  "label": {
+		"field": "Titre du champ"
+	  },
+	  "type": {
+		"field": "Type de carte",
+		"options": [
+		  "VISA",
+		  "Carte bleu",
+		  "Mastercard",
+		  "American Express",
+		  "Maestro"
+		]
+	  },
+	  "nameOnCard": {
+		"field": "Nom sur la carte"
+	  },
+	  "cardNumber": {
+		"field": "Numéro de carte"
+	  },
+	  "cvv": {
+		"field": "CVV"
+	  },
+	  "expiry": {
+		"field": "Date d'éxpiration"
+	  },
+	  "code": {
+		"field": "Code de la carte"
+	  },
+	  "username": {
+		"field": "Nom d'utilisateur"
+	  },
+	  "password": {
+		"field": "Mot de passe"
+	  },
+	  "siteUrl": {
+		"field": "Adresse du site"
+	  },
+	  "text": {
+		"field": "Texte"
+	  },
+	  "notes": {
+		"field": "Notes"
+	  },
+	  "button": {
+		"field": "Mettre à jour"
+	  }
+	},
+	"flash": {
+	  "item_created": "L'enregistrement a bien été sauvegardé",
+	  "item_modify": "L'enregistrement a bien été sauvegardé"
+	}
+  }
+}
+

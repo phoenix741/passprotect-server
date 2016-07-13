@@ -1,0 +1,15 @@
+.nav-wrapper.container
+	a#logo-container.brand-logo(href='#')= t('app.title')
+
+	#navigation-large.right.hide-on-med-and-down
+		ul
+			li
+				a(href='/about')= t('app.menu.about')
+
+	#navigation-mobile.side-nav
+		ul
+			li.bold
+				a(href='/about')= t('app.menu.about')
+
+	a.button-collapse(data-activates='navigation-mobile',href='#')
+		i.material-icons menu

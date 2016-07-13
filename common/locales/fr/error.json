@@ -1,0 +1,29 @@
+{
+  "user": {
+    "404": {
+      "userNotFound": "Utilisateur {{userId}} non trouvé"
+    },
+	"400": {
+	  "_id": "Le nom d'utilisateur est obligatoire",
+	  "password": "Le mot de passe doit faire minimum 8 caractères",
+	  "passwordRepeat": "Les deux mots de passe doivent être identique"
+	}
+  },
+  "line": {
+	"404": {
+	  "lineNotFound": "Ligne {{lineId}} non trouvée"
+	},
+	"400": {
+	  "type": "Le type de ligne doit faire partie de {{choices}}",
+	  "label": "Le nom de la ligne est obligatoire"
+	}
+  },
+  "global": {
+	"500": {
+	  "unknown": "Une erreur est survenu, veuillez contacter l'administrateur du site"
+	},
+	"400": {
+	  "duplicate": "La valeur existe déjà pour ce champ"
+	}
+  }
+}

@@ -1,0 +1,10 @@
+mixin createHeader(title)
+	nav
+		.nav-wrapper
+			a.brand-logo.center(href='#') #{title}
+
+			ul#nav-mobile.left
+				li
+					a.dialog-close(href='#')
+						i.material-icons.left arrow_back
+

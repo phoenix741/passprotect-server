@@ -1,0 +1,12 @@
+config:
+    mongodb:
+        host: MONGODB_HOST
+        user: MONGODB_USER
+        password: MONGODB_PASSWORD
+        options: MONGODB_OPTIONS
+
+    jwt:
+        secret: JWT_SECRET
+
+    crypto:
+        sessionKey: CRYPTO_SESSIONKEY

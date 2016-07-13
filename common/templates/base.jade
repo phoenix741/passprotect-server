@@ -1,0 +1,25 @@
+doctype html
+html
+	head
+		meta(charset='UTF-8')
+		title Passprotect
+
+		link(href='https://fonts.googleapis.com/icon?family=Material+Icons',rel='stylesheet')
+
+		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+		meta(name='robots', content='index, follow')
+	body
+		#content-header
+			nav(role='navigation')
+
+		.pageLoader
+			.progress(style='margin: 0px')
+				.indeterminate
+
+		#content-body
+			block body
+
+		#content-dialog
+		#error-dialog.modal
+
+
