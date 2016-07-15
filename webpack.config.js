@@ -11,6 +11,13 @@ var port = process.env.PORT || 5000;
 var host = process.env.HOST || 'localhost';
 var mode = process.env.MODE || 'dev';
 
+var piwikEnable = process.env.PIWIK_ENABLED;
+if (piwikEnable === undefined) {
+	piwikEnable = true;
+}
+var piwikSiteUrl = process.env.PIWIK_SITE_URL || '//stats-demo.shadoware.org/';
+var piwikSiteId = process.env.PIWIK_SITE_ID || 3;
+
 var distFolder = path.join('dist', mode);
 
 var pluginsProd = mode === 'prod' ? [
@@ -26,6 +33,22 @@ var pluginsProd = mode === 'prod' ? [
 		}
 	})
 ] : [];
+
+var htmlWebpackPluginOptions = {
+	baseUrl: '/',
+	template: path.join(__dirname, 'common', 'templates', 'base.jade'),
+	inject: 'body',
+	minify: {
+		minifyJS: true
+	}
+};
+
+if (piwikEnable) {
+	htmlWebpackPluginOptions.piwik = {
+		siteUrl: piwikSiteUrl,
+		siteId: piwikSiteId
+	};
+}
 
 module.exports = {
 	devtool: mode === 'prod' ? 'source-map' : 'cheap-module-inline-source-map',
@@ -90,7 +113,7 @@ module.exports = {
 				include: [/client/]
 			},
 			{test: /\.(woff2?|eot|ttf|svg)$/, loader: 'url?name=fonts/[hash].[ext]&prefix=font/&limit=5000'},
-			{test: /\.html$/, loader: 'html?interpolate&-minimize', exclude: [/client\/index.html/]},
+			{test: /\.html$/, loader: 'html?interpolate&-minimize', cacheable: true},
 			{test: /\.yml$/, loader: 'json!yaml', cacheable: true}
 		]
 	},
@@ -126,14 +149,12 @@ module.exports = {
 			'__DEV__': JSON.stringify('production'),
 			'process.env': {
 				'NODE_ENV': JSON.stringify('production')
-			}
+			},
+			'__PIWIK_ENABLED__': piwikEnable
+
 		}),
 		new ExtractTextPlugin('[name].css'),
-		new HtmlwebpackPlugin({
-			baseUrl: '/',
-			template: path.join(__dirname, 'common', 'templates', 'base.jade'),
-			inject: 'body'
-		}),
+		new HtmlwebpackPlugin(htmlWebpackPluginOptions),
 		// copy other files
 		new CopyWebpackPlugin([
 			{from: 'index.!(html)'},

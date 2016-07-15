@@ -17,6 +17,8 @@ export function login(username, password) {
 		loginToServer(null, user);
 	}
 	else {
+		application.dialogRegion.startTracking();
+
 		const view = new LoginView({model: user});
 
 		view.on('form:submit', data => loginToServer(view, user));
@@ -34,6 +36,8 @@ export function logout() {
 }
 
 export function register() {
+	application.bodyRegion.startTracking();
+
 	const user = new User();
 	const view = new RegisterView({model: user});
 
