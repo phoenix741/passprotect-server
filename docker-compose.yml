@@ -23,6 +23,8 @@ services:
         environment:
             - UPSTREAM_SERVER=nodejs
             - UPSTREAM_PORT=3000
+            - PIWIK_SITE_URL=//stats-demo.shadoware.org/
+            - PIWIK_SITE_ID=3
         ports:
             - '8080:80'
     mongodb:
