@@ -40,7 +40,7 @@ Using docker-compose you can instantiate the different image with the following 
 version: '2'
 services:
     nodejs:
-        image: docker.shadoware.org/passprotect-server:1.0.0
+        image: phoenix741/passprotect-server:1.0.0
         expose:
             - 3000
         links:
@@ -52,7 +52,7 @@ services:
             - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
             - CRYPTO_SESSIONKEY=xtipKI38GUCvE5cNGtTJxa1wQFvCicF5GDLTWyaBAb5RQqQ8rRBR1yVEq7Jg10cu
     nginx:
-        image: docker.shadoware.org/passprotect-client:1.0.0
+        image: phoenix741/passprotect-client:1.0.0
         links:
             - nodejs
         environment:
@@ -61,7 +61,7 @@ services:
         ports:
             - '8080:80'
     mongodb:
-        image: docker.shadoware.org/database/mongodb:3.2.7
+        image: mongo:3.3.9
         expose:
             - 27017
         volumes:
