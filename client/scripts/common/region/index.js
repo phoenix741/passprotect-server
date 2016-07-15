@@ -33,18 +33,18 @@ class AnalyticsRegion extends Marionette.Region {
 			const url = Backbone.history.getFragment();
 			const title = this.currentTitle;
 
-			this.fetchingSession.then(session => this.trackPageView(url, title, session.get('user').get('_id'), timeMs));
+			this.fetchingSession.then(session => this.trackPageView(url, title, session.get('user'), timeMs));
 		}
 	}
 
-	trackPageView(url, title, username, generationTimeMs, keywords, count) {
+	trackPageView(url, title, user, generationTimeMs, keywords, count) {
 		if (__PIWIK_ENABLED__) {
 			window._paq = window._paq || [];
 
 			_paq.push(['setCustomUrl', url]);
 			title && _paq.push(['setDocumentTitle', title]);
 			generationTimeMs && _paq.push(['setGenerationTimeMs', generationTimeMs]);
-			username && _paq.push(['setUserId', username]);
+			user && _paq.push(['setUserId', user.get('_id')]);
 
 			_paq.push(['enableLinkTracking']);
 
