@@ -1,5 +1,6 @@
 {
   "list": {
+	"title": "Ma liste",
 	"type": {
 	  "card": "Carte de paiement",
 	  "password": "Mot de passe",

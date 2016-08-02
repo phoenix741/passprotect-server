@@ -1,7 +1,7 @@
 dbuild:
 	npm install
 	npm run clean
-	MODE=prod npm run build
+	PIWIK_SITE_URL='$${PIWIK_SITE_URL}' PIWIK_SITE_ID='$${PIWIK_SITE_ID}' MODE=prod npm run build
 	npm run doc
 
 	docker-compose -f docker-compose.yml build

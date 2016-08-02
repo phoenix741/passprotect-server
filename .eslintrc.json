@@ -17,7 +17,8 @@
 	"xdescribe": true,
 	"xit": true,
 	"Promise": true,
-	"prompt": true
+	"prompt": true,
+	"__PIWIK_ENABLED__": false
   },
   "plugins": [
 	"nodeca"

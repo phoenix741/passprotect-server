@@ -8,6 +8,8 @@ import {clearErrors, entitySaveFailed, entityFetchFailed} from 'nsclient/common/
 import {showToast} from 'nsclient/common/utils/alertUtils';
 
 export function list() {
+	application.bodyRegion.startTracking();
+
 	Items.fetchItems().then(function (collection) {
 		const view = new ItemsView({collection});
 		view.on('childview:item:detail', function (view, options) {
@@ -24,10 +26,14 @@ export function list() {
 		});
 
 		application.bodyRegion.show(view);
+
+		return null;
 	}).catch(_.partial(entityFetchFailed, 'item_controller_detail')).done();
 }
 
 export function detail(id) {
+	application.dialogRegion.startTracking();
+
 	Item.fetchItem(id).then(function (model) {
 		const view = new ItemDetailView({model});
 		view.on('form:submit', function () {
@@ -42,10 +48,14 @@ export function detail(id) {
 		view.on('dialog:close', () => routesEventService.trigger('items:list'));
 
 		application.dialogRegion.show(view);
+
+		return null;
 	}).catch(_.partial(entityFetchFailed, 'item_controller_detail')).done();
 }
 
 export function create(type) {
+	application.dialogRegion.startTracking();
+
 	const model = new Item({type});
 	const view = new ItemDetailView({model});
 	view.on('form:submit', function () {
