@@ -52,3 +52,35 @@ textarea ~ .help-block {
 .bold {
   font-weight: bold;
 }
+
+/* Suffix */
+
+.input-field {
+  &.has-suffix > input,
+  &.has-suffix > textarea {
+	padding-right: 5rem;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+  }
+
+  .suffix_password {
+	position: absolute;
+	width: $input-height;
+	font-size: 2rem;
+	transition: color .2s;
+	margin-left: -5rem;
+
+	&.active { color: $input-focus-color; }
+  }
+
+  .suffix_clipboard {
+	position: absolute;
+	width: $input-height;
+	font-size: 2rem;
+	transition: color .2s;
+	margin-left: -2rem;
+
+	&.active { color: $input-focus-color; }
+  }
+}

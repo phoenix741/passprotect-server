@@ -4,29 +4,36 @@
 		label(for='type') #{t('items:item.form.type.field')}
 
 .row
-	.input-field.col.s12
+	.input-field.col.s12.has-suffix
 		input#nameOnCard(type='text',name='nameOnCard')
 		label(for='nameOnCard') #{t('items:item.form.nameOnCard.field')}
+		i.material-icons.suffix_clipboard.copyclp content_copy
 
 .row
-	.input-field.col.s12
+	.input-field.col.s12.has-suffix
 		input#cardNumber(type='text',name='cardNumber')
 		label(for='cardNumber') #{t('items:item.form.cardNumber.field')}
+		i.material-icons.suffix_clipboard.copyclp content_copy
 
 .row
-	.input-field.col.s12
-		input#cvv(type='text',name='cvv')
+	.input-field.col.s12.has-suffix
+		input#cvv(type='password',name='cvv')
 		label(for='cvv') #{t('items:item.form.cvv.field')}
+		i.material-icons.suffix_password.showhide visibility
+		i.material-icons.suffix_clipboard.copyclp content_copy
 
 .row
-	.input-field.col.s12
+	.input-field.col.s12.has-suffix
 		input#expiry(type='text',name='expiry')
 		label(for='expiry') #{t('items:item.form.expiry.field')}
+		i.material-icons.suffix_clipboard.copyclp content_copy
 
 .row
-	.input-field.col.s12
-		input#code(type='text',name='code')
+	.input-field.col.s12.has-suffix
+		input#code(type='password',name='code')
 		label(for='code') #{t('items:item.form.code.field')}
+		i.material-icons.suffix_password.showhide visibility
+		i.material-icons.suffix_clipboard.copyclp content_copy
 
 .row
 	.input-field.col.s12

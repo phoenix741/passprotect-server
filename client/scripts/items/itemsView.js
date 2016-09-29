@@ -83,6 +83,12 @@ export class ItemDetailView extends Marionette.LayoutView {
 	};
 
 	@property
+	static events = {
+		'click .showhide': 'showHide',
+		'click .copyclp': 'copyToClipboard'
+	};
+
+	@property
 	static bindings = {
 		'#label': 'label',
 		'.brand-logo': {
@@ -120,6 +126,34 @@ export class ItemDetailView extends Marionette.LayoutView {
 				break;
 		}
 		this.informations.show(view);
+	}
+
+	showHide(e) {
+		const target = $(e.target);
+		const group = target.closest('.input-field');
+
+		switch (target.html()) {
+			case 'visibility':
+				group.find('input').get(0).type = 'text';
+				target.html('visibility_off');
+				break;
+			case 'visibility_off':
+				group.find('input').get(0).type = 'password';
+				target.html('visibility');
+				break;
+		}
+	}
+
+	copyToClipboard(e) {
+		const target = $(e.target);
+		const group = target.closest('.input-field');
+		const value = group.find('input, textarea').val();
+
+		var $temp = $('<input>');
+		$('body').append($temp);
+		$temp.val(value).select();
+		document.execCommand('copy');
+		$temp.remove();
 	}
 }
 
