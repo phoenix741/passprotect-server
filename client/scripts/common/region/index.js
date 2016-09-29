@@ -58,7 +58,7 @@ class AnalyticsRegion extends Marionette.Region {
 	}
 }
 
-export default class BodyRegion extends AnalyticsRegion {
+export class BodyRegion extends AnalyticsRegion {
 	attachHtml(view) {
 		this.$el.hide();
 		this.$el.html(view.el);
@@ -66,7 +66,7 @@ export default class BodyRegion extends AnalyticsRegion {
 	}
 }
 
-export default class DialogRegion extends AnalyticsRegion {
+export class DialogRegion extends AnalyticsRegion {
 	onShow(view) {
 		super.onShow(view);
 
@@ -86,7 +86,7 @@ export default class DialogRegion extends AnalyticsRegion {
 	}
 }
 
-export default class FullscreenDialogRegion extends AnalyticsRegion {
+export class FullscreenDialogRegion extends AnalyticsRegion {
 	constructor(application, options) {
 		super(options);
 
