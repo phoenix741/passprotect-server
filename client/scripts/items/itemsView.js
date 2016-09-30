@@ -6,6 +6,7 @@ import itemDetailTemplate from 'nscommon/templates/items/itemDetail.jade';
 import paymentCardInformationsTemplate from 'nscommon/templates/items/paymentCardInformations.jade';
 import passwordInformationsTemplate from 'nscommon/templates/items/passwordInformations.jade';
 import textInformationsTemplate from 'nscommon/templates/items/textInformations.jade';
+import removeConfirmTemplate from 'nscommon/templates/items/itemRemove.jade';
 
 import {property} from 'nsclient/common/decorators';
 import {StickitView,MaterializeForm,FormView} from 'nsclient/common/behaviors';
@@ -40,8 +41,8 @@ class ItemView extends Marionette.ItemView {
 	};
 
 	@property
-	static triggers = {
-		'click': 'item:detail'
+	static events = {
+		'click': 'onItemDetailClick'
 	};
 
 	@property
@@ -50,6 +51,28 @@ class ItemView extends Marionette.ItemView {
 			behaviorClass: StickitView
 		}
 	};
+
+	@property
+	static ui = {
+		deleteBtn: '.delete'
+	};
+
+	onItemDetailClick(e) {
+		e.preventDefault();
+
+		const args = {
+			view: this,
+			model: this.model,
+			collection: this.collection
+		};
+
+		if ($.contains(this.ui.deleteBtn.get(0), e.target)) {
+			this.trigger('item:remove', args);
+		}
+		else {
+			this.trigger('item:detail', args);
+		}
+	}
 }
 
 export class ItemsView extends Marionette.CompositeView {
@@ -229,5 +252,16 @@ class TextInformationView extends Marionette.ItemView {
 		'FormView': {
 			behaviorClass: FormView
 		}
+	};
+}
+
+export class RemoveConfirmView extends Marionette.ItemView {
+	@property
+	static template = removeConfirmTemplate;
+
+	@property
+	static triggers = {
+		'click .agree': 'agree',
+		'click .disagree': 'disagree'
 	};
 }

@@ -1,0 +1,9 @@
+.modal-content
+	h5.main-title #{t('items:alert.confirm_remove.title')}
+
+	p #{t('items:alert.confirm_remove.message', {title: label})}
+
+.modal-footer
+	button.modal-action.modal-close.waves-effect.waves-red.btn-flat.disagree(type='button')= t('items:alert.confirm_remove.disagree')
+	button.modal-action.modal-close.waves-effect.waves-green.btn-flat.agree(type='button')= t('items:alert.confirm_remove.agree')
+

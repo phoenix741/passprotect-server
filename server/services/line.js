@@ -44,6 +44,12 @@ module.exports = function (models, services) {
 					return updateLine;
 				});
 			});
+		},
+
+		removeLine(id) {
+			debug(`Remove the line with the id ${id}`);
+
+			return models.line.removeLine(id);
 		}
 	};
 };

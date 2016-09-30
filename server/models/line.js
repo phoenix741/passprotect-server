@@ -42,6 +42,12 @@ module.exports = function () {
 			return db.promise.then(db => {
 				return Promise.fromCallback(cb => db.collection('walletlines').save(line, cb)).return(line);
 			}).catch(processMongoException);
+		},
+
+		removeLine(id) {
+			return db.promise.then(db => {
+				return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({_id: new ObjectID(id)}, cb));
+			}).catch(_.partial(processNotFound, id));
 		}
 	};
 

@@ -269,6 +269,20 @@ module.exports = function (app, services) {
 			data._id = req.line._id;
 
 			return saveLine(data, req, res);
+		})
+		/**
+	 	 * @api {delete} /api/lines/:lineId Delete the line
+		 * @apiName DeleteLine
+		 * @apiGroup Line
+		 * @apiPermission ROLE_USER
+		 *
+		 * @apiSuccessExample {json} Success-Response:
+		 *     HTTP/1.1 204 OK
+	 	 */
+		.delete((req, res) => {
+			return services.line.removeLine(req.line._id).then(function() {
+				res.status(204).send();
+			});
 		});
 
 	app.use('/api/lines', authenticate(), permission(), router);

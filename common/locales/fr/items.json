@@ -57,8 +57,17 @@
 	  }
 	},
 	"flash": {
-	  "item_created": "L'enregistrement a bien été sauvegardé",
-	  "item_modify": "L'enregistrement a bien été sauvegardé"
+	  "item_created": "L'enregistrement a bien été créé",
+	  "item_modify": "L'enregistrement a bien été sauvegardé",
+	  "item_removed": "L'enregistrement a bien été supprimé"
+	}
+  },
+  "alert": {
+	"confirm_remove": {
+	  "title": "Suppression ?",
+	  "message": "Êtes-vous sur de vouloir supprimer \"{{title}}\" ?",
+	  "agree": "Supprimer",
+	  "disagree": "Annuler"
 	}
   }
 }
