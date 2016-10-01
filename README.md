@@ -4,13 +4,12 @@ Passprotect is an single page application used to retrieve and store password, c
 
 ## How data are encrypted
 
-When the application is started you can create a user. Associated to the created user we create 3 keys :
+When the application is started you can create a user. When the user is created the application will create 2 keys :
 
-  * the IV of the AES-256-CTR algorithm: generated from 16 random bytes,
-  * the master key used to encrypt password, text, card from: generated from 32 random bytes, this key is encrypted 
-  using the password of the user and the IV,
-  * the session key used to encrypt JWT token: generated from 32 random bytes, this key is used to encrypt the master
-  key in the JWT token.
+  * the master key used to encrypt (with AES-256-CTR) password, text, card. This key is generated from 32 random bytes, 
+  this key is encrypted using the password of the user and salt (of 16 bytes),
+  * the session key used to encrypt JWT token. The key is generated from 32 random bytes. This key is used to encrypt 
+  the master key in the JWT token.
   
 Then when the line is saved the master key is used to encrypt the data, and when the line is retrieved the master key is
 used to decrypt the data.
