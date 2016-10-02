@@ -69,8 +69,8 @@ services:
 
 There is two images :
 
- * `docker.shadoware.org/passprotect-server:1.0.0`: contains the server part with nodejs.
- * `docker.shadoware.org/passprotect-client:1.0.0`: serve the static file of the client and is used as a proxy to the API
+ * `phoenix741/passprotect-server:1.0.0`: contains the server part with nodejs.
+ * `phoenix741/passprotect-client:1.0.0`: serve the static file of the client and is used as a proxy to the API
   
 The third image is used to contains the mongodb database.
 
