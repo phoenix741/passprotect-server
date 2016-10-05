@@ -1,6 +1,7 @@
 'use strict';
 
 const debug = require('debug')('App:Service:Line');
+const Promise = require('bluebird');
 
 module.exports = function (models, services) {
 	return {
@@ -19,13 +20,18 @@ module.exports = function (models, services) {
 		getLine(id, user) {
 			debug('Get the line with id', id);
 			return models.line.getLine(id).then(function (line) {
+				const salt = line.salt;
 				const informationsEncrypted = line.encryptedInformations;
 
-				return services.crypto.decrypt(informationsEncrypted, new Buffer(user.clearKey, 'binary'), user.encryption.iv).then(function (informationString) {
-					line.informations = JSON.parse(informationString);
+				const generateLineKeyPromise = services.crypto.createKeyDerivation(user.clearKey, salt);
 
-					return line;
-				});
+				return generateLineKeyPromise
+					.then(lineKey => services.crypto.decrypt(informationsEncrypted, lineKey.key, lineKey.iv))
+					.then(function (informationString) {
+						line.informations = JSON.parse(informationString);
+
+						return line;
+					});
 			});
 		},
 
@@ -35,14 +41,23 @@ module.exports = function (models, services) {
 			const informations = line.informations;
 			const informationsString = JSON.stringify(informations);
 
-			return services.crypto.encrypt(new Buffer(informationsString, 'utf-8'), new Buffer(user.clearKey, 'binary'), user.encryption.iv).then(function (informationEncrypted) {
-				line.encryptedInformations = informationEncrypted;
-				delete line.informations;
+			const generateSaltPromise = services.crypto.generateIV();
+			const generateLineKeyPromise = generateSaltPromise.then(salt => services.crypto.createKeyDerivation(user.clearKey, salt));
 
-				return models.line.saveLine(line).then(function (updateLine) {
-					updateLine.informations = informations;
-					return updateLine;
+			return Promise.props({
+				salt: generateSaltPromise,
+				lineKey: generateLineKeyPromise
+			}).then(props => {
+				return services.crypto.encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv).then(function (informationEncrypted) {
+					line.salt = props.salt;
+					line.encryptedInformations = informationEncrypted;
+					delete line.informations;
+
+					return models.line.saveLine(line);
 				});
+			}).then(function (updateLine) {
+				updateLine.informations = informations;
+				return updateLine;
 			});
 		},
 

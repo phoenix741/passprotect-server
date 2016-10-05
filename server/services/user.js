@@ -26,11 +26,20 @@ module.exports = function (models, services) {
 		getClearUser(id, password) {
 			debug('Get the clear version of the user with id', id);
 			const userPromise = this.getUser(id);
-			const decryptedKeyPromise = userPromise.then(user => {
-				const iv = user.encryption.iv;
-				const encryptedKey = user.encryption.key;
+			const generateMasterKeyKeyPromise = userPromise.then(user => {
+				const salt = user.encryption.salt;
 
-				return services.crypto.decrypt(encryptedKey, password, iv);
+				return services.crypto.createKeyDerivation(password, salt);
+			});
+			const decryptedKeyPromise = Promise.props({
+				user: userPromise,
+				masterKeyKey: generateMasterKeyKeyPromise
+			}).then(props => {
+				const key = props.masterKeyKey.key;
+				const iv = props.masterKeyKey.iv;
+				const encryptedKey = props.user.encryption.key;
+
+				return services.crypto.decrypt(encryptedKey, key, iv);
 			});
 
 			return Promise.props({
@@ -55,8 +64,8 @@ module.exports = function (models, services) {
 			const encryptionKey = user.clearKey;
 
 			return services.crypto
-				.encrypt(encryptionKey, user.encryption.sessionKey, user.encryption.iv)
-				.then(function(encryptedKey) {
+				.encrypt(encryptionKey, user.encryption.sessionKey, user.encryption.salt)
+				.then(function (encryptedKey) {
 					payload.clearKey = encryptedKey;
 
 					return payload;
@@ -69,7 +78,7 @@ module.exports = function (models, services) {
 			const decryptedKeyPromise = userPromise.then(user => {
 				const encryptedKey = payload.clearKey;
 
-				return services.crypto.decrypt(encryptedKey, user.encryption.sessionKey, user.encryption.iv);
+				return services.crypto.decrypt(encryptedKey, user.encryption.sessionKey, user.encryption.salt);
 			});
 
 			return Promise.props({
@@ -87,7 +96,7 @@ module.exports = function (models, services) {
 
 			return services.crypto.checkPassword(password, user.password)
 				.then(isValid => {
-					if (!isValid) {
+					if (!isValid) {
 						throw new AuthorizationError('User or password invalid');
 					}
 				})
@@ -95,24 +104,25 @@ module.exports = function (models, services) {
 		},
 
 		registerUser(user) {
-			const hashPromise = services.crypto.hashPassword(user.password);
-			const generateIVPromise = services.crypto.generateIV();
-			const generateKeyPromise = services.crypto.generateKey();
+			const hashPasswordPromise = services.crypto.hashPassword(user.password);
+			const generateSaltPromise = services.crypto.generateIV();
+			const generateMasterKeyPromise = services.crypto.generateKey();
 			const generateSessionKeyPromise = services.crypto.generateKey();
+			const generateMasterKeyKeyPromise = generateSaltPromise.then(salt => services.crypto.createKeyDerivation(user.password, salt));
 
 			const encryptKeyPromise = Promise.props({
-				iv: generateIVPromise,
-				key: generateKeyPromise
-			}).then(obj => services.crypto.encrypt(new Buffer(obj.key, 'hex'), user.password, obj.iv));
+				masterKey: generateMasterKeyPromise,
+				masterKeyKey: generateMasterKeyKeyPromise
+			}).then(obj => services.crypto.encrypt(obj.masterKey, obj.masterKeyKey.key, obj.masterKeyKey.iv));
 
 			return Promise.props({
-				hash: hashPromise,
-				iv: generateIVPromise,
+				hash: hashPasswordPromise,
+				salt: generateSaltPromise,
 				key: encryptKeyPromise,
 				sessionKey: generateSessionKeyPromise
 			}).then(obj => {
 				user.password = obj.hash;
-				user.encryption = _.pick(obj, 'key', 'iv', 'sessionKey');
+				user.encryption = _.pick(obj, 'salt', 'key', 'sessionKey');
 
 				return models.user.registerUser(user);
 			});

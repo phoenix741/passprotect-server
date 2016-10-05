@@ -35,7 +35,7 @@ module.exports = function () {
 		getLine(id) {
 			return db.promise.then(db => {
 				return Promise.fromCallback(cb => db.collection('walletlines').findOne({_id: new ObjectID(id)}, cb));
-			}).catch(_.partial(processNotFound, id));
+			}).then(_.partial(processNotFound, id));
 		},
 
 		saveLine(line) {
@@ -47,7 +47,7 @@ module.exports = function () {
 		removeLine(id) {
 			return db.promise.then(db => {
 				return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({_id: new ObjectID(id)}, cb));
-			}).catch(_.partial(processNotFound, id));
+			}).then(_.partial(processNotFound, id));
 		}
 	};
 
