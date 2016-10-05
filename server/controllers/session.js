@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
 const _ = require('underscore');
 const router = require('express-promise-router')();
 const authenticate = require('../utils/passport').authenticate;

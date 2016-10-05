@@ -1,5 +1,8 @@
 'use strict';
 
+const Promise = require('bluebird');
+global.Promise = Promise;
+
 var express = require('express');
 var debug = require('debug')('App:Server');
 var path = require('path');

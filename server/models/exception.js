@@ -8,7 +8,7 @@ class DuplicateKeyError extends Error {
 		this.originalError = err;
 		this.name = 'DuplicateKeyError';
 		this.status = 400;
-		
+
 		const searchFieldRegexp = /E11000 duplicate key error collection:\s+\w+\.\w+\s+index:\s+(\w+)_\s+dup key/g;
 		const fields = searchFieldRegexp.exec(err.errmsg);
 		this.field = fields.length > 1 ? fields[1] : null;

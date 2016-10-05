@@ -2,7 +2,6 @@
 
 const debug = require('debug')('App:Service:User');
 const _ = require('underscore');
-const Promise = require('bluebird');
 const AuthorizationError = require('../models/exception').AuthorizationError;
 
 module.exports = function (models, services) {

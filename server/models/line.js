@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('underscore');
-const Promise = require('bluebird');
 const db = require('../utils/db');
 const i18n = require('i18next');
 const ObjectID = require('mongodb').ObjectID;

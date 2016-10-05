@@ -6,8 +6,6 @@ const i18n = require('i18next');
 const authenticate = require('../utils/passport').authenticate;
 const permission = require('../utils/passport').permission;
 
-const Promise = require('bluebird');
-
 module.exports = function (app, services) {
 	/**
 	 * @apiDefine ParamsUpdate

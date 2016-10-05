@@ -1,7 +1,6 @@
 'use strict';
 
 const debug = require('debug')('App:Service:Line');
-const Promise = require('bluebird');
 
 module.exports = function (models, services) {
 	return {
