@@ -152,6 +152,6 @@ module.exports = function (app, services) {
 	app.use('/api/users', router);
 
 	function filterUser(user) {
-		return _.omit(user, 'password', 'confirmationToken', 'encryption', 'session', 'clearKey');
+		return _.omit(user, 'password', 'confirmationToken');
 	}
 };
