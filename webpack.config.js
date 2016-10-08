@@ -1,26 +1,27 @@
 'use strict';
 
-var webpack = require('webpack');
-var path = require('path');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var autoprefixer = require('autoprefixer');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const config = require('config');
+const webpack = require('webpack');
+const path = require('path');
+const HtmlwebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var port = process.env.PORT || 5000;
-var host = process.env.HOST || 'localhost';
-var mode = process.env.MODE || 'dev';
+const port = process.env.PORT || 5000;
+const host = process.env.HOST || 'localhost';
+const mode = process.env.MODE || 'dev';
 
 var piwikEnable = process.env.PIWIK_ENABLED;
 if (piwikEnable === undefined) {
 	piwikEnable = true;
 }
-var piwikSiteUrl = process.env.PIWIK_SITE_URL || '//stats-demo.shadoware.org/';
-var piwikSiteId = process.env.PIWIK_SITE_ID || 3;
+const piwikSiteUrl = process.env.PIWIK_SITE_URL || '//stats-demo.shadoware.org/';
+const piwikSiteId = process.env.PIWIK_SITE_ID || 3;
 
-var distFolder = path.join('dist', mode);
+const distFolder = path.join('dist', mode);
 
-var pluginsProd = mode === 'prod' ? [
+const pluginsProd = mode === 'prod' ? [
 	//new webpack.optimize.DedupePlugin(),
 	new webpack.optimize.UglifyJsPlugin({
 		minimize: true,
@@ -34,7 +35,7 @@ var pluginsProd = mode === 'prod' ? [
 	})
 ] : [];
 
-var htmlWebpackPluginOptions = {
+const htmlWebpackPluginOptions = {
 	baseUrl: '/',
 	template: path.join(__dirname, 'common', 'templates', 'base.jade'),
 	inject: 'body',
@@ -75,7 +76,8 @@ module.exports = {
 		alias: {
 			'nscommon': path.join(__dirname, 'common'),
 			'nsclient': path.join(__dirname, 'client', 'scripts'),
-			'nsimages': path.join(__dirname, 'client', 'img')
+			'nsimages': path.join(__dirname, 'client', 'img'),
+			'crypto': require.resolve('crypto-browserify')
 		},
 		root: [
 			path.resolve(path.join(__dirname, 'node_modules')),
@@ -114,7 +116,8 @@ module.exports = {
 			},
 			{test: /\.(woff2?|eot|ttf|svg)$/, loader: 'url?name=fonts/[hash].[ext]&prefix=font/&limit=5000'},
 			{test: /\.html$/, loader: 'html?interpolate&-minimize', cacheable: true},
-			{test: /\.yml$/, loader: 'json!yaml', cacheable: true}
+			{test: /\.yml$/, loader: 'json!yaml', cacheable: true},
+			{test: /\.json$/, loader: 'json', cacheable: true}
 		]
 	},
 	devServer: {
@@ -150,8 +153,8 @@ module.exports = {
 			'process.env': {
 				'NODE_ENV': JSON.stringify('production')
 			},
-			'__PIWIK_ENABLED__': piwikEnable
-
+			'__PIWIK_ENABLED__': piwikEnable,
+			'__PASSPROTECT_CONFIG__': JSON.stringify(config.get('config.client'))
 		}),
 		new ExtractTextPlugin('[name].css'),
 		new HtmlwebpackPlugin(htmlWebpackPluginOptions),
