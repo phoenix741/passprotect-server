@@ -5,6 +5,7 @@ import {SessionStorage} from 'nsclient/common/entities/session';
 class ProjectApplication extends Marionette.Application {
 	initialize() {
 		this.session = new SessionStorage();
+		return this.session.fetch();
 	}
 
 	getCurrentRoute() {

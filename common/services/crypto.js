@@ -38,7 +38,7 @@ module.exports.encrypt = function (text, key, iv, options) {
 	});
 };
 
-module.exports.decrypt = function (text, key, iv) {
+module.exports.decrypt = function (text, key, iv, options) {
 	console.log('decrypt', arguments);
 	const decryptor = crypto.createDecipheriv(options.algorithm, new Buffer(key, 'hex'), new Buffer(iv, 'hex'));
 	decryptor.setAuthTag(new Buffer(text.authTag, 'hex'));

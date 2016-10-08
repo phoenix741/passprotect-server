@@ -60,7 +60,7 @@ export function loginToServer(view, username, password) {
 		.signIn(username, password)
 		.then(() => view && view.trigger('dialog:close'))
 		.catch(error => {
-			application.getSession().signOut();
+			$('.pageLoader').hide();
 
 			if (error.status === 401) {
 				const errors = {username: i18n.t('user:login.form.username.help.invalid')};

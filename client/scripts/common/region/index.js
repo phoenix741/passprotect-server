@@ -43,7 +43,7 @@ class AnalyticsRegion extends Marionette.Region {
 			_paq.push(['setCustomUrl', url]);
 			title && _paq.push(['setDocumentTitle', title]);
 			generationTimeMs && _paq.push(['setGenerationTimeMs', generationTimeMs]);
-			user && _paq.push(['setUserId', user.get('_id')]);
+			user && _paq.push(['setUserId', user]);
 
 			_paq.push(['enableLinkTracking']);
 

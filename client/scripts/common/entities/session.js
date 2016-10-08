@@ -5,6 +5,8 @@ import {property} from 'nsclient/common/decorators';
 import BackboneSession from 'backbone-session';
 import {decrypt, createKeyDerivation} from 'nscommon/services/crypto';
 
+const config = __PASSPROTECT_CONFIG__.crypto;
+
 export class SessionServer extends Backbone.Model {
 	@property
 	static urlRoot = '/api/session';
@@ -33,17 +35,18 @@ export class SessionServer extends Backbone.Model {
 
 	_load() {
 		const password = this.get('password');
-		const salt = this.encryption.salt;
+		const salt = this.get('encryption').salt;
 
-		const masterKeyKeyPromise = createKeyDerivation(password, salt);
+		const masterKeyKeyPromise = createKeyDerivation(password, salt, config.pbkdf2);
 
 		return masterKeyKeyPromise.then(masterKeyKey => {
 			const key = masterKeyKey.key;
 			const iv = masterKeyKey.iv;
-			const encryptedKey = this.encryption.key;
+			const encryptedKey = this.get('encryption').encryptedKey;
 
-			return decrypt(encryptedKey, key, iv);
+			return decrypt(encryptedKey, key, iv, config.cypherIv);
 		}).then(key => {
+			console.log(key);
 			this.set('clearKey', key.toString('binary'));
 
 			return this;
@@ -70,6 +73,8 @@ export class SessionStorage extends BackboneSession {
 					clearKey: this.serverSession.get('clearKey'),
 					token: this.serverSession.get('token')
 				});
+
+				return this.save();
 			})
 			.then(() => Backbone.history.loadUrl());
 	}
