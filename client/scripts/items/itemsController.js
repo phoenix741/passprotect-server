@@ -37,7 +37,7 @@ export function list() {
 export function detail(id) {
 	application.dialogRegion.startTracking();
 
-	Item.fetchItem(id).then(function (model) {
+	Item.fetchItem(id, application.getSession().get('clearKey')).then(function (model) {
 		const view = new ItemDetailView({model});
 		view.on('form:submit', function () {
 			model.save().then(function () {
@@ -62,7 +62,7 @@ export function create(type) {
 	const model = new Item({type});
 	const view = new ItemDetailView({model});
 	view.on('form:submit', function () {
-		model.save().then(function () {
+		model.encryptAndSave(application.getSession().get('clearKey')).then(function () {
 			// Call a login of the user
 			showToast(view, i18n.t('items:item.flash.item_created'));
 			clearErrors(view);

@@ -96,17 +96,17 @@ module.exports = function (app, services) {
 			const username = req.body.username;
 			const password = req.body.password;
 
-			const clearUser = services.user.getClearUser(username, password);
-			const payload = clearUser
+			const getUser = services.user.getUser(username);
+			const payload = getUser
 				.then(_.partial(services.user.verifyPassword, _, password))
 				.then(services.user.createSessionUser);
 			const jwtToken = payload.then(payload => jwt.signAsync({user: payload}, config.get('config.jwt.secret'), {}));
 
-			return Promise.props({clearUser, jwtToken})
+			return Promise.props({getUser, jwtToken})
 				.then(function (result) {
-					result.clearUser.token = 'JWT ' + result.jwtToken;
+					result.getUser.token = 'JWT ' + result.jwtToken;
 					res.cookie('jwt', result.jwtToken, {httpOnly: true/*, secure: true*/});
-					res.status(200).json(filterUser(result.clearUser));
+					res.status(200).json(filterUser(result.getUser));
 				})
 				.catch(err => {
 					if (err.status === 404) {
@@ -135,6 +135,6 @@ module.exports = function (app, services) {
 	app.use('/api/session', router);
 
 	function filterUser(user) {
-		return _.omit(user, 'password', 'confirmationToken', 'encryption', 'session', 'clearKey');
+		return _.omit(user, 'password', 'confirmationToken');
 	}
 };

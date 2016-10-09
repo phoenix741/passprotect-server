@@ -1,5 +1,6 @@
 'use strict';
 
+const config = require('config');
 const _ = require('underscore');
 const router = require('express-promise-router')();
 const i18n = require('i18next');
@@ -92,7 +93,7 @@ module.exports = function (app, services) {
 		 * @apiUse ResponseUpdateComplete
 		 */
 		.post((req, res) => {
-			const data = _.pick(req.body, '_id', 'password');
+			const data = _.pick(req.body, '_id', 'password', 'encryption');
 
 			const validationError = new Error();
 			validationError.status = 400;
@@ -103,6 +104,11 @@ module.exports = function (app, services) {
 
 			if (!_.isString(data.password) || _.isEmpty(data.password) || data.password.length < 8) {
 				validationError.message = i18n.t('error:user.400.password');
+				return Promise.reject(validationError);
+			}
+
+			if (!_.isObject(data.encryption)) {
+				validationError.message = i18n.t('error:user.400.encryption');
 				return Promise.reject(validationError);
 			}
 
@@ -152,6 +158,6 @@ module.exports = function (app, services) {
 	app.use('/api/users', router);
 
 	function filterUser(user) {
-		return _.omit(user, 'password', 'confirmationToken', 'encryption', 'session', 'clearKey');
+		return _.omit(user, 'password', 'confirmationToken');
 	}
 };

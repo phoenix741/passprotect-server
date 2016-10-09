@@ -5,23 +5,20 @@ import routesEventService from 'nsclient/common/services/routesEventService';
 import {clearErrors,entitySaveFailed,displayErrors} from 'nsclient/common/utils/viewUtils';
 import {showToast,alert} from 'nsclient/common/utils/alertUtils';
 import {LoginView,RegisterView} from './userView';
-
-import {Session} from 'nsclient/common/entities/session';
 import {User} from 'nsclient/common/entities/user';
+import {SessionServer} from 'nsclient/common/entities/session';
 
 export function login(username, password) {
-	// Show the login dialog popup view
-	const user = new Session({username: username, password: password});
-
 	if (username) {
-		loginToServer(null, user);
+		loginToServer(null, username, password);
 	}
 	else {
 		application.dialogRegion.startTracking();
 
-		const view = new LoginView({model: user});
+		const model = new SessionServer({username, password});
+		const view = new LoginView({model});
 
-		view.on('form:submit', data => loginToServer(view, user));
+		view.on('form:submit', data => loginToServer(view, model.get('username'), model.get('password')));
 		view.on('user:signup', () => {
 			view.trigger('dialog:close');
 			routesEventService.trigger('user:register');
@@ -32,7 +29,7 @@ export function login(username, password) {
 }
 
 export function logout() {
-	Session.logout();
+	application.getSession().signOut();
 }
 
 export function register() {
@@ -41,14 +38,12 @@ export function register() {
 	const user = new User();
 	const view = new RegisterView({model: user});
 
-	user.setForceIsNew(true);
-
 	view.on('form:submit', function () {
 		// Save the username and the password before registring to the server
 		const username = user.get('_id');
 		const password = user.get('password');
 
-		user.save().then(function () {
+		user.registerUser().then(function () {
 			// Call a login of the user
 			showToast(view, i18n.t('user:register.flash.user_created'));
 			clearErrors(view);
@@ -60,19 +55,13 @@ export function register() {
 	application.bodyRegion.show(view);
 }
 
-export function loginToServer(view, user) {
-	user
-		.save()
-		.then(() => {
-			if (view) {
-				view.trigger('dialog:close');
-			}
-
-			return Session.registerUser(user);
-		})
-		.then(() => Backbone.history.loadUrl())
+export function loginToServer(view, username, password) {
+	application.getSession()
+		.signIn(username, password)
+		.then(() => view && view.trigger('dialog:close'))
 		.catch(error => {
-			Session.unregisterUser();
+			$('.pageLoader').hide();
+
 			if (error.status === 401) {
 				const errors = {username: i18n.t('user:login.form.username.help.invalid')};
 

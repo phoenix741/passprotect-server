@@ -1,6 +1,6 @@
 'use strict';
 
-import {Session} from '../entities/session';
+import application from 'nsclient/application';
 
 class AnalyticsRegion extends Marionette.Region {
 	onShow(view) {
@@ -10,7 +10,6 @@ class AnalyticsRegion extends Marionette.Region {
 	startTracking() {
 		if (__PIWIK_ENABLED__) {
 			this.startGenerationTimeMs = (new Date()).getTime();
-			this.fetchingSession = Session.getSession();
 		}
 		this.currentTitle = null;
 	}
@@ -33,7 +32,7 @@ class AnalyticsRegion extends Marionette.Region {
 			const url = Backbone.history.getFragment();
 			const title = this.currentTitle;
 
-			this.fetchingSession.then(session => this.trackPageView(url, title, session.get('user'), timeMs));
+			this.trackPageView(url, title, application.getSession().get('username'), timeMs);
 		}
 	}
 
@@ -44,7 +43,7 @@ class AnalyticsRegion extends Marionette.Region {
 			_paq.push(['setCustomUrl', url]);
 			title && _paq.push(['setDocumentTitle', title]);
 			generationTimeMs && _paq.push(['setGenerationTimeMs', generationTimeMs]);
-			user && _paq.push(['setUserId', user.get('_id')]);
+			user && _paq.push(['setUserId', user]);
 
 			_paq.push(['enableLinkTracking']);
 

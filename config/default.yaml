@@ -8,13 +8,14 @@ config:
     jwt:
         secret: 'dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r'
 
-    crypto:
-        pbkdf2:
-            iterations: 1000
-            keylen: 64
-            digest: sha512
-        cypherIv:
-            algorithm: 'id-aes256-GCM'
-        ivSize: 8
-        keySize: 32
-        sessionKey: 'xtipKI38GUCvE5cNGtTJxa1wQFvCicF5GDLTWyaBAb5RQqQ8rRBR1yVEq7Jg10cu'
+    client:
+        crypto:
+            pbkdf2:
+                iterations: 1000
+                keylen: 256
+                ivlen: 96
+                digest: sha512
+            cypherIv:
+                algorithm: 'AES-256-GCM'
+            ivSize: 64
+            keySize: 256

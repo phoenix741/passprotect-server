@@ -2,6 +2,9 @@
 
 import {property} from 'nsclient/common/decorators';
 import 'backbone-deep-model/distribution/deep-model.min';
+import {createKeyDerivation, decrypt, encrypt, generateIV, generateKey} from 'nscommon/services/crypto';
+
+const config = __PASSPROTECT_CONFIG__.crypto;
 
 const cardTypeMapping = {
 	card: {
@@ -57,9 +60,49 @@ export class Item extends Backbone.DeepModel {
 		return cardTypeMapping[this.get('type')].color;
 	}
 
-	static fetchItem(_id) {
+	_load(key) {
+		const salt = this.get('salt');
+		const informationsEncrypted = this.get('encryptedInformations');
+
+		const generateLineKeyPromise = createKeyDerivation(key, salt, config.pbkdf2);
+
+		return generateLineKeyPromise
+			.then(lineKey => decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv))
+			.then(informationString => this.set('informations', JSON.parse(informationString)));
+	}
+
+	encryptAndSave(key) {
+		const model = this;
+		const informations = this.get('informations');
+		const informationsString = JSON.stringify(informations);
+
+		const generateSaltPromise = generateIV(config.ivSize);
+		const generateLineKeyPromise = generateSaltPromise.then(salt => createKeyDerivation(key, salt, config.pbkdf2));
+
+		return Promise.props({
+			salt: generateSaltPromise,
+			lineKey: generateLineKeyPromise
+		}).then(props => {
+			return encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv).then(function (informationEncrypted) {
+				model.set({
+					salt: props.salt,
+					encryptedInformations: informationEncrypted
+				});
+
+				return model.save();
+			});
+		});
+	}
+
+	toJSON(options) {
+		var attr = _.clone(this.attributes);
+		delete attr.informations;
+		return attr;
+	}
+
+	static fetchItem(_id, key) {
 		const item = new Item({_id});
-		return item.fetch();
+		return item.fetch().then(() => item._load(key));
 	}
 }
 

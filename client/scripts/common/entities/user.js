@@ -1,6 +1,9 @@
 'use strict';
 
 import {property} from 'nsclient/common/decorators';
+import {generateIV, generateKey, createKeyDerivation, encrypt} from 'nscommon/services/crypto';
+
+const config = __PASSPROTECT_CONFIG__.crypto;
 
 export class User extends Backbone.Model {
 	@property
@@ -25,10 +28,6 @@ export class User extends Backbone.Model {
 		}
 	};
 
-	setForceIsNew(isNew) {
-		this.forceIsNew = isNew;
-	}
-
 	/**
 	 * Check if the model is new.
 	 *
@@ -38,5 +37,34 @@ export class User extends Backbone.Model {
 	 */
 	isNew() {
 		return this.forceIsNew || super.isNew();
+	}
+
+	/**
+	 * Register the user to the server.
+	 *
+	 * To register a user to a server, the user the creation and the definition of some keys.
+	 *
+	 * @returns {Promise} Promise of the registered user.
+	 */
+	registerUser() {
+		this.forceIsNew = true;
+
+		const salt = generateIV(config.ivSize);
+		const masterKey = generateKey(config.keySize);
+		const masterKeyKey = salt.then(salt => createKeyDerivation(this.get('password'), salt, config.pbkdf2));
+
+		const encryptedKey = Promise.props({
+			masterKey,
+			masterKeyKey
+		}).then(obj => encrypt(obj.masterKey, obj.masterKeyKey.key, obj.masterKeyKey.iv, config.cypherIv));
+
+		return Promise.props({
+			salt,
+			encryptedKey
+		}).then(obj => {
+			this.set('encryption', _.pick(obj, 'salt', 'encryptedKey'));
+
+			return this.save();
+		});
 	}
 }

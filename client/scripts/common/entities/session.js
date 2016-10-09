@@ -2,22 +2,12 @@
 
 import routesEventService from 'nsclient/common/services/routesEventService';
 import {property} from 'nsclient/common/decorators';
+import BackboneSession from 'backbone-session';
+import {decrypt, createKeyDerivation} from 'nscommon/services/crypto';
 
-export class SessionStorage extends Backbone.Model {
-	@property
-	static defaults = {
-		authenticated: false,
-		user: null
-	}
-}
+const config = __PASSPROTECT_CONFIG__.crypto;
 
-const currentSession = new SessionStorage();
-let currentSessionInitialized = false;
-
-/**
- * Object used to get session information from the API.
- */
-export class Session extends Backbone.Model {
+export class SessionServer extends Backbone.Model {
 	@property
 	static urlRoot = '/api/session';
 
@@ -33,61 +23,75 @@ export class Session extends Backbone.Model {
 		}
 	};
 
-	static getSession() {
-		return new Promise(function (resolve) {
-			if (currentSessionInitialized) {
-				resolve(currentSession);
-				return;
-			}
+	signIn(username, password, options) {
+		this.set({username, password});
 
-			currentSessionInitialized = true;
+		return this.save(options).then(() => this._load());
+	}
 
-			const serverSession = new Session();
-			serverSession.fetch()
-				.then(() => currentSession.set({authenticated: true, user: serverSession}))
-				.catch(() => currentSession.set({authenticated: false, user: null}))
-				.finally(() => resolve(currentSession));
+	signOut(options) {
+		return $.ajax({url: '/api/session', method: 'DELETE'});
+	}
+
+	_load() {
+		const password = this.get('password');
+		const salt = this.get('encryption').salt;
+
+		const masterKeyKeyPromise = createKeyDerivation(password, salt, config.pbkdf2);
+
+		return masterKeyKeyPromise.then(masterKeyKey => {
+			const key = masterKeyKey.key;
+			const iv = masterKeyKey.iv;
+			const encryptedKey = this.get('encryption').encryptedKey;
+
+			return decrypt(encryptedKey, key, iv, config.cypherIv);
+		}).then(key => {
+			this.set('clearKey', key.toString('binary'));
+
+			return this;
 		});
 	}
+}
 
-	static getSessionUser() {
-		return Session.getSession()
-			.then(session => {
-				// Need authentification
-				if (!session.get('user')) {
-					throw new Error('Need authentification');
-				}
+export class SessionStorage extends BackboneSession {
+	@property
+	static Model = SessionServer;
 
-				return session.get('user');
+	initialize(properties, options) {
+		super.initialize(properties, options);
+
+		this.serverSession = new SessionServer();
+	}
+
+	signIn(username, password, options) {
+		return this.serverSession
+			.signIn(username, password, options)
+			.then(() => {
+				this.set({
+					username: this.serverSession.get('username'),
+					clearKey: this.serverSession.get('clearKey'),
+					token: this.serverSession.get('token')
+				});
+
+				return this.save();
 			})
-			.catch(() => routesEventService.trigger('login'));
+			.then(() => Backbone.history.loadUrl());
 	}
 
-	static registerUser(user) {
-		return Session.getSession()
-			.then(currentSession => {
-				currentSession.set({authenticated: true, user: user});
-				routesEventService.trigger('session:registerUser', user);
-			});
+	signOut(options) {
+		return super.signOut()
+			.then(() => this.serverSession.signOut(options))
+			.then(() => Backbone.history.loadUrl());
 	}
 
-	static unregisterUser() {
-		return Session.getSession()
-			.then(currentSession => {
-				currentSession.set({authenticated: false, user: null});
-				routesEventService.trigger('session:unregisterUser');
-			});
-	}
-
-	static logout() {
-		return $.ajax({
-			url: '/api/session',
-			method: 'DELETE'
-		}).done(() => {
-			Session.unregisterUser();
-			Backbone.history.loadUrl();
-
-			return null;
+	getAuthStatus(options) {
+		return new Promise(function (resolve, reject) {
+			if (this.get('clearKey') && this.get('token')) {
+				resolve();
+			}
+			else {
+				reject();
+			}
 		});
 	}
 }

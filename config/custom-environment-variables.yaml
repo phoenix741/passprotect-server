@@ -8,5 +8,3 @@ config:
     jwt:
         secret: JWT_SECRET
 
-    crypto:
-        sessionKey: CRYPTO_SESSIONKEY

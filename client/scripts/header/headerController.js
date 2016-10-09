@@ -4,7 +4,6 @@ import application from 'nsclient/application';
 import routesEventService from 'nsclient/common/services/routesEventService';
 import {HeaderLayout, HeaderMenu, HeaderMobileMenu} from './headerView';
 import menu from './entities/menu';
-import {Session} from 'nsclient/common/entities/session';
 
 export function showHeader() {
 	const headerLayout = new HeaderLayout();
@@ -16,28 +15,26 @@ export function showHeader() {
 	//
 	// The menu can be refreshed when the session state changed. (A
 	// login or logout event occure).
-	Session.getSession().then(currentSession => {
-		currentSession.on('change', function () {
-			// Refresh the header
-			menu.fetchHeaders(currentSession.get('user'));
-		});
-
-		const menuCollection = menu.fetchHeaders(currentSession.get('user'));
-		const headerMenu = new HeaderMenu({collection: menuCollection});
-		const headerMobileMenu = new HeaderMobileMenu({collection: menuCollection});
-
-		headerLayout.on('show', function () {
-			headerLayout.menu.show(headerMenu);
-			headerLayout.menuMobile.show(headerMobileMenu);
-		});
-
-		headerMenu.on('childview:childview:navigate', navigateMenu);
-		headerMenu.on('childview:navigate', navigateMenu);
-		headerMobileMenu.on('childview:childview:navigate', navigateMenu);
-		headerMobileMenu.on('childview:navigate', navigateMenu);
-
-		application.headerRegion.show(headerLayout);
+	application.getSession().on('change', function () {
+		// Refresh the header
+		menu.fetchHeaders(application.getSession().get('username'));
 	});
+
+	const menuCollection = menu.fetchHeaders(application.getSession().get('username'));
+	const headerMenu = new HeaderMenu({collection: menuCollection});
+	const headerMobileMenu = new HeaderMobileMenu({collection: menuCollection});
+
+	headerLayout.on('show', function () {
+		headerLayout.menu.show(headerMenu);
+		headerLayout.menuMobile.show(headerMobileMenu);
+	});
+
+	headerMenu.on('childview:childview:navigate', navigateMenu);
+	headerMenu.on('childview:navigate', navigateMenu);
+	headerMobileMenu.on('childview:childview:navigate', navigateMenu);
+	headerMobileMenu.on('childview:navigate', navigateMenu);
+
+	application.headerRegion.show(headerLayout);
 
 	headerLayout.on('brand:clicked', function () {
 		routesEventService.trigger('items:list');
