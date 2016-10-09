@@ -25,7 +25,7 @@ const pluginsProd = mode === 'prod' ? [
 	//new webpack.optimize.DedupePlugin(),
 	new webpack.optimize.UglifyJsPlugin({
 		minimize: true,
-		mangle: false,
+		//mangle: false,
 		output: {
 			comments: false
 		},
