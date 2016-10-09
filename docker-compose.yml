@@ -4,7 +4,7 @@ services:
         build:
           context: ./
           dockerfile: Dockerfile.nodejs
-        image: phoenix741/passprotect-server:1.0.0
+        image: phoenix741/passprotect-server:develop
         expose:
             - 3000
         links:
@@ -17,7 +17,7 @@ services:
         build:
           context: ./
           dockerfile: Dockerfile.nginx
-        image: phoenix741/passprotect-client:1.0.0
+        image: phoenix741/passprotect-client:develop
         links:
             - nodejs
         environment:
