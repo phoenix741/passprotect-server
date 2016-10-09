@@ -211,7 +211,7 @@ module.exports = function (app, services) {
 		 *     HTTP/1.1 401 Unauthorized
 		 */
 		.post((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'informations');
+			const data = _.pick(req.body, 'type', 'label', 'encryptedInformations', 'salt');
 
 			return saveLine(data, req, res);
 		});
@@ -261,7 +261,7 @@ module.exports = function (app, services) {
 		 * @apiUse ResponseLineComplete
 		 */
 		.put((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'informations');
+			const data = _.pick(req.body, 'type', 'label', 'encryptedInformations', 'salt');
 
 			// Force the id of the line to ensure that the user doesn't try to change it
 			data._id = req.line._id;
@@ -291,7 +291,7 @@ module.exports = function (app, services) {
 	 * @returns {Object} The filtered object.
 	 */
 	function filterLine(line) {
-		return _.pick(line, '_id', 'type', 'label', 'informations');
+		return _.pick(line, '_id', 'type', 'label', 'encryptedInformations', 'salt');
 	}
 
 	/**

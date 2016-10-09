@@ -46,7 +46,6 @@ export class SessionServer extends Backbone.Model {
 
 			return decrypt(encryptedKey, key, iv, config.cypherIv);
 		}).then(key => {
-			console.log(key);
 			this.set('clearKey', key.toString('binary'));
 
 			return this;

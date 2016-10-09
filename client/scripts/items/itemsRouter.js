@@ -25,7 +25,7 @@ export default function itemsRouter(application) {
 		API.detail(id);
 	});
 	routesEventService.on('items:create', (type) => {
-		application.navigate('items/add' + type);
+		application.navigate('items/add/' + type);
 		API.create(type);
 	});
 
