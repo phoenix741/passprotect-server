@@ -41,7 +41,8 @@ const htmlWebpackPluginOptions = {
 	inject: 'body',
 	minify: {
 		minifyJS: true
-	}
+	},
+	hash: true
 };
 
 if (piwikEnable) {

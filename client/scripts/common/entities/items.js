@@ -61,8 +61,8 @@ export class Item extends Backbone.DeepModel {
 	}
 
 	_load(key) {
-		const salt = this.get('salt');
-		const informationsEncrypted = this.get('encryptedInformations');
+		const salt = this.get('encryption.salt');
+		const informationsEncrypted = this.get('encryption.informations');
 
 		const generateLineKeyPromise = createKeyDerivation(key, salt, config.pbkdf2);
 
@@ -84,9 +84,9 @@ export class Item extends Backbone.DeepModel {
 			lineKey: generateLineKeyPromise
 		}).then(props => {
 			return encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv).then(function (informationEncrypted) {
-				model.set({
+				model.set('encryption', {
 					salt: props.salt,
-					encryptedInformations: informationEncrypted
+					informations: informationEncrypted
 				});
 
 				return model.save();

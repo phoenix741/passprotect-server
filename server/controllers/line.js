@@ -8,74 +8,52 @@ const permission = require('../utils/passport').permission;
 
 module.exports = function (app, services) {
 	/**
-	 * @apiDefine text Text line
+	 * @apiDefine text Informations to encrypt (client side) for text
 	 */
 	/**
-	 * @apiDefine password Password line
+	 * @apiDefine password Informations to encrypt (client side) for password
 	 */
 	/**
-	 * @apiDefine card Payment card line
+	 * @apiDefine card Informations to encrypt (client side) for payment card
 	 */
 
 	/**
 	 * @apiDefine UpdateLine
 	 *
-	 * @apiParam (text) {String="text","card","password"} type type of line
-	 * @apiParam (text) {String} label label of the line
-	 * @apiParam (text) {Object} informations Informations to encrypt
-	 * @apiParam (text) {String} informations.text Text that will be encrypted
-	 * @apiParam (text) {String} informations.notes Custom note added to the line
+	 * @apiParam {String="text","card","password"} type type of line
+	 * @apiParam {String} label label of the line
+	 * @apiParam {Object} encryption Informations used for encrypted data
+	 * @apiParam {Object} encryption.informations Encrypted informations
+	 * @apiParam {String} encryption.informations.authTag Authentification tag of the encrypted information
+	 * @apiParam {String} encryption.informations.content Encrypted informations
+	 * @apiParam {String} encryption.salt Salt used to encrypt/decrypt informations
 	 *
-	 * @apiParam (password) {String="text","card","password"} type type of line
-	 * @apiParam (password) {String} label label of the line
-	 * @apiParam (password) {Object} informations Informations to encrypt
-	 * @apiParam (password) {String} informations.username Username associated to the pasword
-	 * @apiParam (password) {String} informations.password The password
-	 * @apiParam (password) {String} informations.siteUrl The site where the password is used
-	 * @apiParam (password) {String} informations.notes Custom note added to the line
+	 * @apiParam (text) {String} text Text that will be encrypted
+	 * @apiParam (text) {String} notes Custom note added to the line
 	 *
-	 * @apiParam (card) {String="text","card","password"} type type of line
-	 * @apiParam (card) {String} label label of the line
-	 * @apiParam (card) {Object} informations Informations to encrypt
-	 * @apiParam (card) {String="VISA","Carte bleu","Mastercard","American Express","Maestro"} informations.type Type of card
-	 * @apiParam (card) {String} informations.nameOnCard Name of the person on the card
-	 * @apiParam (card) {String} informations.cardNumber The card number
-	 * @apiParam (card) {String} informations.cvv The code in the back on the card
-	 * @apiParam (card) {String} informations.expiry The expiration date
-	 * @apiParam (card) {String} informations.code The code to use to pay with the card
-	 * @apiParam (card) {String} informations.notes Custom note added to the line
+	 * @apiParam (password) {String} username Username associated to the pasword
+	 * @apiParam (password) {String} password The password
+	 * @apiParam (password) {String} siteUrl The site where the password is used
+	 * @apiParam (password) {String} notes Custom note added to the line
 	 *
-	 * @apiParamExample {json} Text line:
+	 * @apiParam (card) {String="VISA","Carte bleu","Mastercard","American Express","Maestro"} type Type of card
+	 * @apiParam (card) {String} nameOnCard Name of the person on the card
+	 * @apiParam (card) {String} cardNumber The card number
+	 * @apiParam (card) {String} cvv The code in the back on the card
+	 * @apiParam (card) {String} expiry The expiration date
+	 * @apiParam (card) {String} code The code to use to pay with the card
+	 * @apiParam (card) {String} notes Custom note added to the line
+	 *
+	 * @apiParamExample {json} Line:
 	 *   {
 	 *     "type": "text",
 	 *     "label": "My custom text",
-	 *     "informations": {
-	 *       "text": "Text to encrypt"
-	 *     }
-	 *   }
-	 *
-	 * @apiParamExample {json} Password line:
-	 *   {
-	 *     "type": "password",
-	 *     "label": "My custom password",
-	 *     "informations": {
-	 *       "username": "My Username"
-	 *       "password": "My password"
-	 *       "siteUrl": "http://site"
-	 *     }
-	 *   }
-	 *
-	 * @apiParamExample {json} Card line:
-	 *   {
-	 *     "type": "card",
-	 *     "label": "Ma Carte de crédit",
-	 *     "informations": {
-	 *       "nameOnCard": "Nom de la carte",
-	 *       "cardNumber": "Numero de la carte",
-	 *       "cvv": "CVV",
-	 *       "expiry": "12/12",
-	 *       "code": "1231",
-	 *       "notes": "Test mesage"
+	 *     "encryption": {
+	 *       "salt": "83b01169a90fe764",
+	 *       "informations": {
+	 *         "content": "d13a32829c2547b8bca6da5bb568d3",
+	 *         "authTag": "db47515bdcb7643484d60189b7ad4e33"
+	 *       }
 	 *     }
 	 *   }
 	 */
@@ -83,33 +61,15 @@ module.exports = function (app, services) {
 	/**
 	 * @apiDefine ResponseLineComplete
 	 *
-	 * @apiSuccess (text) {String} _id Id of the line
-	 * @apiSuccess (text) {String} type type of line
-	 * @apiSuccess (text) {String} label label of the line
-	 * @apiSuccess (text) {Object} informations informations that have been encrypted
-	 * @apiSuccess (text) {String} informations.text Text enter by the user
-	 * @apiSuccess (text) {String} informations.notes Custom note added to the line
+	 * @apiSuccess {String} _id Id of the line
+	 * @apiSuccess {String} type type of line
+	 * @apiSuccess {String} label label of the line
+	 * @apiSuccess {Object} encryption Informations used for encrypted data
+	 * @apiSuccess {Object} encryption.informations Encrypted informations
+	 * @apiSuccess {String} encryption.informations.content Encrypted content of the line
+	 * @apiSuccess {String} encryption.informations.authTag Authentification tag of the encrypted informations
+	 * @apiSuccess {String} encryption.salt Salt used to encrypt informations
 	 *
-	 * @apiSuccess (password) {String} _id Id of the line
-	 * @apiSuccess (password) {String} type type of line
-	 * @apiSuccess (password) {String} label label of the line
-	 * @apiSuccess (password) {Object} informations informations that have been encrypted
-	 * @apiSuccess (password) {String} informations.username Username associated to the pasword
-	 * @apiSuccess (password) {String} informations.password The password
-	 * @apiSuccess (password) {String} informations.siteUrl The site where the password is used
-	 * @apiSuccess (password) {String} informations.notes Custom note added to the line
-	 *
-	 * @apiSuccess (card) {String} _id Id of the line
-	 * @apiSuccess (card) {String} type type of line
-	 * @apiSuccess (card) {String} label label of the line
-	 * @apiSuccess (card) {Object} informations informations that have been encrypted
-	 * @apiSuccess (card) {String="VISA","Carte bleu","Mastercard","American Express","Maestro"} informations.type Type of card
-	 * @apiSuccess (card) {String} informations.nameOnCard Name of the person on the card
-	 * @apiSuccess (card) {String} informations.cardNumber The card number
-	 * @apiSuccess (card) {String} informations.cvv The code in the back on the card
-	 * @apiSuccess (card) {String} informations.expiry The expiration date
-	 * @apiSuccess (card) {String} informations.code The code to use to pay with the card
-	 * @apiSuccess (card) {String} informations.notes Custom note added to the line
 	 *
 	 * @apiSuccessExample {json} Success text:
 	 *   HTTP/1.1 200 OK
@@ -117,35 +77,12 @@ module.exports = function (app, services) {
 	 *       "_id": "57685936f4495bc62c4d28a3",
 	 *       "type": "text",
 	 *       "label": "My custom text",
-	 *       "informations": {
-	 *         "text": "Text to encrypt"
-	 *       }
-	 *     }
-	 *
-	 * @apiSuccessExample {json} Success password:
-	 *   HTTP/1.1 200 OK
-	 *     {
-	 *       "type": "password",
-	 *       "label": "My custom password",
-	 *       "informations": {
-	 *         "username": "My Username"
-	 *         "password": "My password"
-	 *         "siteUrl": "http://site"
-	 *       }
-	 *     }
-	 *
-	 * @apiSuccessExample {json} Success card:
-	 *   HTTP/1.1 200 OK
-	 *     {
-	 *       "type": "card",
-	 *       "label": "Ma Carte de crédit",
-	 *       "informations": {
-	 *         "nameOnCard": "Nom de la carte",
-	 *         "cardNumber": "Numero de la carte",
-	 *         "cvv": "CVV",
-	 *         "expiry": "12/12",
-	 *         "code": "1231",
-	 *         "notes": "Test mesage"
+	 *       "encryption": {
+	 *         "salt": "83b01169a90fe764",
+	 *         "informations": {
+	 *           "content": "d13a32829c2547b8bca6da5bb568d3",
+	 *           "authTag": "db47515bdcb7643484d60189b7ad4e33"
+	 *         }
 	 *       }
 	 *     }
 	 */
@@ -211,7 +148,7 @@ module.exports = function (app, services) {
 		 *     HTTP/1.1 401 Unauthorized
 		 */
 		.post((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'encryptedInformations', 'salt');
+			const data = _.pick(req.body, 'type', 'label', 'encryption');
 
 			return saveLine(data, req, res);
 		});
@@ -261,7 +198,7 @@ module.exports = function (app, services) {
 		 * @apiUse ResponseLineComplete
 		 */
 		.put((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'encryptedInformations', 'salt');
+			const data = _.pick(req.body, 'type', 'label', 'encryption');
 
 			// Force the id of the line to ensure that the user doesn't try to change it
 			data._id = req.line._id;
@@ -291,7 +228,7 @@ module.exports = function (app, services) {
 	 * @returns {Object} The filtered object.
 	 */
 	function filterLine(line) {
-		return _.pick(line, '_id', 'type', 'label', 'encryptedInformations', 'salt');
+		return _.pick(line, '_id', 'type', 'label', 'encryption');
 	}
 
 	/**
