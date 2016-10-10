@@ -53,6 +53,10 @@ module.exports = function (models, services) {
 		},
 
 		registerUser(user) {
+			debug(`Create the user with the id ${user._id}`);
+
+			user.creationAt = new Date();
+
 			const hashPasswordPromise = services.crypto.hashPassword(user.password);
 
 			return hashPasswordPromise.then(hash => {

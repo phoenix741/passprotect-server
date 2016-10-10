@@ -38,8 +38,9 @@ module.exports = function () {
 		},
 
 		saveLine(line) {
+			const cleanLine = _.omit(line, '_rev');
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlines').save(line, cb)).return(line);
+				return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate({_id: new ObjectID(line._id)}, {$set: cleanLine, $inc: {_rev: 1}}, {returnOriginal: false}, cb)).then(doc => doc.value);
 			}).catch(processMongoException);
 		},
 

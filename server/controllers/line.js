@@ -228,7 +228,7 @@ module.exports = function (app, services) {
 	 * @returns {Object} The filtered object.
 	 */
 	function filterLine(line) {
-		return _.pick(line, '_id', 'type', 'label', 'encryption');
+		return _.pick(line, '_id', 'type', 'label', 'encryption', '_rev');
 	}
 
 	/**

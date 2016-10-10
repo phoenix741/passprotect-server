@@ -24,6 +24,7 @@ module.exports = function (models, services) {
 		saveLine(line, user) {
 			debug(`Create the line of type ${line.type}`);
 
+			line.updatedAt = new Date();
 			return models.line.saveLine(line);
 		},
 
