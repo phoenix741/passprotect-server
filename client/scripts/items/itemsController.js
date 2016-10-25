@@ -40,7 +40,7 @@ export function detail(id) {
 	Item.fetchItem(id, application.getSession().get('clearKey')).then(function (model) {
 		const view = new ItemDetailView({model});
 		view.on('form:submit', function () {
-			model.save().then(function () {
+			model.encryptAndSave(application.getSession().get('clearKey')).then(function () {
 				// Call a login of the user
 				showToast(view, i18n.t('items:item.flash.item_modify'));
 				clearErrors(view);
