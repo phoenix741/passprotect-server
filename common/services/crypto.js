@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const streamToPromise = require('stream-to-promise');
 
 module.exports.createKeyDerivation = function (password, salt, options) {
-	console.log('createKeyDerivation', arguments);
 	const iterations = options.iterations;
 	const keylen = options.keylen / 8;
 	const ivlen = options.ivlen / 8;
@@ -14,17 +13,14 @@ module.exports.createKeyDerivation = function (password, salt, options) {
 };
 
 module.exports.generateIV = function (size) {
-	console.log('generateIV', arguments);
 	return Promise.fromCallback(cb => crypto.randomBytes(size / 8, cb)).then(iv => new Buffer(iv).toString('hex'));
 };
 
 module.exports.generateKey = function (size) {
-	console.log('generateKey', arguments);
 	return Promise.fromCallback(cb => crypto.randomBytes(size / 8, cb)).then(iv => new Buffer(iv).toString('hex'));
 };
 
 module.exports.encrypt = function (text, key, iv, options) {
-	console.log('encrypt', arguments);
 	const encryptor = crypto.createCipheriv(options.algorithm, new Buffer(key, 'hex'), new Buffer(iv, 'hex'));
 	encryptor.write(text);
 	encryptor.end();
@@ -39,7 +35,6 @@ module.exports.encrypt = function (text, key, iv, options) {
 };
 
 module.exports.decrypt = function (text, key, iv, options) {
-	console.log('decrypt', arguments);
 	const decryptor = crypto.createDecipheriv(options.algorithm, new Buffer(key, 'hex'), new Buffer(iv, 'hex'));
 	decryptor.setAuthTag(new Buffer(text.authTag, 'hex'));
 	decryptor.write(text.content, 'hex');

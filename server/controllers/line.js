@@ -148,7 +148,7 @@ module.exports = function (app, services) {
 		 *     HTTP/1.1 401 Unauthorized
 		 */
 		.post((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'encryption');
+			const data = _.pick(req.body, 'type', 'label', 'encryption', '_rev');
 
 			return saveLine(data, req, res);
 		});
@@ -198,7 +198,7 @@ module.exports = function (app, services) {
 		 * @apiUse ResponseLineComplete
 		 */
 		.put((req, res) => {
-			const data = _.pick(req.body, 'type', 'label', 'encryption');
+			const data = _.pick(req.body, 'type', 'label', 'encryption', '_rev');
 
 			// Force the id of the line to ensure that the user doesn't try to change it
 			data._id = req.line._id;

@@ -13,7 +13,10 @@ const NotFoundError = require('./exception').NotFoundError;
  *        _id: {type: ObjectId},
  *        user: {type: String},
  *        label: {type: String},
- *        note: {type: encrypted}
+ *        type: {type: String},
+ *        encryption: {type: encrypted Object}
+ *        updatedAt: {type: Date}
+ *        _rev: {type: Number}
  *
  * And all other informations that a user want to store in the wallet line (depending on the wallet).
  */
@@ -31,16 +34,22 @@ module.exports = function () {
 			});
 		},
 
-		getLine(id) {
+		getLine(id, _rev) {
+			const query = {_id: new ObjectID(id)};
+			if (_rev !== undefined) {
+				query._rev = _rev;
+			}
+
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlines').findOne({_id: new ObjectID(id)}, cb));
+				return Promise.fromCallback(cb => db.collection('walletlines').findOne(query, cb));
 			}).then(_.partial(processNotFound, id));
 		},
 
 		saveLine(line) {
 			const cleanLine = _.omit(line, '_rev');
+			const revision = line._rev || 0;
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate({_id: new ObjectID(line._id)}, {$set: cleanLine, $inc: {_rev: 1}}, {returnOriginal: false}, cb)).then(doc => doc.value);
+				return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate({_id: new ObjectID(line._id), _rev: revision}, {$set: cleanLine, $inc: {_rev: 1}}, {returnOriginal: false, upsert: true}, cb)).then(doc => doc.value);
 			}).catch(processMongoException);
 		},
 
