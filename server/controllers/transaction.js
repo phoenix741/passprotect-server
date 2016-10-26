@@ -10,17 +10,18 @@ const permission = require('../utils/passport').permission;
 module.exports = function (app, services) {
 	router.route('')
 	/**
-	 * @api {get} /api/linestransaction Request all transactions
+	 * @api {get} /api/transactions Request all transactions
 	 *
-	 * @apiDescription Request all transaction that happen since the last synchronisation date.
+	 * @apiDescription Request all transactions that happen since the last synchronisation date.
 	 *
-	 * @apiName GetLinesTransaction
-	 * @apiGroup LineTransaction
+	 * @apiName GetTransactions
+	 * @apiGroup Transaction
 	 * @apiPermission ROLE_USER
 	 *
 	 * @apiParam {Date} earliest Last synchronized date.
 
 	 * @apiSuccess {String} _id Id of the transaction
+	 * @apiSuccess {String} type Type of transaction (only line)
 	 * @apiSuccess {String} line Id of the line that is associated to the transaction
 	 * @apiSuccess {String} user User of the line
 	 * @apiSuccess {Object} before The line before modification
@@ -33,6 +34,7 @@ module.exports = function (app, services) {
 	 *     [
 	 *       {
 	 *         "_id" : ObjectId("580fbb477c41a6153566f8f2"),
+	 *         "type": "line",
 	 *         "line" : ObjectId("58052a93b69faf215a733648"),
 	 *         "user" : "test",
 	 *         "before" : {
@@ -85,7 +87,7 @@ module.exports = function (app, services) {
 
 			const earliest = moment(req.query.earliest).toDate();
 
-			return services.linetransaction.getTransactions(req.user, {earliest, offset, limit}).then(res.json.bind(res));
+			return services.transaction.getTransactions(req.user, {earliest, offset, limit}).then(res.json.bind(res));
 		});
 
 	app.use('/api/transactions', authenticate(), permission(), router);

@@ -20,7 +20,7 @@ class Core {
 
 		models.user = require('./models/user')();
 		models.line = require('./models/line')();
-		models.linetransaction = require('./models/linetransaction')();
+		models.transaction = require('./models/transaction')();
 
 		return models;
 	}
@@ -30,7 +30,7 @@ class Core {
 
 		services.user = require('./services/user')(models, services);
 		services.line = require('./services/line')(models, services);
-		services.linetransaction = require('./services/linetransaction')(models, services);
+		services.transaction = require('./services/transaction')(models, services);
 		services.crypto = require('./services/crypto')(models, services);
 
 		return services;
@@ -41,7 +41,7 @@ class Core {
 		require('./controllers/user')(app, services);
 		require('./controllers/session')(app, services);
 		require('./controllers/line')(app, services);
-		require('./controllers/linetransaction')(app, services);
+		require('./controllers/transaction')(app, services);
 
 		app.use(express.static(path.join(__dirname, '..', 'dist', 'dev')));
 

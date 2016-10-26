@@ -30,26 +30,13 @@ module.exports = function () {
 			}
 
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlinestransaction').find(find).sort({updatedAt: 1}).skip(offset).limit(limit).toArray(cb));
+				return Promise.fromCallback(cb => db.collection('transactions').find(find).sort({updatedAt: 1}).skip(offset).limit(limit).toArray(cb));
 			});
 		},
 
-		createTransaction(before, after) {
-			const base = after || before;
-			if (!base) {
-				return null;
-			}
-
-			const object = {
-				line: base._id,
-				user: base.user,
-				before: before,
-				after: after,
-				updatedAt: base.updatedAt,
-				sha512: after && crypto.createHash('sha512').update(after.encryption.informations.content).digest('hex')
-			};
+		create(transaction) {
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlinestransaction').insert(object, cb));
+				return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb));
 			}).catch(processMongoException);
 		}
 	};

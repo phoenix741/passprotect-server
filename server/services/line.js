@@ -29,7 +29,7 @@ module.exports = function (models, services) {
 
 			return getLineIfAvailable(line._id, line._rev).then(function (oldLine) {
 				return models.line.saveLine(line).tap(function (newLine) {
-					return models.linetransaction.createTransaction(oldLine, newLine);
+					return services.transaction.createTransaction('line', oldLine, newLine);
 				});
 			});
 		},
@@ -40,7 +40,7 @@ module.exports = function (models, services) {
 			return getLineIfAvailable(id).tap(function () {
 				return models.line.removeLine(id);
 			}).tap(function (oldLine) {
-				return models.linetransaction.createTransaction(oldLine);
+				return services.transaction.createTransaction('line', oldLine);
 			});
 		}
 	};

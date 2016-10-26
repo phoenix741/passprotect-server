@@ -47,9 +47,14 @@ module.exports = function () {
 
 		saveLine(line) {
 			const cleanLine = _.omit(line, '_rev');
-			const revision = line._rev || 0;
+			const revision = line._rev;
+			const query = {_id: new ObjectID(line._id)};
+			if (revision) {
+				query._rev = revision;
+			}
+
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate({_id: new ObjectID(line._id), _rev: revision}, {$set: cleanLine, $inc: {_rev: 1}}, {returnOriginal: false, upsert: true}, cb)).then(doc => doc.value);
+				return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate(query, {$set: cleanLine, $inc: {_rev: 1}}, {returnOriginal: false, upsert: true}, cb)).then(doc => doc.value);
 			}).catch(processMongoException);
 		},
 
