@@ -1,6 +1,6 @@
 {
   "name": "passprotect-server",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Server used to keep password of the user in a secure store",
   "licence": "MIT",
   "apidoc": {
