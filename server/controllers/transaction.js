@@ -18,8 +18,10 @@ module.exports = function (app, services) {
 	 * @apiGroup Transaction
 	 * @apiPermission ROLE_USER
 	 *
-	 * @apiParam {Date} earliest Last synchronized date.
-
+	 * @apiParam {Number} [offset=0] Offset for pagination
+	 * @apiParam {Number} [limit=10000] Limit of transactions used for pagination
+	 * @apiParam {Date} [earliest] Last synchronized date.
+	 *
 	 * @apiSuccess {String} _id Id of the transaction
 	 * @apiSuccess {String} type Type of transaction (only line)
 	 * @apiSuccess {String} line Id of the line that is associated to the transaction
@@ -83,7 +85,7 @@ module.exports = function (app, services) {
 	 */
 		.get((req, res) => {
 			const offset = parseInt(req.query.offset || 0);
-			const limit = parseInt(req.query.limit || 10);
+			const limit = parseInt(req.query.limit || 10000);
 
 			const earliest = moment(req.query.earliest).toDate();
 

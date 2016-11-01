@@ -49,7 +49,7 @@ module.exports = function (app, services) {
 	 *     "type": "text",
 	 *     "label": "My custom text",
 	 *     "encryption": {
-	 *       "salt": "83b01169a90fe764",
+	 * )      "salt": "83b01169a90fe764",
 	 *       "informations": {
 	 *         "content": "d13a32829c2547b8bca6da5bb568d3",
 	 *         "authTag": "db47515bdcb7643484d60189b7ad4e33"
@@ -98,6 +98,9 @@ module.exports = function (app, services) {
 	 * @apiGroup Line
 	 * @apiPermission ROLE_USER
 	 *
+	 * @apiParam {Number} [offset=0] Offset for pagination
+	 * @apiParam {Number} [limit=10000] Limit of items used for pagination
+	 *
 	 * @apiSuccess {String} _id Id of the line
 	 * @apiSuccess {String} type type of line
 	 * @apiSuccess {String} label label of the line
@@ -128,7 +131,7 @@ module.exports = function (app, services) {
 	 */
 		.get((req, res) => {
 			const offset = parseInt(req.query.offset || 0);
-			const limit = parseInt(req.query.limit || 10);
+			const limit = parseInt(req.query.limit || 10000);
 
 			return services.line.getLines(req.user, {offset, limit}).map(filterLine).then(res.json.bind(res));
 		})

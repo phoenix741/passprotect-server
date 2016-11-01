@@ -62,6 +62,9 @@ module.exports = function (app, services) {
 	 * @apiGroup User
 	 * @apiPermission ROLE_ADMIN
 	 *
+	 * @apiParam {Number} [offset=0] Offset for pagination
+	 * @apiParam {Number} [limit=10000] Limit of users used for pagination
+	 *
 	 * @apiSuccess {String} _id User name.
 	 * @apiSuccess {String="user","admin"} role Role of the user.
 	 *
