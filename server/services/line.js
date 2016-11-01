@@ -14,7 +14,10 @@ module.exports = function (models, services) {
 			const filter = {};
 			filter.user = user._id;
 
-			return models.line.getLines(filter, params.offset, params.limit);
+			const sort = {};
+			sort.label = 1;
+
+			return models.line.getLines(filter, params.offset, params.limit, sort);
 		},
 
 		getLine(id, user) {

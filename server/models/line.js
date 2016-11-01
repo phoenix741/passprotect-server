@@ -22,7 +22,7 @@ const NotFoundError = require('./exception').NotFoundError;
  */
 module.exports = function () {
 	return {
-		getLines(filter, offset, limit) {
+		getLines(filter, offset, limit, sort) {
 			const find = {};
 
 			if (_.isString(filter.user)) {
@@ -30,7 +30,7 @@ module.exports = function () {
 			}
 
 			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('walletlines').find(find, {_id: 1, type: 1, label: 1}).skip(offset).limit(limit).toArray(cb));
+				return Promise.fromCallback(cb => db.collection('walletlines').find(find, {_id: 1, type: 1, label: 1}).sort(sort).skip(offset).limit(limit).toArray(cb));
 			});
 		},
 
