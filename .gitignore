@@ -1,4 +1,3 @@
-syntax: glob
 bin
 build
 composer.phar
@@ -30,6 +29,5 @@ bower_components/
 sessions/*.json
 .directory
 doc
-syntax:regexp
 ^vendor
 .nobackup
