@@ -1,5 +1,7 @@
 # Passprotect
 
+[![Build Status](https://ci.shadoware.org/api/badges/phoenix/passprotect-server/status.svg?branch=develop)](https://ci.shadoware.org/phoenix/passprotect-server)
+
 Passprotect is an single page application used to retrieve and store password, credit card, or other text securely.
 
 ## How data are encrypted
