@@ -90,6 +90,7 @@
     "materialize-css": "^0.97.7",
     "node-sass": "^3.10.0",
     "postcss-loader": "^0.13.0",
+    "rimraf": "^2.5.4",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",

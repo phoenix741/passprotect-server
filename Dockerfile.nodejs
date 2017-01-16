@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6.7.0
+FROM node:7-alpine
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 
 ENV MODE=prod
