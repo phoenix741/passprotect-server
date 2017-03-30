@@ -1,24 +1,22 @@
 'use strict';
 
-const path = require('path');
-const express = require('express');
-const favicon = require('serve-favicon');
-const logger = require('morgan-debug');
-const methodOverride = require('method-override');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const errorHandler = require('errorhandler');
-const passport = require('passport');
+import path from 'path';
+import express from 'express';
+import favicon from 'serve-favicon';
+import logger from 'morgan-debug';
+import methodOverride from 'method-override';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import errorHandler from 'errorhandler';
+import passport from 'passport';
 
-const i18n = require('i18next');
-const i18nMiddleware = require('i18next-express-middleware');
+import i18n from 'i18next';
+import i18nMiddleware from 'i18next-express-middleware';
 
-const Core = require('./core');
-const db = require('./utils/db');
+import {Core} from './core';
+import {connection as dbConnection} from 'server/utils/db';
 
-module.exports = function (app) {
-	require(path.join(__dirname, '..', 'common', 'helpers'))(app.locals);
-
+export default function middlewares(app) {
 	const envPath = app.get('env') === 'development' ? 'dev' : 'prod';
 
 	app.use(express.static(path.join(__dirname, '..', 'dist', envPath), {maxage: 24 * 3600 * 30}));
@@ -39,7 +37,7 @@ module.exports = function (app) {
 
 	// Connection to mongodb
 	app.use((req, res, next) => {
-		db.connection();
+		dbConnection();
 		next();
 	});
 

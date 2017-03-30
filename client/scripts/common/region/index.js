@@ -71,7 +71,7 @@ export class DialogRegion extends AnalyticsRegion {
 
 		this.listenTo(view, 'dialog:close', this.closeDialog);
 
-		this.$el.openModal({
+		this.$el.modal({
 			complete: () => {
 				this.closeDialog();
 			}

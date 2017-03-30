@@ -1,54 +1,48 @@
 'use strict';
 
-const debug = require('debug')('App:Service:Line');
-const NotFoundError = require('../models/exception').NotFoundError;
+import debug from 'debug';
+import {NotFoundError} from 'server/models/exception';
+import {getLines as getLinesModel, getLine as getLineModel, saveLine as saveLineModel, removeLine as removeLineModel} from 'server/models/line';
+import {createTransaction} from 'server/services/transaction';
 
-module.exports = function (models, services) {
-	return {
-		getLines(user, params) {
-			debug('Get all lines from user ', user._id);
-			if (params.limit === 0) {
-				return Promise.resolve([]);
-			}
+const log = debug('App:Service:Line');
 
-			const filter = {};
-			filter.user = user._id;
+export function getLines(user) {
+	log('Get all lines from user ', user._id);
 
-			const sort = {};
-			sort.label = 1;
+	const filter = {};
+	filter.user = user._id;
 
-			return models.line.getLines(filter, params.offset, params.limit, sort);
-		},
+	const sort = {};
+	sort.label = 1;
 
-		getLine(id, user) {
-			debug(`Get the line with id ${id}`);
-			return models.line.getLine(id);
-		},
+	return getLinesModel(filter, sort);
+}
 
-		saveLine(line, user) {
-			debug(`Create the line of type ${line.type}`);
+export function getLine(id) {
+	log(`Get the line with id ${id}`);
+	return getLineModel(id);
+}
 
-			line.updatedAt = new Date();
+export function saveLine(line) {
+	log(`Create the line of type ${line.type}`);
 
-			return getLineIfAvailable(line._id, line._rev).then(function (oldLine) {
-				return models.line.saveLine(line).tap(function (newLine) {
-					return services.transaction.createTransaction('line', oldLine, newLine);
-				});
-			});
-		},
+	line.updatedAt = new Date();
 
-		removeLine(id) {
-			debug(`Remove the line with the id ${id}`);
+	return getLineIfAvailable(line._id, line._rev)
+		.then(function (oldLine) {
+			return saveLineModel(line).tap(newLine => createTransaction('line', oldLine, newLine));
+		});
+}
 
-			return getLineIfAvailable(id).tap(function () {
-				return models.line.removeLine(id);
-			}).tap(function (oldLine) {
-				return services.transaction.createTransaction('line', oldLine);
-			});
-		}
-	};
+export function removeLine(id) {
+	log(`Remove the line with the id ${id}`);
 
-	function getLineIfAvailable(id, rev) {
-		return models.line.getLine(id, rev).catch(NotFoundError, () => null);
-	}
-};
+	return getLineIfAvailable(id)
+		.tap(() => removeLineModel(id))
+		.tap(oldLine => createTransaction('line', oldLine));
+}
+
+function getLineIfAvailable(id, rev) {
+	return getLineModel(id, rev).catch(NotFoundError, () => null);
+}

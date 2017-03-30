@@ -4,7 +4,6 @@ import '../css/passprotect.scss';
 
 import './bootstrap/materializecss';
 import resBundle from 'i18next-resource-store-loader!nscommon/locales';
-import helpers from 'nscommon/helpers';
 
 import application from 'nsclient/application';
 import router from 'nsclient/router';
@@ -28,9 +27,6 @@ const i18nOptions = {
 const i18nInitPromise = Promise.fromCallback((cb) => i18n.init(i18nOptions, cb)).then((t) => {
 	window.t = t;
 });
-
-// Load Jade helper
-helpers(window);
 
 // Set the application
 addRegions(application);

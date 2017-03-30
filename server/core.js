@@ -1,66 +1,49 @@
 'use strict';
 
-const _ = require('underscore');
-const debug = require('debug')('App:Core');
-const i18n = require('i18next');
+import _ from 'lodash';
+import debug from 'debug';
+import i18n from 'i18next';
 
-const path = require('path');
-const express = require('express');
+import path from 'path';
+import express from 'express';
 
-class Core {
+import './config-passport';
+import userRouter from 'server/controllers/user';
+import sessionRouter from 'server/controllers/session';
+import lineRouter from 'server/controllers/line';
+import transactionRouter from 'server/controllers/transaction';
+import graphqlRouter, {graphiqlRouter} from 'server/controllers/graphql';
+import { graphiqlExpress } from 'graphql-server-express';
+
+
+const log = debug('App:Core');
+
+export class Core {
 	constructor(app) {
-		this.model = this.getModels();
-		this.services = this.getServices(this.model);
-
-		this.createControllers(app, this.services);
-	}
-
-	getModels() {
-		const models = {};
-
-		models.user = require('./models/user')();
-		models.line = require('./models/line')();
-		models.transaction = require('./models/transaction')();
-
-		return models;
-	}
-
-	getServices(models) {
-		const services = {};
-
-		services.user = require('./services/user')(models, services);
-		services.line = require('./services/line')(models, services);
-		services.transaction = require('./services/transaction')(models, services);
-		services.crypto = require('./services/crypto')(models, services);
-
-		return services;
+		this.createControllers(app);
 	}
 
 	createControllers(app, services) {
-		require('./config-passport')(app, services);
-		require('./controllers/user')(app, services);
-		require('./controllers/session')(app, services);
-		require('./controllers/line')(app, services);
-		require('./controllers/transaction')(app, services);
+		app.use('/api/users', userRouter);
+		app.use('/api/transactions', transactionRouter);
+		app.use('/api/session', sessionRouter);
+		app.use('/api/lines', lineRouter);
+		app.use('/api/graphql', graphqlRouter);
+		app.use('/graphiql', graphiqlExpress({
+			endpointURL: '/api/graphql'
+		}));
 
 		app.use(express.static(path.join(__dirname, '..', 'dist', 'dev')));
 
 		app.use((err, req, res, next) => {
-			debug(err);
+			log(err);
 
-			if (err && err.name === 'ValidationError') {
-				const json = _(err.errors)
-					.chain()
-					.map(value => _.pick(value, 'path', 'message', 'kind', 'name'))
-					.indexBy('path')
-					.value();
-
-				return res.status(400).json({code: 400, message: json});
-			}
 			if (err && err.name === 'DuplicateKeyError') {
-				return res.status(400).json({code: 400, message: {
-					[err.field]: i18n.t('error:global.400.duplicate')
-				}});
+				return res.status(400).json({
+					code: 400, message: {
+						[err.field]: i18n.t('error:global.400.duplicate')
+					}
+				});
 			}
 
 			if (err && err.status) {
@@ -75,5 +58,3 @@ class Core {
 
 	}
 }
-
-module.exports = Core;

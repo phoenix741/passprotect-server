@@ -99,7 +99,15 @@ module.exports = {
 				query: {
 					cacheDirectory: true,
 					plugins: ['transform-decorators-legacy'],
-					presets: ['es2015-loose', 'stage-1']
+					presets: [
+						['env', {
+							targets: {
+								"browsers": ["last 2 versions", "android >= 4", "not ie <= 11"]
+							},
+							debug: true
+						}],
+						'stage-1'
+					]
 				}
 			},
 			{test: /\.ejs$/, loader: 'ejs', cacheable: true},
