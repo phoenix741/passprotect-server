@@ -291,7 +291,7 @@ router.route('/:lineId')
  * @returns {Object} The filtered object.
  */
 function filterLine(line) {
-	return _.pick(line, '_id', 'user', 'type', 'label', 'encryption', '_rev');
+	return _.pick(line, '_id', 'user', 'type', 'label', 'encryption', 'updatedAt', '_rev');
 }
 
 function sanitizeInput(input) {

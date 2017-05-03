@@ -6,8 +6,11 @@ import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import {Strategy as AnonymousStrategy} from 'passport-anonymous';
 import debug from 'debug';
 import {getUserFromSession} from 'server/services/user';
+import cookie from 'cookie';
+import jsonwebtoken from 'jsonwebtoken';
 
 const log = debug('App:Passport');
+const jwt = Promise.promisifyAll(jsonwebtoken);
 
 const authHeaderOpts = {
 	jwtFromRequest: ExtractJwt.fromAuthHeader(),
@@ -50,4 +53,25 @@ function cookieExtractor(req) {
 		token = req.cookies.jwt;
 	}
 	return token;
+}
+
+export function websocketVerifyClient(info, cb) {
+	const cookies = cookie.parse(info.req.headers.cookie) || {};
+	const authorization = (info.req.headers.authorization || 'JWT ').substr(4);
+	log('Websocket connection via ' + (cookies.jwt ? 'cookie ' : ' ') + (authorization ? 'authorization header' : ''));
+
+	const tokenJwt = cookies.jwt || authorization;
+
+	return jwt
+		.verifyAsync(tokenJwt, config.get('config.jwt.secret'))
+		.then(tokenJwt => getUserFromSession(tokenJwt.user))
+		.then(user => {
+			log(`User ${user._id} connected on the websocket`);
+			info.req.user = user;
+			cb(true);
+		})
+		.catch(err => {
+			log('Can\'t connect token ' + tokenJwt + ' because of ' + err.message);
+			cb(false, err.status)
+		});
 }

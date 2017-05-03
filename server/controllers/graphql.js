@@ -10,15 +10,17 @@ import { graphqlExpress } from 'graphql-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
+import { SubscriptionManager } from 'graphql-subscriptions';
 
 import {getUsers,getUser} from 'server/services/user';
 import {getLines,getLine} from 'server/services/line';
 import {getTransactions} from 'server/services/transaction';
+import {pubsub} from 'server/services/subscriptions';
 
 import {typeDefs as userTypeDefs, resolvers as userResolvers} from './user';
 import {typeDefs as lineTypeDefs, resolvers as lineResolvers} from './line';
 import {typeDefs as sessionTypeDefs, resolvers as sessionResolvers} from './session';
-import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers} from './transaction';
+import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers, setupFunctions as transactionSetupFunctions} from './transaction';
 
 const log = debug('App:Controllers:GraphQL');
 
@@ -50,8 +52,12 @@ const GraphQLScalarDate = new GraphQLScalarType({
 
 const resolvers = _.merge({Date: GraphQLScalarDate}, userResolvers, lineResolvers, sessionResolvers, transactionResolvers);
 
+const setupFunctions = _.merge(transactionSetupFunctions);
+
 log('Create the graphql schema');
 const schema = makeExecutableSchema({typeDefs, resolvers, logger: {log}});
+
+export const subscriptionManager = new SubscriptionManager({schema, pubsub, setupFunctions});
 
 const graphqlRouter = graphqlExpress((req, res) => ({
 	schema,

@@ -41,11 +41,11 @@ export default function middlewares(app) {
 		next();
 	});
 
-	const core = new Core(app);
-	core.run();
-
 	// error handling middleware should be loaded after the loading the routes
 	if (app.get('env') === 'development') {
 		app.use(errorHandler());
 	}
+
+	const core = new Core(app);
+	core.run();
 };

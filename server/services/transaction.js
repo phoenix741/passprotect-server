@@ -5,11 +5,12 @@ import debug from 'debug';
 import {NotFoundError} from 'server/models/exception';
 import crypto from 'crypto';
 import {getTransactions as getTransactionsModel, createTransaction as createTransactionModel} from 'server/models/transaction';
+import {transactionAdded} from 'server/services/subscriptions';
 
 const log = debug('App:Service:LineTransaction');
 
 export function getTransactions(user, params = {}) {
-	log(`Get all transaction of the user ${user._id}`);
+	log(`Get all transaction of the user ${user._id} after ${params.earliest}`);
 
 	const filter = {};
 	filter.user = user._id;
@@ -34,5 +35,5 @@ export function createTransaction(type, before, after) {
 		sha512: after && crypto.createHash('sha512').update(after.encryption.informations.content).digest('hex')
 	};
 
-	return createTransactionModel(transaction);
+	return createTransactionModel(transaction).tap(transactionAdded);
 }

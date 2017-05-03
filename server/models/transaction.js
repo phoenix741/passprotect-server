@@ -33,7 +33,7 @@ export function getTransactions(filter) {
 
 export function createTransaction(transaction) {
 	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb));
+		return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb)).then(doc => doc.ops[0]);
 	}).catch(processMongoException);
 }
 

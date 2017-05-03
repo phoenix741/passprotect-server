@@ -22,3 +22,7 @@ extend type RootQuery {
   # Request all transactions that happen since the last synchronisation date.
   transactions(earliest: Date!): [WalletTransaction]
 }
+
+type RootSubscription {
+  transactionAdded: WalletTransaction!
+}

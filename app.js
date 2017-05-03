@@ -24,6 +24,3 @@ app.set('view engine', 'jade');
 
 middlewares(app);
 
-app.listen(app.get('port'), function () {
-	log('Express server listening on port ' + app.get('port'));
-});

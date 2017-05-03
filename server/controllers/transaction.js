@@ -22,11 +22,27 @@ export const typeDefs = [
 
 export const resolvers = {
 	RootQuery: {
-		transactions(obj, {earliestTs}, {user}) {
-			const earliest = moment(earliestTs).toDate();
+		transactions(obj, {earliest}, {user}) {
+			earliest = moment(earliest).toDate();
 
 			return checkPermission(user).then(() => getTransactions(user, {earliest}));
 		}
+	},
+
+	RootSubscription: {
+		transactionAdded(transaction) {
+			return transaction;
+		}
+	}
+};
+
+export const setupFunctions = {
+	transactionAdded({context}) {
+		return {
+			transactionAdded: {
+				filter: transaction => transaction.user === context.user._id
+			}
+		};
 	}
 };
 

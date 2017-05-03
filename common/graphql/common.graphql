@@ -28,4 +28,5 @@ type Errors {
 schema {
   query: RootQuery
   mutation: RootMutation
+  subscription: RootSubscription
 }
