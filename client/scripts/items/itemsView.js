@@ -1,17 +1,17 @@
 'use strict';
 
-import itemsTemplate from 'nscommon/templates/items/items.jade';
-import itemTemplate from 'nscommon/templates/items/item.jade';
-import itemDetailTemplate from 'nscommon/templates/items/itemDetail.jade';
-import paymentCardInformationsTemplate from 'nscommon/templates/items/paymentCardInformations.jade';
-import passwordInformationsTemplate from 'nscommon/templates/items/passwordInformations.jade';
-import textInformationsTemplate from 'nscommon/templates/items/textInformations.jade';
-import removeConfirmTemplate from 'nscommon/templates/items/itemRemove.jade';
+import itemsTemplate from 'nscommon/templates/items/items.pug';
+import itemTemplate from 'nscommon/templates/items/item.pug';
+import itemDetailTemplate from 'nscommon/templates/items/itemDetail.pug';
+import paymentCardInformationsTemplate from 'nscommon/templates/items/paymentCardInformations.pug';
+import passwordInformationsTemplate from 'nscommon/templates/items/passwordInformations.pug';
+import textInformationsTemplate from 'nscommon/templates/items/textInformations.pug';
+import removeConfirmTemplate from 'nscommon/templates/items/itemRemove.pug';
 
 import {property} from 'nsclient/common/decorators';
 import {StickitView,MaterializeForm,FormView} from 'nsclient/common/behaviors';
 
-class ItemView extends Marionette.ItemView {
+class ItemView extends Marionette.View {
 	@property
 	static tagName = 'a';
 
@@ -46,11 +46,7 @@ class ItemView extends Marionette.ItemView {
 	};
 
 	@property
-	static behaviors = {
-		'StickitView': {
-			behaviorClass: StickitView
-		}
-	};
+	static behaviors = [StickitView];
 
 	@property
 	static ui = {
@@ -96,7 +92,7 @@ export class ItemsView extends Marionette.CompositeView {
 	};
 }
 
-export class ItemDetailView extends Marionette.LayoutView {
+export class ItemDetailView extends Marionette.View {
 	@property
 	static template = itemDetailTemplate;
 
@@ -121,21 +117,14 @@ export class ItemDetailView extends Marionette.LayoutView {
 	};
 
 	@property
-	static behaviors = {
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [FormView, MaterializeForm];
 
 	@property
 	static regions = {
 		informations: '.informations'
 	};
 
-	onShow() {
+	onRender() {
 		let view;
 		switch (this.model.get('type')) {
 			case 'card':
@@ -148,7 +137,7 @@ export class ItemDetailView extends Marionette.LayoutView {
 				view = new TextInformationView({model: this.model});
 				break;
 		}
-		this.informations.show(view);
+		this.showChildView('informations', view);
 	}
 
 	showHide(e) {
@@ -180,7 +169,7 @@ export class ItemDetailView extends Marionette.LayoutView {
 	}
 }
 
-class PaymentCardInformationsView extends Marionette.ItemView {
+class PaymentCardInformationsView extends Marionette.View {
 	@property
 	static template = paymentCardInformationsTemplate;
 
@@ -201,17 +190,10 @@ class PaymentCardInformationsView extends Marionette.ItemView {
 	};
 
 	@property
-	static behaviors = {
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [FormView, MaterializeForm];
 }
 
-class PasswordInformationView extends Marionette.ItemView {
+class PasswordInformationView extends Marionette.View {
 	@property
 	static template = passwordInformationsTemplate;
 
@@ -224,17 +206,10 @@ class PasswordInformationView extends Marionette.ItemView {
 	};
 
 	@property
-	static behaviors = {
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [FormView, MaterializeForm];
 }
 
-class TextInformationView extends Marionette.ItemView {
+class TextInformationView extends Marionette.View {
 	@property
 	static template = textInformationsTemplate;
 
@@ -245,17 +220,10 @@ class TextInformationView extends Marionette.ItemView {
 	};
 
 	@property
-	static behaviors = {
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [FormView, MaterializeForm];
 }
 
-export class RemoveConfirmView extends Marionette.ItemView {
+export class RemoveConfirmView extends Marionette.View {
 	@property
 	static template = removeConfirmTemplate;
 

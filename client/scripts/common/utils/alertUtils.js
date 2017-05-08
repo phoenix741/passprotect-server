@@ -25,11 +25,11 @@ export function hideAlert(view) {
 }
 
 export function alert(view, message, title) {
-	application.errorDialogRegion.startTracking();
+	application.getView().getRegion('errorDialogRegion').startTracking();
 
 	const errorDialogView = new ErrorDialogView({model: new Backbone.Model({message: message, title: title})});
 
-	application.errorDialogRegion.show(errorDialogView);
+	application.getView().showChildView('errorDialogRegion', errorDialogView);
 }
 
 /**

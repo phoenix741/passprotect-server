@@ -1,23 +1,22 @@
 'use strict';
 
 import _ from 'lodash';
-import Router from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import fs from 'fs';
 import path from 'path';
 import debug from 'debug';
-
 import {authenticate,permission,checkPermission} from 'server/utils/passport';
 import {getLines,getLine,removeLine,saveLine} from 'server/services/line';
 
 const log = debug('App:Controllers:Line');
 
-const router = Router();
+const router = expressPromiseRouter();
 export default [authenticate(), permission(), router];
 
 log('Load line type definition');
 export const typeDefs = [
-	fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'line.graphql'), 'utf-8'),
+	fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'line.graphql'), 'utf-8')
 ];
 
 export const resolvers = {
@@ -61,7 +60,7 @@ export const resolvers = {
 				.tap(line => checkPermission(user, [], line.user))
 				.then(() => removeLine(id))
 				.then(() => ({errors: []}))
-				.catch(parseErrors)
+				.catch(parseErrors);
 		}
 	},
 

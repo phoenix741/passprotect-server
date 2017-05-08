@@ -7,7 +7,6 @@ import resBundle from 'i18next-resource-store-loader!nscommon/locales';
 
 import application from 'nsclient/application';
 import router from 'nsclient/router';
-import {addRegions} from 'nsclient/common/region';
 
 import 'nsclient/common/plugins';
 import 'nsclient/common/services/errorsService';
@@ -27,9 +26,6 @@ const i18nOptions = {
 const i18nInitPromise = Promise.fromCallback((cb) => i18n.init(i18nOptions, cb)).then((t) => {
 	window.t = t;
 });
-
-// Set the application
-addRegions(application);
 
 application.on('start', () => {
 	router(application);

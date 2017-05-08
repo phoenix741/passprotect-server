@@ -2,11 +2,10 @@
 
 import config from 'config';
 import _ from 'lodash';
-import Router from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import {authenticate,permission,checkPermission} from 'server/utils/passport';
 import {getUser,createSessionUser,verifyPassword} from 'server/services/user';
-import moment from 'moment';
 import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
@@ -14,14 +13,14 @@ import debug from 'debug';
 
 const log = debug('App:Controllers:Session');
 
-const router = Router();
+const router = expressPromiseRouter();
 const jwt = Promise.promisifyAll(jsonwebtoken);
 
 export default router;
 
 log('Load session type definition');
 export const typeDefs = [
-	fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8'),
+	fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
 ];
 
 export const resolvers = {
@@ -37,7 +36,7 @@ export const resolvers = {
 				.then(data => connectSession(data))
 				.spread((user, jwtToken) =>  {
 					res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
-					return {token: 'JWT ' + jwtToken}
+					return {token: 'JWT ' + jwtToken};
 				})
 				.catch(parseErrors);
 		},

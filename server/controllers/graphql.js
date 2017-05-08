@@ -2,19 +2,15 @@
 
 import _ from 'lodash';
 import fs from 'fs';
-import path from 'path'
+import path from 'path';
 import debug from 'debug';
 import {authenticate} from 'server/utils/passport';
-import moment from 'moment';
 import { graphqlExpress } from 'graphql-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { SubscriptionManager } from 'graphql-subscriptions';
 
-import {getUsers,getUser} from 'server/services/user';
-import {getLines,getLine} from 'server/services/line';
-import {getTransactions} from 'server/services/transaction';
 import {pubsub} from 'server/services/subscriptions';
 
 import {typeDefs as userTypeDefs, resolvers as userResolvers} from './user';
@@ -68,4 +64,3 @@ const graphqlRouter = graphqlExpress((req, res) => ({
 }));
 
 export default [authenticate(), graphqlRouter];
-

@@ -8,7 +8,7 @@ import MissingPageView from 'nsclient/common/views/missingPageView';
 window.onerror = function (msg, url, linenumber, column, error) {
 	// Track the error
 	if (error && error.status === 404) {
-		application.bodyRegion.show(new MissingPageView());
+		application.getView().showChildView('bodyRegion', new MissingPageView());
 		return;
 	}
 

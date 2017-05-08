@@ -2,7 +2,6 @@
 
 import debug from 'debug';
 
-import {NotFoundError} from 'server/models/exception';
 import crypto from 'crypto';
 import {getTransactions as getTransactionsModel, createTransaction as createTransactionModel} from 'server/models/transaction';
 import {transactionAdded} from 'server/services/subscriptions';

@@ -1,6 +1,5 @@
 'use strict';
 
-import _ from 'lodash';
 import debug from 'debug';
 import i18n from 'i18next';
 
@@ -10,7 +9,6 @@ import http from 'http';
 
 import {websocketVerifyClient as verifyClient}  from './config-passport';
 import userRouter from 'server/controllers/user';
-import {getUserFromSession} from 'server/services/user';
 import sessionRouter from 'server/controllers/session';
 import lineRouter from 'server/controllers/line';
 import transactionRouter from 'server/controllers/transaction';
@@ -68,13 +66,13 @@ export class Core {
 				onConnect(connectionParams, webSocket) {
 					return {
 						user: webSocket.upgradeReq.user
-					}
+					};
 				}
 			},
 			{
 				server: this.server,
 				path: '/subscriptions',
-				verifyClient,
+				verifyClient
 			}
 		);
 	}

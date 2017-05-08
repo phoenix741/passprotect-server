@@ -1,3 +1,5 @@
 'use strict';
 
-export default new Backbone.Wreqr.RequestResponse();
+import Radio from 'backbone.radio';
+
+export default Radio.channel('entities');

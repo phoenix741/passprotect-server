@@ -1,16 +1,14 @@
 'use strict';
 
 import 'app-module-path/register';
-import Promise from 'server/utils/promise';
+import 'server/utils/promise';
 
 import express from 'express';
 import path from 'path';
-import debug from 'debug';
 
 import bootstrap from './server/bootstrap';
 import middlewares from './server/middlewares';
 
-const log = debug('App:Server');
 const app = express();
 
 bootstrap(app.get('env'));
@@ -23,4 +21,3 @@ app.set('views', path.join(__dirname, 'common', 'templates'));
 app.set('view engine', 'jade');
 
 middlewares(app);
-

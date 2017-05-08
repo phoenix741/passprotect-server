@@ -24,9 +24,9 @@ export function showHeader() {
 	const headerMenu = new HeaderMenu({collection: menuCollection});
 	const headerMobileMenu = new HeaderMobileMenu({collection: menuCollection});
 
-	headerLayout.on('show', function () {
-		headerLayout.menu.show(headerMenu);
-		headerLayout.menuMobile.show(headerMobileMenu);
+	headerLayout.on('render', function () {
+		headerLayout.showChildView('menu', headerMenu);
+		headerLayout.showChildView('menuMobile', headerMobileMenu);
 	});
 
 	headerMenu.on('childview:childview:navigate', navigateMenu);
@@ -34,7 +34,7 @@ export function showHeader() {
 	headerMobileMenu.on('childview:childview:navigate', navigateMenu);
 	headerMobileMenu.on('childview:navigate', navigateMenu);
 
-	application.headerRegion.show(headerLayout);
+	application.getView().showChildView('headerRegion', headerLayout);
 
 	headerLayout.on('brand:clicked', function () {
 		routesEventService.trigger('items:list');

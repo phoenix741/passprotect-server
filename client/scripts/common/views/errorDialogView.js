@@ -1,9 +1,9 @@
 'use strict';
 
-import template from 'nscommon/templates/common/errors_dialog.jade';
+import template from 'nscommon/templates/common/errors_dialog.pug';
 import {property} from 'nsclient/common/decorators';
 
-export class ErrorDialogView extends Marionette.ItemView {
+export class ErrorDialogView extends Marionette.View {
 	@property
 	static template = template;
 

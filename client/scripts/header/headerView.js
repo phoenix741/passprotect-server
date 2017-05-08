@@ -1,13 +1,13 @@
 'use strict';
 
-import templateHeader from 'nscommon/templates/common/header.jade';
+import templateHeader from 'nscommon/templates/common/header.pug';
 import templateHeaderGroupLinkTemplate from './templates/headerGroupLinkTemplate.ejs';
 import templateHeaderGroupMenuTemplate from './templates/headerGroupMenuTemplate.ejs';
 import templateHeaderMobileGroupLinkTemplate from './templates/headerMobileGroupLinkTemplate.ejs';
 import templateHeaderMobileGroupMenuTemplate from './templates/headerMobileGroupMenuTemplate.ejs';
 import {property} from 'nsclient/common/decorators';
 
-export class HeaderLayout extends Marionette.LayoutView {
+export class HeaderLayout extends Marionette.View {
 	@property
 	static template = templateHeader;
 
@@ -26,7 +26,7 @@ export class HeaderLayout extends Marionette.LayoutView {
 	};
 }
 
-export class HeaderGroupLink extends Marionette.ItemView {
+export class HeaderGroupLink extends Marionette.View {
 	@property
 	static template = templateHeaderGroupLinkTemplate;
 
@@ -63,7 +63,7 @@ export class HeaderGroupMenu extends Marionette.CompositeView {
 	@property
 	static tagName = 'li';
 
-	templateHelpers() {
+	templateContext() {
 		return {
 			index: this.index
 		};
@@ -74,7 +74,7 @@ export class HeaderGroupMenu extends Marionette.CompositeView {
 		this.collection = this.model.get('collection');
 	}
 
-	onShow() {
+	render() {
 		this.$el.find('.dropdown-button').dropdown();
 	}
 }
@@ -83,7 +83,7 @@ export class HeaderMenu extends Marionette.CollectionView {
 	@property
 	static tagName = 'ul';
 
-	getChildView(item) {
+	childView(item) {
 		if (item.get('collection')) {
 			return HeaderGroupMenu;
 		}
@@ -99,7 +99,7 @@ export class HeaderMenu extends Marionette.CollectionView {
 	}
 }
 
-export class HeaderMobileGroupLink extends Marionette.ItemView {
+export class HeaderMobileGroupLink extends Marionette.View {
 	@property
 	static template = templateHeaderMobileGroupLinkTemplate;
 
@@ -144,7 +144,7 @@ export class HeaderMobileGroupMenu extends Marionette.CompositeView {
 		return item.get('url');
 	}
 
-	onShow() {
+	render() {
 		this.$el.find('.collapsible').collapsible();
 	}
 }
@@ -165,7 +165,7 @@ export class HeaderMobileMenu extends HeaderMenu {
 		};
 	}
 
-	onShow() {
+	render() {
 		this.$el.parent().parent().find('.button-collapse').sideNav({
 			menuWidth: 300,
 			closeOnClick: true

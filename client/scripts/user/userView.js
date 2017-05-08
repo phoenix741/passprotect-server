@@ -1,11 +1,11 @@
 'use strict';
 
-import loginTemplate from 'nscommon/templates/user/login.jade';
-import registerTemplate from 'nscommon/templates/user/register.jade';
+import loginTemplate from 'nscommon/templates/user/login.pug';
+import registerTemplate from 'nscommon/templates/user/register.pug';
 import {property} from 'nsclient/common/decorators';
 import {ValidationView,MaterializeForm,FormView} from 'nsclient/common/behaviors';
 
-export class LoginView extends Marionette.ItemView {
+export class LoginView extends Marionette.View {
 	@property
 	static template = loginTemplate;
 
@@ -20,17 +20,7 @@ export class LoginView extends Marionette.ItemView {
 	};
 
 	@property
-	static behaviors = {
-		'ValidationView': {
-			behaviorClass: ValidationView
-		},
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [ValidationView, MaterializeForm, FormView];
 
 	@property
 	static bindings = {
@@ -39,22 +29,12 @@ export class LoginView extends Marionette.ItemView {
 	};
 }
 
-export class RegisterView extends Marionette.ItemView {
+export class RegisterView extends Marionette.View {
 	@property
 	static template = registerTemplate;
 
 	@property
-	static behaviors = {
-		'ValidationView': {
-			behaviorClass: ValidationView
-		},
-		'MaterializeForm': {
-			behaviorClass: MaterializeForm
-		},
-		'FormView': {
-			behaviorClass: FormView
-		}
-	};
+	static behaviors = [ValidationView, MaterializeForm, FormView];
 
 	@property
 	static bindings = {

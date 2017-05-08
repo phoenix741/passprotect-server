@@ -2,10 +2,8 @@
 
 import _ from 'lodash';
 import {promise as dbPromise} from 'server/utils/db';
-import i18n from 'i18next';
-import crypto from 'crypto';
 
-import { processMongoException, NotFoundError } from './exception';
+import { processMongoException } from './exception';
 
 /*
  * Model of a wallet line contains :
@@ -35,11 +33,4 @@ export function createTransaction(transaction) {
 	return dbPromise.then(db => {
 		return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb)).then(doc => doc.ops[0]);
 	}).catch(processMongoException);
-}
-
-function processNotFound(lineId, line) {
-	if (!line) {
-		throw new NotFoundError(i18n.t('error:line.404.lineNotFound', { lineId }));
-	}
-	return line;
 }

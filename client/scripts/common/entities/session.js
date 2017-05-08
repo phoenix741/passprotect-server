@@ -1,8 +1,7 @@
 'use strict';
 
-import routesEventService from 'nsclient/common/services/routesEventService';
 import {property} from 'nsclient/common/decorators';
-import BackboneSession from 'backbone-session';
+import BackboneSession from 'backbone-session/backbone-session';
 import {decrypt, createKeyDerivation} from 'nscommon/services/crypto';
 
 const config = __PASSPROTECT_CONFIG__.crypto;

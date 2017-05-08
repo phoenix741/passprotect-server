@@ -4,7 +4,7 @@ import application from 'nsclient/application';
 import {AboutView} from './pageView';
 
 export function about() {
-	application.bodyRegion.startTracking();
+	application.getView().getRegion('bodyRegion').startTracking();
 	const view = new AboutView();
-	application.bodyRegion.show(view);
+	application.getView().showChildView('bodyRegion', view);
 }

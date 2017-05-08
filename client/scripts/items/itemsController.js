@@ -8,14 +8,14 @@ import {clearErrors, entitySaveFailed, entityFetchFailed} from 'nsclient/common/
 import {showToast} from 'nsclient/common/utils/alertUtils';
 
 export function list() {
-	application.bodyRegion.startTracking();
+	application.getView().getRegion('bodyRegion').startTracking();
 
 	Items.fetchItems().then(function (collection) {
 		const view = new ItemsView({collection});
-		view.on('childview:item:remove', function (view, options) {
+		view.on('childview:item:remove', function (options) {
 			showConfirmationRemove(options.model);
 		});
-		view.on('childview:item:detail', function (view, options) {
+		view.on('childview:item:detail', function (options) {
 			routesEventService.trigger('items:detail', options.model.get('_id'));
 		});
 		view.on('item:add-credit-card', function () {
@@ -28,14 +28,14 @@ export function list() {
 			routesEventService.trigger('items:create', 'text');
 		});
 
-		application.bodyRegion.show(view);
+		application.getView().showChildView('bodyRegion', view);
 
 		return null;
 	}).catch(_.partial(entityFetchFailed, 'item_controller_detail')).done();
 }
 
 export function detail(id) {
-	application.dialogRegion.startTracking();
+	application.getView().getRegion('dialogRegion').startTracking();
 
 	Item.fetchItem(id, application.getSession().get('clearKey')).then(function (model) {
 		const view = new ItemDetailView({model});
@@ -50,14 +50,14 @@ export function detail(id) {
 		});
 		view.on('dialog:close', () => routesEventService.trigger('items:list'));
 
-		application.dialogRegion.show(view);
+		application.getView().showChildView('dialogRegion', view);
 
 		return null;
 	}).catch(_.partial(entityFetchFailed, 'item_controller_detail')).done();
 }
 
 export function create(type) {
-	application.dialogRegion.startTracking();
+	application.getView().getRegion('dialogRegion').startTracking();
 
 	const model = new Item({type});
 	const view = new ItemDetailView({model});
@@ -72,11 +72,11 @@ export function create(type) {
 	});
 	view.on('dialog:close', () => routesEventService.trigger('items:list'));
 
-	application.dialogRegion.show(view);
+	application.getView().showChildView('dialogRegion', view);
 }
 
 function showConfirmationRemove(model) {
-	application.errorDialogRegion.startTracking();
+	application.getView().getRegion('errorDialogRegion').startTracking();
 
 	const removeConfirmView = new RemoveConfirmView({model});
 	removeConfirmView.on('agree', function () {
@@ -87,5 +87,5 @@ function showConfirmationRemove(model) {
 		}).catch(_.partial(entitySaveFailed, 'item_controller_destroy', removeConfirmView)).done();
 	});
 
-	application.errorDialogRegion.show(removeConfirmView);
+	application.getView().showChildView('errorDialogRegion', removeConfirmView);
 }

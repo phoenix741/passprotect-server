@@ -29,4 +29,4 @@ export default function bootstrap(environment) {
 		.use(LanguageDetector)
 		.use(i18nBackend)
 		.init(i18nOption);
-};
+}

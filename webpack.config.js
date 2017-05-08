@@ -3,9 +3,9 @@
 const config = require('config');
 const webpack = require('webpack');
 const path = require('path');
+const autoprefixer = require('autoprefixer');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const port = process.env.PORT || 5000;
@@ -22,8 +22,8 @@ const piwikSiteId = process.env.PIWIK_SITE_ID || 3;
 const distFolder = path.join('dist', mode);
 
 const pluginsProd = mode === 'prod' ? [
-	//new webpack.optimize.DedupePlugin(),
 	new webpack.optimize.UglifyJsPlugin({
+		sourceMap: true,
 		minimize: true,
 		//mangle: false,
 		output: {
@@ -37,7 +37,7 @@ const pluginsProd = mode === 'prod' ? [
 
 const htmlWebpackPluginOptions = {
 	baseUrl: '/',
-	template: path.join(__dirname, 'common', 'templates', 'base.jade'),
+	template: path.join(__dirname, 'common', 'templates', 'base.pug'),
 	inject: 'body',
 	minify: {
 		minifyJS: true
@@ -54,7 +54,6 @@ if (piwikEnable) {
 
 module.exports = {
 	devtool: mode === 'prod' ? 'source-map' : 'cheap-module-inline-source-map',
-	debug: true,
 	cache: true,
 	context: path.join(__dirname, 'client', 'scripts'),
 	entry: {
@@ -73,60 +72,117 @@ module.exports = {
 		reasons: true
 	},
 	resolve: {
-		extensions: ['', '.js', '.json', '.css', '.html', '.sass', '.scss'],
+		extensions: ['.js', '.json', '.css', '.html', '.sass', '.scss'],
 		alias: {
 			'nscommon': path.join(__dirname, 'common'),
 			'nsclient': path.join(__dirname, 'client', 'scripts'),
 			'nsimages': path.join(__dirname, 'client', 'img'),
 			'crypto': require.resolve('crypto-browserify')
 		},
-		root: [
+		modules: [
 			path.resolve(path.join(__dirname, 'node_modules')),
 			path.resolve(path.join(__dirname, 'bower_components'))
-		],
-		modulesDirectories: ['node_modules', 'bower_components']
-	},
-	postcss: function () {
-		return [autoprefixer];
+		]
 	},
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.jsx?$/,
 				exclude: /(node_modules|bower_components|externals)/,
-				cacheable: true,
 				loader: 'babel-loader',
-				query: {
+				options: {
 					cacheDirectory: true,
 					plugins: ['transform-decorators-legacy'],
 					presets: [
 						['env', {
 							targets: {
-								"browsers": ["last 2 versions", "android >= 4", "not ie <= 11"]
+								'browsers': ['last 2 versions', 'android >= 4', 'not ie <= 11']
 							},
-							debug: true
+							debug: true,
+							modules: false,
+							loose: true
 						}],
 						'stage-1'
 					]
 				}
 			},
-			{test: /\.ejs$/, loader: 'ejs', cacheable: true},
-			{test: /\.jade/, loader: 'jade', cacheable: true},
+			{
+				test: /\.ejs$/,
+				loader: 'ejs-loader'
+			},
+			{
+				test: /\.pug/,
+				loader: 'pug-loader'
+			},
 			{
 				test: /\.(jpe?g|png|gif|svg)$/i,
-				loaders: ['url?limit=100000&name=img/[name].[ext]', 'img?optimizationLevel=5&progressive=true'],
-				cacheable: true
+				use: [
+					{
+						loader: 'url-loader',
+						options: {
+							limit: 100000,
+							name: 'img/[name].[ext]'
+						}
+					},
+					{
+						loader: 'img-loader',
+						options: {
+							optimizationLevel: 5,
+							progressive: true
+						}
+					}
+				]
 			},
-			{test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss'), cacheable: true},
+			{
+				test: /\.css$/,
+				loader: ExtractTextPlugin.extract({
+					fallback: 'style-loader',
+					use: [
+						{loader: 'css-loader', options: {sourceMap: true, importLoaders: 1}},
+						{loader: 'postcss-loader', options: {sourceMap: true, plugins: () => [autoprefixer({ browsers: ['last 2 versions', 'android >= 4', 'not ie <= 11'] })]}}
+					]
+				})
+			},
 			{
 				test: /\.(scss|sass)$/,
-				loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss!sass?sourceMap'),
+				loader: ExtractTextPlugin.extract({
+					fallback: 'style-loader',
+					use: [
+						{loader: 'css-loader', options: {sourceMap: true, importLoaders: 2}},
+						{loader: 'postcss-loader', options: {sourceMap: true, plugins: () => [autoprefixer({ browsers: ['last 2 versions', 'android >= 4', 'not ie <= 11'] })]}},
+						{loader: 'sass-loader', options: {sourceMap: true}}
+					]
+				}),
 				include: [/client/]
 			},
-			{test: /\.(woff2?|eot|ttf|svg)$/, loader: 'url?name=fonts/[hash].[ext]&prefix=font/&limit=5000'},
-			{test: /\.html$/, loader: 'html?interpolate&-minimize', cacheable: true},
-			{test: /\.yml$/, loader: 'json!yaml', cacheable: true},
-			{test: /\.json$/, loader: 'json', cacheable: true}
+			{
+				test: /\.(woff2?|eot|ttf|svg)$/,
+				loader: 'url-loader',
+				options: {
+					name: 'fonts/[hash].[ext]',
+					prefix: 'font/',
+					limit: 5000
+				}
+			},
+			{
+				test: /\.html$/,
+				loader: 'html-loader',
+				options: {
+					interpolate: true,
+					minimize: false
+				}
+			},
+			{
+				test: /\.yml$/,
+				use: [
+					{
+						loader: 'json-loader'
+					},
+					{
+						loader: 'yaml-loader'
+					}
+				]
+			}
 		]
 	},
 	devServer: {
@@ -153,10 +209,6 @@ module.exports = {
 			Marionette: 'backbone.marionette',
 			Hammer: 'hammerjs/hammer'
 		}),
-		new webpack.ResolverPlugin([
-			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['browser', 'main']),
-			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
-		]),
 		new webpack.DefinePlugin({
 			'__DEV__': JSON.stringify('production'),
 			'process.env': {

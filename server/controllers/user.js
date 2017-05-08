@@ -1,8 +1,7 @@
 'use strict';
 
-import config from 'config';
 import _ from 'lodash';
-import Router from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import debug from 'debug';
 import fs from 'fs';
@@ -12,7 +11,7 @@ import {getUsers,getUser,registerUser} from 'server/services/user';
 
 const log = debug('App:Controllers:User');
 
-const router = Router();
+const router = expressPromiseRouter();
 export default router;
 
 log('Load user type definition');

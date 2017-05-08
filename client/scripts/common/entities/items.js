@@ -2,7 +2,7 @@
 
 import {property} from 'nsclient/common/decorators';
 import 'backbone-deep-model/distribution/deep-model.min';
-import {createKeyDerivation, decrypt, encrypt, generateIV, generateKey} from 'nscommon/services/crypto';
+import {createKeyDerivation, decrypt, encrypt, generateIV} from 'nscommon/services/crypto';
 
 const config = __PASSPROTECT_CONFIG__.crypto;
 

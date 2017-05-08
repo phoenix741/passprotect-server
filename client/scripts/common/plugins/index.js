@@ -18,5 +18,8 @@ Backbone.Validation.configure({
 
 Backbone.Stickit.addHandler({
 	selector: '*',
-	setOptions: {validate: true}
+	setOptions: {validate: true},
+	afterUpdate: function($el) {
+		$el.trigger('change');
+	}
 });

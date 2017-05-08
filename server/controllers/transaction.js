@@ -1,8 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
-import Router from 'express-promise-router';
-import i18n from 'i18next';
+import expressPromiseRouter from 'express-promise-router';
 import {authenticate,permission,checkPermission} from 'server/utils/passport';
 import {getTransactions} from 'server/services/transaction';
 import moment from 'moment';
@@ -12,7 +10,7 @@ import debug from 'debug';
 
 const log = debug('App:Controllers:Session');
 
-const router = Router();
+const router = expressPromiseRouter();
 export default [authenticate(), permission(), router];
 
 log('Load transaction type definition');

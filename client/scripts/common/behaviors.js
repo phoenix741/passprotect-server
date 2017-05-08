@@ -40,7 +40,7 @@ export class MaterializeForm extends Marionette.Behavior {
 	};
 
 	updateTextField(field) {
-		if (field.val().length > 0 || field.attr('placeholder') !== undefined || field[0].validity.badInput === true) {
+		if (field.val().length > 0 || field.autofocus || field.attr('placeholder') !== undefined || field[0].validity.badInput === true) {
 			field.siblings('label, i').addClass('active');
 		}
 		else {
@@ -48,7 +48,7 @@ export class MaterializeForm extends Marionette.Behavior {
 		}
 	}
 
-	onShow() {
+	onRender() {
 		const behavior = this;
 		this.ui.textFields.each(function() {
 			behavior.updateTextField($(this));

@@ -13,7 +13,7 @@ export function login(username, password) {
 		loginToServer(null, username, password);
 	}
 	else {
-		application.dialogRegion.startTracking();
+		application.getView().getRegion('dialogRegion').startTracking();
 
 		const model = new SessionServer({username, password});
 		const view = new LoginView({model});
@@ -24,7 +24,7 @@ export function login(username, password) {
 			routesEventService.trigger('user:register');
 		});
 
-		application.dialogRegion.show(view);
+		application.getView().showChildView('dialogRegion', view);
 	}
 }
 
@@ -33,7 +33,7 @@ export function logout() {
 }
 
 export function register() {
-	application.bodyRegion.startTracking();
+	application.getView().getRegion('bodyRegion').startTracking();
 
 	const user = new User();
 	const view = new RegisterView({model: user});
@@ -52,7 +52,7 @@ export function register() {
 		}).catch(_.partial(entitySaveFailed, 'user_controller_register', view)).done();
 	});
 
-	application.bodyRegion.show(view);
+	application.getView().showChildView('bodyRegion', view);
 }
 
 export function loginToServer(view, username, password) {

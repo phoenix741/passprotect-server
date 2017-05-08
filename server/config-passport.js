@@ -72,6 +72,6 @@ export function websocketVerifyClient(info, cb) {
 		})
 		.catch(err => {
 			log('Can\'t connect token ' + tokenJwt + ' because of ' + err.message);
-			cb(false, err.status)
+			cb(false, err.status);
 		});
 }
