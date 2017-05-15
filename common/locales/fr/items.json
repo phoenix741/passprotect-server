@@ -1,74 +1,75 @@
 {
   "list": {
-	"title": "Ma liste",
-	"type": {
-	  "card": "Carte de paiement",
-	  "password": "Mot de passe",
-	  "text": "Général"
-	}
+    "title": "Ma liste",
+    "type": {
+      "card": "Carte de paiement",
+      "password": "Mot de passe",
+      "text": "Général"
+    }
   },
   "item": {
-	"form": {
-	  "label": {
-		"field": "Titre du champ"
-	  },
-	  "type": {
-		"field": "Type de carte",
-		"options": [
-		  "VISA",
-		  "Carte bleu",
-		  "Mastercard",
-		  "American Express",
-		  "Maestro"
-		]
-	  },
-	  "nameOnCard": {
-		"field": "Nom sur la carte"
-	  },
-	  "cardNumber": {
-		"field": "Numéro de carte"
-	  },
-	  "cvv": {
-		"field": "CVV"
-	  },
-	  "expiry": {
-		"field": "Date d'éxpiration"
-	  },
-	  "code": {
-		"field": "Code de la carte"
-	  },
-	  "username": {
-		"field": "Nom d'utilisateur"
-	  },
-	  "password": {
-		"field": "Mot de passe"
-	  },
-	  "siteUrl": {
-		"field": "Adresse du site"
-	  },
-	  "text": {
-		"field": "Texte"
-	  },
-	  "notes": {
-		"field": "Notes"
-	  },
-	  "button": {
-		"field": "Mettre à jour"
-	  }
-	},
-	"flash": {
-	  "item_created": "L'enregistrement a bien été créé",
-	  "item_modify": "L'enregistrement a bien été sauvegardé",
-	  "item_removed": "L'enregistrement a bien été supprimé"
-	}
+    "title_creation": "Création",
+    "title_modification": "Modification",
+    "form": {
+      "label": {
+        "field": "Titre du champ"
+      },
+      "type": {
+        "field": "Type de carte",
+        "options": [
+          "VISA",
+          "Carte bleu",
+          "Mastercard",
+          "American Express",
+          "Maestro"
+        ]
+      },
+      "nameOnCard": {
+        "field": "Nom sur la carte"
+      },
+      "cardNumber": {
+        "field": "Numéro de carte"
+      },
+      "cvv": {
+        "field": "CVV"
+      },
+      "expiry": {
+        "field": "Date d'éxpiration"
+      },
+      "code": {
+        "field": "Code de la carte"
+      },
+      "username": {
+        "field": "Nom d'utilisateur"
+      },
+      "password": {
+        "field": "Mot de passe"
+      },
+      "siteUrl": {
+        "field": "Adresse du site"
+      },
+      "text": {
+        "field": "Texte"
+      },
+      "notes": {
+        "field": "Notes"
+      },
+      "button": {
+        "field": "Mettre à jour"
+      }
+    },
+    "flash": {
+      "item_modify": "L'enregistrement a bien été sauvegardé",
+      "item_removed": "L'enregistrement a bien été supprimé",
+      "close": "Fermer"
+    }
   },
   "alert": {
-	"confirm_remove": {
-	  "title": "Suppression ?",
-	  "message": "Êtes-vous sur de vouloir supprimer \"{{title}}\" ?",
-	  "agree": "Supprimer",
-	  "disagree": "Annuler"
-	}
+    "confirm_remove": {
+      "title": "Suppression ?",
+      "message": "Êtes-vous sur de vouloir supprimer \"{{title}}\" ?",
+      "agree": "Supprimer",
+      "disagree": "Annuler"
+    }
   }
 }
-

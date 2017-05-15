@@ -1,0 +1,13 @@
+query getLinesWithDetail {
+  lines {
+    type
+    label
+		encryption {
+      salt
+      informations {
+        content
+        authTag
+      }
+    }
+  }
+}

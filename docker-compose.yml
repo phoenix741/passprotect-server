@@ -28,7 +28,7 @@ services:
         ports:
             - '8080:80'
     mongodb:
-        image: mongo:3.3.9
+        image: mongo:3.5
         ports:
             - '27017:27017'
         volumes:

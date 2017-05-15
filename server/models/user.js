@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import {isString} from 'lodash';
 import {promise as dbPromise} from 'server/utils/db';
 import i18n from 'i18next';
 
@@ -21,7 +21,7 @@ import { processMongoException, NotFoundError } from './exception';
 export function getUsers(filter = {}) {
 	const find = {};
 
-	if (_.isString(filter.confirmationToken)) {
+	if (isString(filter.confirmationToken)) {
 		find.confirmationToken = filter.confirmationToken;
 	}
 
@@ -33,7 +33,7 @@ export function getUsers(filter = {}) {
 export function getUser(id) {
 	return dbPromise.then(db => {
 		return Promise.fromCallback(cb => db.collection('users').findOne({ _id: id.toLowerCase() }, cb));
-	}).then(_.partial(processNotFound, id));
+	}).then(user => processNotFound(id, user));
 }
 
 export function registerUser(user) {

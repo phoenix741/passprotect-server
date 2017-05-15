@@ -1,7 +1,7 @@
 'use strict';
 
 import config from 'config';
-import _ from 'lodash';
+import {pick,omit,isString,isEmpty} from 'lodash';
 import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import {authenticate,permission,checkPermission} from 'server/utils/passport';
@@ -26,7 +26,7 @@ export const typeDefs = [
 export const resolvers = {
 	RootQuery: {
 		session(obj, args, {user}) {
-			return checkPermission(user).then(() => filterUser(user));
+			return filterUser(user);
 		}
 	},
 
@@ -36,7 +36,7 @@ export const resolvers = {
 				.then(data => connectSession(data))
 				.spread((user, jwtToken) =>  {
 					res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
-					return {token: 'JWT ' + jwtToken};
+					return {token: 'JWT ' + jwtToken, user: filterUser(user)};
 				})
 				.catch(parseErrors);
 		},
@@ -193,16 +193,16 @@ router.route('')
 	});
 
 function sanitizeInput(input) {
-	const data = _.pick(input, 'username', 'password');
+	const data = pick(input, 'username', 'password');
 
 	const validationError = new Error();
 	validationError.status = 401;
-	if (!_.isString(data.username) || _.isEmpty(data.username)) {
+	if (!isString(data.username) || isEmpty(data.username)) {
 		validationError.message = i18n.t('error:user.401.username');
 		return Promise.reject(validationError);
 	}
 
-	if (!_.isString(data.password) || _.isEmpty(data.password)) {
+	if (!isString(data.password) || isEmpty(data.password)) {
 		validationError.message = i18n.t('error:user.401.password');
 		return Promise.reject(validationError);
 	}
@@ -222,7 +222,7 @@ function connectSession({username, password}) {
 }
 
 function filterUser(user) {
-	return _.omit(user, 'password', 'confirmationToken');
+	return user ? omit(user, 'password', 'confirmationToken') : null;
 }
 
 function parseErrors(err) {

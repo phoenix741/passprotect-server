@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import {pick, omit, isString, isEmpty, isObject} from 'lodash';
 import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import debug from 'debug';
@@ -206,35 +206,35 @@ router.route('/:userId')
 	});
 
 function sanitizeUser(input) {
-	const data = _.pick(input, '_id', 'password', 'encryption');
+	const data = pick(input, '_id', 'password', 'encryption');
 
 	const validationError = new Error();
 	validationError.status = 400;
-	if (!_.isString(data._id) || _.isEmpty(data._id)) {
+	if (!isString(data._id) || isEmpty(data._id)) {
 		validationError.message = i18n.t('error:user.400._id');
 		return Promise.reject(validationError);
 	}
 
-	if (!_.isString(data.password) || _.isEmpty(data.password) || data.password.length < 8) {
+	if (!isString(data.password) || isEmpty(data.password) || data.password.length < 8) {
 		validationError.message = i18n.t('error:user.400.password');
 		return Promise.reject(validationError);
 	}
 
-	if (!_.isObject(data.encryption)) {
+	if (!isObject(data.encryption)) {
 		validationError.message = i18n.t('error:user.400.encryption');
 		return Promise.reject(validationError);
 	}
 
-	data.encryption = _.pick(data.encryption, 'salt', 'encryptedKey');
+	data.encryption = pick(data.encryption, 'salt', 'encryptedKey');
 
-	if (!_.isObject(data.encryption.encryptedKey) || !_.isString(data.encryption.salt)) {
+	if (!isObject(data.encryption.encryptedKey) || !isString(data.encryption.salt)) {
 		validationError.message = i18n.t('error:user.400.encryption');
 		return Promise.reject(validationError);
 	}
 
-	data.encryption.encryptedKey = _.pick(data.encryption.encryptedKey, 'content', 'authTag');
+	data.encryption.encryptedKey = pick(data.encryption.encryptedKey, 'content', 'authTag');
 
-	if (!_.isString(data.encryption.encryptedKey.content) || !_.isString(data.encryption.encryptedKey.authTag)) {
+	if (!isString(data.encryption.encryptedKey.content) || !isString(data.encryption.encryptedKey.authTag)) {
 		validationError.message = i18n.t('error:user.400.encryption');
 		return Promise.reject(validationError);
 	}
@@ -243,7 +243,7 @@ function sanitizeUser(input) {
 }
 
 function filterUser(user) {
-	return _.omit(user, 'password', 'confirmationToken');
+	return omit(user, 'password', 'confirmationToken');
 }
 
 function parseErrors(err) {

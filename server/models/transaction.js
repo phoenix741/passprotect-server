@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import {isString, isDate} from 'lodash';
 import {promise as dbPromise} from 'server/utils/db';
 
 import { processMongoException } from './exception';
@@ -17,10 +17,10 @@ import { processMongoException } from './exception';
 export function getTransactions(filter) {
 	const find = {};
 
-	if (_.isString(filter.user)) {
+	if (isString(filter.user)) {
 		find.user = filter.user;
 	}
-	if (_.isDate(filter.earliest)) {
+	if (isDate(filter.earliest)) {
 		find.updatedAt = { '$gte': filter.earliest };
 	}
 

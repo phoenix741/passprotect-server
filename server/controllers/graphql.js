@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import { flatten, merge } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import debug from 'debug';
@@ -21,7 +21,7 @@ import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers, setu
 const log = debug('App:Controllers:GraphQL');
 
 log('Load common type definitions');
-const typeDefs = _.flatten([
+const typeDefs = flatten([
 	fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'common.graphql'), 'utf-8'),
 	userTypeDefs,
 	lineTypeDefs,
@@ -46,9 +46,9 @@ const GraphQLScalarDate = new GraphQLScalarType({
 	}
 });
 
-const resolvers = _.merge({Date: GraphQLScalarDate}, userResolvers, lineResolvers, sessionResolvers, transactionResolvers);
+const resolvers = merge({Date: GraphQLScalarDate}, userResolvers, lineResolvers, sessionResolvers, transactionResolvers);
 
-const setupFunctions = _.merge(transactionSetupFunctions);
+const setupFunctions = merge(transactionSetupFunctions);
 
 log('Create the graphql schema');
 const schema = makeExecutableSchema({typeDefs, resolvers, logger: {log}});

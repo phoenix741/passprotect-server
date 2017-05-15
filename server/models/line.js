@@ -1,6 +1,6 @@
 'use strict';
 
-import _  from 'lodash';
+import {isString, omit}  from 'lodash';
 import {promise as dbPromise} from 'server/utils/db';
 import i18n from 'i18next';
 import { ObjectID } from 'mongodb';
@@ -22,7 +22,7 @@ import { processMongoException, NotFoundError } from './exception';
 export function getLines(filter, sort) {
 	const find = {};
 
-	if (_.isString(filter.user)) {
+	if (isString(filter.user)) {
 		find.user = filter.user;
 	}
 
@@ -39,11 +39,11 @@ export function getLine(id, _rev) {
 
 	return dbPromise.then(db => {
 		return Promise.fromCallback(cb => db.collection('walletlines').findOne(query, cb));
-	}).then(_.partial(processNotFound, id));
+	}).then(line => processNotFound(id, line));
 }
 
 export function saveLine(line) {
-	const cleanLine = _.omit(line, '_rev');
+	const cleanLine = omit(line, '_rev');
 	const revision = line._rev;
 	const query = { _id: new ObjectID(line._id) };
 	if (revision) {
@@ -58,7 +58,7 @@ export function saveLine(line) {
 export function removeLine(id) {
 	return dbPromise.then(db => {
 		return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }, cb));
-	}).then(_.partial(processNotFound, id));
+	}).then(line => processNotFound(id, line));
 }
 
 function processNotFound(lineId, line) {

@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import {omit, pick, includes, isString, isEmpty} from 'lodash';
 import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
 import fs from 'fs';
@@ -22,7 +22,7 @@ export const typeDefs = [
 export const resolvers = {
 	RootQuery: {
 		lines(obj, args, {user}) {
-			return checkPermission(user).then(() => getLines(user._id)).map(line => checkPermission(user, [], line.user).return(line)).map(filterLine);
+			return checkPermission(user).then(() => getLines(user)).map(line => checkPermission(user, [], line.user).return(line)).map(filterLine);
 		},
 
 		line(obj, {id}, {user}) {
@@ -215,7 +215,7 @@ router.route('')
  *     HTTP/1.1 401 Unauthorized
  */
 	.post((req, res) => {
-		const data = _.omit(req.body, '_id', 'user');
+		const data = omit(req.body, '_id', 'user');
 
 		return checkAndSaveLine(data, req, res);
 	});
@@ -268,7 +268,7 @@ router.route('/:lineId')
  */
 	.put((req, res) => {
 		// Force the id of the line to ensure that the user doesn't try to change it
-		const data = _.omit(req.body, '_id');
+		const data = omit(req.body, '_id');
 		data._id = req.line._id;
 
 		return checkAndSaveLine(data, req, res);
@@ -290,22 +290,22 @@ router.route('/:lineId')
  * @returns {Object} The filtered object.
  */
 function filterLine(line) {
-	return _.pick(line, '_id', 'user', 'type', 'label', 'encryption', 'updatedAt', '_rev');
+	return pick(line, '_id', 'user', 'type', 'label', 'encryption', 'updatedAt', '_rev');
 }
 
 function sanitizeInput(input) {
-	const data = _.pick(input, '_id', 'user', 'type', 'label', 'encryption', '_rev');
+	const data = pick(input, '_id', 'user', 'type', 'label', 'encryption', '_rev');
 
 	const validationError = new Error();
 	validationError.status = 400;
 
 	const typeChoices = ['card', 'password', 'text'];
-	if (!_.includes(typeChoices, data.type)) {
+	if (!includes(typeChoices, data.type)) {
 		validationError.message = i18n.t('error:line.400.type', {choices: typeChoices.join(', ')});
 		return Promise.reject(validationError);
 	}
 
-	if (!_.isString(data.label) || _.isEmpty(data.label)) {
+	if (!isString(data.label) || isEmpty(data.label)) {
 		validationError.message = i18n.t('error:line.400.label');
 		return Promise.reject(validationError);
 	}

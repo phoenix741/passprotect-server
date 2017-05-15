@@ -1,0 +1,23 @@
+mutation createSession($input: ConnectionInformationInput!) {
+		createSession(input: $input) {
+			... on ConnectionInformation {
+				token,
+				user {
+					_id
+					encryption {
+						salt
+						encryptedKey {
+							content
+							authTag
+						}
+					}
+				}
+			}
+			... on Errors {
+				errors {
+					fieldName
+					message
+				}
+			}
+		}
+}

@@ -9,7 +9,9 @@ input ConnectionInformationInput {
 # Result of the connection
 type ConnectionInformation {
   # Token to be used in connection information
-  token: String
+  token: String,
+  # The connected user
+  user: User!
 }
 
 extend type RootQuery {

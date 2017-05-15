@@ -1,0 +1,24 @@
+mutation createUpdateLine($input: WalletLineInput!) {
+		createUpdateLine(input: $input) {
+			... on WalletLine {
+				_id
+        type
+        label
+        encryption {
+          salt
+          informations {
+            content
+            authTag
+          }
+        }
+        updatedAt
+        _rev
+			}
+			... on Errors {
+				errors {
+					fieldName
+					message
+				}
+			}
+		}
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 import debug from 'debug';
-import _ from 'lodash';
+import {pick} from 'lodash';
 import {AuthorizationError} from 'server/models/exception';
 import {getUsers as getUsersModel, getUser as getUserModel,registerUser as registerUserModel} from 'server/models/user';
 import {hashPassword, checkPassword} from './crypto';
@@ -11,7 +11,7 @@ const log = debug('App:Service:User');
 export function getUsers(params = {}) {
 	log('Get all users with params ', params);
 
-	const filter = _.pick(params, 'confirmationToken');
+	const filter = pick(params, 'confirmationToken');
 
 	return getUsersModel(filter);
 }
@@ -28,7 +28,7 @@ export function getUser(id) {
  */
 export function createSessionUser(user) {
 	log('Create the session payload for user ', user._id);
-	const payload = _.pick(user, '_id');
+	const payload = pick(user, '_id');
 
 	return Promise.resolve(payload);
 }
