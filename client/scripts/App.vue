@@ -13,11 +13,11 @@
 			v-list(dense)
 				v-divider
 				v-list-item
-					v-list-tile(router=true,to="/about")
+					v-list-tile(router=true,to="/login",v-if="! SESSION.authenticated")
 						v-list-tile-action
-							v-icon info
+							v-icon face
 						v-list-tile-content
-							v-list-tile-title {{ trans('app.menu.about') }}
+							v-list-tile-title {{ trans('app.menu.connect') }}
 				v-list-item
 					v-list-tile(router=true,to="/items",v-if="!! SESSION.authenticated")
 						v-list-tile-action
@@ -25,32 +25,38 @@
 						v-list-tile-content
 							v-list-tile-title {{ trans('app.menu.items') }}
 				v-list-item
-					v-list-tile(v-if="!! SESSION.authenticated",v-on:click.native="handleDownloadPassword()")
+					v-list-tile(v-if="!! SESSION.authenticated",v-on:click.native="handleExport()")
 						v-list-tile-action
 							v-icon import_export
 						v-list-tile-content
 							v-list-tile-title {{ trans('app.menu.export') }}
+				v-divider
 				v-list-item
-					v-list-tile(v-if="!! SESSION.authenticated")
+					v-list-tile(v-if="!! SESSION.authenticated",v-on:click.native="handleLogout()")
 						v-list-tile-action
-							v-icon print
+							v-icon power_settings_new
 						v-list-tile-content
-							v-list-tile-title {{ trans('app.menu.print') }}
+							v-list-tile-title {{ trans('app.menu.logout') }}
+				v-list-item
+					v-list-tile(router=true,to="/about")
+						v-list-tile-action
+							v-icon chat_bubble
+						v-list-tile-content
+							v-list-tile-title {{ trans('app.menu.about') }}
 
 		v-toolbar.indigo.darken-4(fixed)
 			v-toolbar-side-icon(light,@click.native.stop="drawer = !drawer")
 			v-toolbar-title {{ trans('app.title') }}
-			v-toolbar-items
-				v-toolbar-item(v-if="!! SESSION.authenticated",v-on:click.native="handleLogout()") {{ trans('app.menu.logout') }}
-				v-toolbar-item(router=true,to="/login",v-if="! SESSION.authenticated") {{ trans('app.menu.connect') }}
 		main
 			v-container
 				router-view
+		v-footer.indigo.darken-4
+			span © 2017
 </template>
 
 <script type="text/babel">
 	import {SESSION, logout} from './user/UserService';
-	import {generatePasswordFile} from './items/ItemService';
+	import {exportLinesAsCsv} from './items/ItemService';
 
 	export default {
 		name: 'app',
@@ -65,8 +71,8 @@
 			handleLogout() {
 				logout(this);
 			},
-			handleDownloadPassword() {
-				generatePasswordFile(this);
+			handleExport() {
+				exportLinesAsCsv(this);
 			}
 		}
 	}

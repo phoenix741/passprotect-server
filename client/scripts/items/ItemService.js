@@ -3,12 +3,13 @@
 import {SESSION} from '../user/UserService';
 import {createKeyDerivation, decrypt, encrypt, generateIV} from 'nsclient/utils/crypto';
 import {parseErrors} from 'nsclient/utils/errors';
-import {merge, find, remove} from 'lodash';
+import {merge, find, remove, pick} from 'lodash';
 import createUpdateLine from './createUpdateLine.gql';
 import removeLineQuery from './removeLine.gql';
 import getLines from './getLines.gql';
 import getLinesWithDetail from './getLinesWithDetail.gql';
 import downloadAsFile from 'download-as-file';
+import json2csv from 'json2csv';
 
 const config = __PASSPROTECT_CONFIG__.crypto;
 
@@ -140,27 +141,40 @@ export function decryptLine(line) {
 		.then(clearInformation => completeFields(line.type, clearInformation));
 }
 
-export function generatePasswordFile(context) {
-	context.$apollo.addSmartQuery('lines', {
-		query: getLinesWithDetail,
-		result({data}) {
-			Promise
-				.filter(data.lines, line => line.type === 'password')
-				.map(line => {
-					return decryptLine(line).then(function(decryptedContent) {
-						return line.label + '\t\t' + decryptedContent.siteUrl + '\t\t' + decryptedContent.username + '\t\t' + decryptedContent.password;
-					});
-				})
-				.then(function(data) {
-					downloadAsFile({
-						data: data.join('\n'),
-						filename: 'password.txt'
-					});
-				});
+export function exportLinesAsCsv(context) {
+	return exportLines(context)
+		.then(data => Promise.fromCallback(cb => json2csv({data}, cb)))
+		.then(data => downloadAsFile({data, filename: 'password.csv'}));
+}
 
-			setTimeout(() => context.$apollo.queries.lines.stop());
-		}
+export function exportLines(context) {
+	const query = new Promise(function(resolve, reject) {
+		context.$apollo.addSmartQuery('lines', {
+			query: getLinesWithDetail,
+			result({data}) {
+				setTimeout(() => context.$apollo.queries.lines.stop());
+				resolve(data.lines);
+			},
+			error(error) {
+				reject(error);
+			}
+		});
 	});
+
+	return query
+		.each(line => {
+			return decryptLine(line)
+				.then(decryptedContent => (line.decryptedContent = decryptedContent));
+		})
+		.map(line => {
+			const result = merge(
+				pick(line, ['label']),
+				pick(line.decryptedContent, ['username', 'password', 'siteUrl', 'notes']),
+				pick(line.decryptedContent, ['type', 'nameOnCard', 'cardNumber', 'cvv', 'expiry', 'code', 'notes']),
+				pick(line.decryptedContent, ['text', 'notes'])
+			);
+			return result;
+		});
 }
 
 function completeFields(type, clearInformation) {
