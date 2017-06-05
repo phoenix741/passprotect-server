@@ -1,7 +1,7 @@
 'use strict';
 
 import {SESSION} from '../user/UserService';
-import {createKeyDerivation, decrypt, encrypt, generateIV} from 'nsclient/utils/crypto';
+import {createKeyDerivation, decrypt, encrypt, generateIV, generatePassword} from 'nsclient/utils/crypto';
 import {parseErrors} from 'nsclient/utils/errors';
 import {merge, find, remove, pick} from 'lodash';
 import createUpdateLine from './createUpdateLine.gql';
@@ -139,6 +139,10 @@ export function decryptLine(line) {
 		.then(lineKey => decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv))
 		.then(informationString => JSON.parse(informationString))
 		.then(clearInformation => completeFields(line.type, clearInformation));
+}
+
+export function generate() {
+	return generatePassword(128);
 }
 
 export function exportLinesAsCsv(context) {

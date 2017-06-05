@@ -15,6 +15,7 @@ import Login from './user/Login.vue';
 import Register from './user/Register.vue';
 import Items from './items/Items.vue';
 import ItemModification from './items/ItemModification.vue';
+import ItemVisualisation from './items/ItemVisualisation.vue';
 import ItemCreation from './items/ItemCreation.vue';
 import About from './page/About.vue';
 import {apolloClient} from './utils/graphql';
@@ -47,7 +48,8 @@ const routes = [
 	{path: '/about', component: About},
 	{path: '/items', component: Items},
 	{path: '/items/type/:type', component: ItemCreation, props: true},
-	{path: '/items/:id', component: ItemModification, props: true},
+	{path: '/items/:id/edit', component: ItemModification, props: true},
+	{path: '/items/:id', component: ItemVisualisation, props: true},
 	{path: '/login', component: Login},
 	{path: '/register', component: Register},
 	{path: '*', redirect: '/items'}

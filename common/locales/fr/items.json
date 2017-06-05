@@ -10,6 +10,7 @@
   "item": {
     "title_creation": "Création",
     "title_modification": "Modification",
+		"title_visualisation": "Visualisation",
     "form": {
       "label": {
         "field": "Titre du champ"
@@ -55,7 +56,8 @@
         "field": "Notes"
       },
       "button": {
-        "field": "Mettre à jour"
+        "field": "Mettre à jour",
+				"generate": "Générer le mot de passe"
       }
     },
     "flash": {

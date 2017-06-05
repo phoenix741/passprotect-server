@@ -3,6 +3,8 @@
 import crypto from 'crypto';
 import streamToPromise from 'stream-to-promise';
 
+const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+
 export function createKeyDerivation(password, salt, options) {
 	const iterations = options.iterations;
 	const keylen = options.keylen / 8;
@@ -24,6 +26,20 @@ export function generateKey(size) {
 	return Promise
 		.fromCallback(cb => crypto.randomBytes(size / 8, cb))
 		.then(iv => new Buffer(iv).toString('hex'));
+}
+
+export function generatePassword(size) {
+	const len = size / 8;
+	return Promise
+		.fromCallback(cb => crypto.randomBytes(len, cb))
+		.then(generatedChars => {
+			const password = new Array(len);
+			for (let i = 0; i < len; i++) {
+				password[i] = chars[generatedChars[i] % chars.length];
+			}
+
+			return password.join('');
+		});
 }
 
 export function encrypt(text, key, iv, options) {
