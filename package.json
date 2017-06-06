@@ -29,7 +29,6 @@
     "node": ">= 6.2.1"
   },
   "dependencies": {
-    "apollo-client": "^1.2.2",
     "app-module-path": "^2.2.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
@@ -61,10 +60,10 @@
     "permission": "^1.0.4",
     "serve-favicon": "~2.4.2",
     "stream-to-promise": "^2.2.0",
-    "subscriptions-transport-ws": "^0.6.0",
-    "vue-apollo": "^2.1.0-beta.8"
+    "subscriptions-transport-ws": "^0.6.0"
   },
   "devDependencies": {
+    "apollo-client": "^1.2.2",
     "apidoc": "^0.17.5",
     "autoprefixer": "^7.0.1",
     "babel-cli": "^6.24.1",
@@ -110,6 +109,7 @@
     "url-loader": "^0.5.8",
     "vee-validate": "^2.0.0-rc.3",
     "vue": "^2.3.3",
+    "vue-apollo": "^2.1.0-beta.8",
     "vue-loader": "^12.0.4",
     "vue-router": "^2.5.3",
     "vue-template-compiler": "^2.3.3",

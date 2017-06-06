@@ -1,14 +1,41 @@
-FROM node:7-alpine
+#
+# -------- Base ---------
+
+FROM node:8-alpine as base
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
+
+WORKDIR /src
+COPY package.json /src
+
+#
+# -------- Dependencies --------
+FROM base as dependencies
+
+RUN npm install --production
+RUN mv node_modules prod_node_modules
+RUN npm install
+
+#
+# -------- Compile server ----------
+FROM dependencies AS compile
+
+COPY . .
+RUN npm run compile
+
+#
+# -------- Dist -----------
+FROM base AS dist
+
+COPY client ./client
+COPY common ./common
+COPY config ./config
+COPY package.json ./
+COPY --from=dependencies /src/prod_node_modules /src/node_modules
+COPY --from=compile /src/dist/app.js /src/app.js
+COPY --from=compile /src/dist/server /src/server
 
 ENV MODE=prod
 ENV NODE_ENV=production
 
-WORKDIR /src
-
-COPY package.json /src
-RUN npm install && npm cache clean
-COPY . /src
-
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["node", "app.js"]

@@ -1,14 +1,4 @@
 pipeline:
-    build: 
-        image: node:7
-        environment:
-            - NPM_CONFIG_LOGLEVEL=warn
-        commands:
-            - npm install
-            - npm run clean
-            - PIWIK_SITE_URL='$${PIWIK_SITE_URL}' PIWIK_SITE_ID='$${PIWIK_SITE_ID}' MODE=prod npm run build
-            - npm run doc
-
     nodejs:
         image: plugins/docker
         repo: phoenix741/passprotect-server
@@ -20,4 +10,3 @@ pipeline:
         repo: phoenix741/passprotect-client
         tags: develop
         dockerfile: Dockerfile.nginx
-

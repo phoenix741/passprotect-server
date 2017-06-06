@@ -44,7 +44,7 @@
 						v-list-tile-content
 							v-list-tile-title {{ trans('app.menu.about') }}
 
-		v-toolbar.indigo.darken-4(fixed)
+		v-toolbar.indigo.darken-4(fixed,light)
 			v-toolbar-side-icon(light,@click.native.stop="drawer = !drawer")
 			v-toolbar-title {{ trans('app.title') }}
 		main

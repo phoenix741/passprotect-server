@@ -1,11 +1,29 @@
-FROM nginx:alpine
+#
+# -------- Base ---------
+
+FROM node:8-alpine as builder
+MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
+
+WORKDIR /src
+COPY package.json /src
+RUN npm install
+
+ENV MODE=prod
+ENV NODE_ENV=production
+
+COPY . .
+RUN npm run build && npm run doc
+
+#
+# -------- Dist -----------
+FROM nginx:alpine as final
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 
 COPY docker/nginx-default.conf /etc/nginx/conf.d/default.template
 COPY docker/nginx-proxy.conf /etc/nginx/proxy.conf
 
-COPY dist/prod /usr/share/nginx/html
-COPY dist/prod/index.html /usr/share/nginx/html/index.html.template
-COPY doc /usr/share/nginx/html/api/doc
+COPY --from=builder /src/dist/prod /usr/share/nginx/html
+COPY --from=builder /src/dist/prod/index.html /usr/share/nginx/html/index.html.template
+COPY --from=builder /src/doc /usr/share/nginx/html/api/doc
 
 CMD ["/bin/sh", "-c", "envsubst '$UPSTREAM_SERVER $UPSTREAM_PORT' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && envsubst '${PIWIK_SITE_URL} ${PIWIK_SITE_ID}' < /usr/share/nginx/html/index.html.template > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"]
