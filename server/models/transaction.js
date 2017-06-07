@@ -1,12 +1,9 @@
 'use strict';
 
-const _ = require('underscore');
-const db = require('../utils/db');
-const i18n = require('i18next');
-const crypto = require('crypto');
+import {isString, isDate} from 'lodash';
+import {promise as dbPromise} from 'server/utils/db';
 
-const processMongoException = require('./exception').processMongoException;
-const NotFoundError = require('./exception').NotFoundError;
+import { processMongoException } from './exception';
 
 /*
  * Model of a wallet line contains :
@@ -17,34 +14,23 @@ const NotFoundError = require('./exception').NotFoundError;
  *
  * And all other informations that a user want to store in the wallet line (depending on the wallet).
  */
-module.exports = function () {
-	return {
-		getTransactions(filter, offset, limit) {
-			const find = {};
+export function getTransactions(filter) {
+	const find = {};
 
-			if (_.isString(filter.user)) {
-				find.user = filter.user;
-			}
-			if (_.isDate(filter.earliest)) {
-				find.updatedAt = {'$gte': filter.earliest};
-			}
-
-			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('transactions').find(find).sort({updatedAt: 1}).skip(offset).limit(limit).toArray(cb));
-			});
-		},
-
-		create(transaction) {
-			return db.promise.then(db => {
-				return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb));
-			}).catch(processMongoException);
-		}
-	};
-
-	function processNotFound(lineId, line) {
-		if (!line) {
-			throw new NotFoundError(i18n.t('error:line.404.lineNotFound', {lineId}));
-		}
-		return line;
+	if (isString(filter.user)) {
+		find.user = filter.user;
 	}
-};
+	if (isDate(filter.earliest)) {
+		find.updatedAt = { '$gte': filter.earliest };
+	}
+
+	return dbPromise.then(db => {
+		return Promise.fromCallback(cb => db.collection('transactions').find(find).sort({ updatedAt: 1 }).toArray(cb));
+	});
+}
+
+export function createTransaction(transaction) {
+	return dbPromise.then(db => {
+		return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb)).then(doc => doc.ops[0]);
+	}).catch(processMongoException);
+}

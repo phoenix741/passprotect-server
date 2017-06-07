@@ -8,6 +8,10 @@
 	  "password": "Le mot de passe doit faire minimum 8 caractères",
 	  "passwordRepeat": "Les deux mots de passe doivent être identique",
 	  "encryption": "Les données de chiffrages ne sont pas valides"
+	},
+	"401": {
+	  "username": "Le login est obligatoire",
+	  "password": "Le mot de passe est obligatoire"
 	}
   },
   "line": {

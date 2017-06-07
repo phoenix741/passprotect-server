@@ -1,0 +1,32 @@
+scalar Date
+
+# Encrypted content
+type EncryptedContent {
+  # Content encrypted with salt
+  content: String!
+  # Authentification tag
+  authTag: String!
+}
+
+# Encrypted content
+input EncryptedContentInput {
+  # Content encrypted with salt
+  content: String!
+  # Authentification tag
+  authTag: String!
+}
+
+type Error {
+  fieldName: String,
+  message: String
+}
+
+type Errors {
+  errors: [Error]!
+}
+
+schema {
+  query: RootQuery
+  mutation: RootMutation
+  subscription: RootSubscription
+}

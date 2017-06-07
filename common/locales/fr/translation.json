@@ -1,31 +1,32 @@
 {
   "app": {
-	"title": "Passprotect",
-	"menu": {
-	  "about": "A propos",
-	  "my_account": "Mon compte",
-	  "connect": "Se connecter",
-	  "logout": "Se déconnecter",
-	  "items": "Ma liste"
-	},
-	"dialog": {
-	  "close": "Fermer"
-	}
+    "title": "Passprotect",
+    "menu": {
+      "about": "A propos",
+      "my_account": "Mon compte",
+      "connect": "Se connecter",
+      "logout": "Se déconnecter",
+      "items": "Ma liste",
+      "export": "Exporter",
+      "print": "Imprimer"
+    },
+    "dialog": {
+      "close": "Fermer"
+    }
   },
   "alert": {
-	"validation": {
-	  "title": "Impossible de soumettre votre formulaire"
-	},
-	"unknown_error": {
-	  "title": "Erreur",
-	  "message": "Un problème est survenu",
-	  "close": "Fermer"
-	}
+    "validation": {
+      "title": "Impossible de soumettre votre formulaire"
+    },
+    "unknown_error": {
+      "title": "Erreur",
+      "message": "Un problème est survenu",
+      "close": "Fermer"
+    }
   },
   "about": {
-	"title": "A propos de Passprotect",
-	"copyright": "Passprotect est un outil qui permet de stocker mot de passe, carte de crédit, et toutes autres informations de facon crypté.",
-	"licence": "MIT Licence"
+    "title": "A propos de Passprotect",
+    "copyright": "Passprotect est un outil qui permet de stocker mot de passe, carte de crédit, et toutes autres informations de facon crypté.",
+    "licence": "MIT Licence"
   }
 }
-

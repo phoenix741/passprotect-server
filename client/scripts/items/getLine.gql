@@ -1,0 +1,16 @@
+query getLineById($id: ID!) {
+  line(id: $id) {
+    _id
+    type
+    label
+    encryption {
+      salt
+      informations {
+        content
+        authTag
+      }
+    }
+    updatedAt
+    _rev
+  }
+}

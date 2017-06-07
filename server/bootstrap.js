@@ -1,13 +1,15 @@
 'use strict';
 
-const path = require('path');
-const debug = require('debug')('app:bootstrap');
-const i18nMiddleware = require('i18next-express-middleware');
-const i18nBackend = require('i18next-node-fs-backend');
+import path from 'path';
+import debug from 'debug';
+import {LanguageDetector} from 'i18next-express-middleware';
+import i18nBackend from 'i18next-node-fs-backend';
+import i18n from 'i18next';
 
-module.exports = (environment) => {
+const log = debug('app:bootstrap');
+
+export default function bootstrap(environment) {
 	// Init i18n
-	const i18n = require('i18next');
 	const i18nOption = {
 		ns: ['translation', 'error', 'contact', 'user'],
 		lng: 'fr',
@@ -21,10 +23,10 @@ module.exports = (environment) => {
 		//debug: environment === 'development'
 	};
 
-	debug('Define the i18n options with ' + i18nOption);
+	log('Define the i18n options with ' + i18nOption);
 
 	i18n
-		.use(i18nMiddleware.LanguageDetector)
+		.use(LanguageDetector)
 		.use(i18nBackend)
 		.init(i18nOption);
-};
+}

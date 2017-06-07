@@ -1,28 +1,28 @@
 'use strict';
 
-const MongoClient = require('mongodb').MongoClient;
-const config = require('config');
-const debug = require('debug')('App:Utils:Db');
+import {MongoClient} from 'mongodb';
+import config from 'config';
+import debug from 'debug';
 
-module.exports.promise = null;
-module.exports.db = null;
+const log = debug('App:Utils:Db');
 
-module.exports.connection = connection;
+export let promise = null;
+export let db = null;
 
-function connection() {
-	if (!module.exports.promise) {
-		module.exports.promise = Promise.fromCallback(cb => MongoClient.connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'), cb))
-			.then((db) => {
-				debug('Express server connected to mongodb host ' + config.get('config.mongodb.host'));
-				module.exports.db = db;
-				return db;
+export function connection() {
+	if (!promise) {
+		promise = Promise.fromCallback(cb => MongoClient.connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'), cb))
+			.then((database) => {
+				log('Express server connected to mongodb host ' + config.get('config.mongodb.host'));
+				db = database;
+				return database;
 			}).catch(err => {
-				module.exports.promise = null;
+				promise = null;
 				throw err;
 			});
 	}
 
-	return module.exports.promise;
+	return promise;
 }
 
-connection().catch(err => debug('Can\'t connect to mongodb', err));
+connection().catch(err => log('Can\'t connect to mongodb', err));

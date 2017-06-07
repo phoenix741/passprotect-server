@@ -1,0 +1,8 @@
+mutation removeLine($id: ID!) {
+  removeLine(id: $id) {
+    errors {
+      fieldName
+      message
+    }
+  }
+}

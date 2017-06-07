@@ -1,66 +1,54 @@
 'use strict';
 
-const _ = require('underscore');
-const debug = require('debug')('App:Core');
-const i18n = require('i18next');
+import debug from 'debug';
+import i18n from 'i18next';
 
-const path = require('path');
-const express = require('express');
+import path from 'path';
+import express from 'express';
+import http from 'http';
 
-class Core {
+import {websocketVerifyClient as verifyClient}  from './config-passport';
+import userRouter from 'server/controllers/user';
+import sessionRouter from 'server/controllers/session';
+import lineRouter from 'server/controllers/line';
+import transactionRouter from 'server/controllers/transaction';
+import graphqlRouter, {subscriptionManager} from 'server/controllers/graphql';
+import { graphiqlExpress } from 'graphql-server-express';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+
+const log = debug('App:Core');
+
+export class Core {
 	constructor(app) {
-		this.model = this.getModels();
-		this.services = this.getServices(this.model);
+		this.app = app;
+		this.server = http.createServer(this.app);
 
-		this.createControllers(app, this.services);
+		this.createControllers(app);
+		this.createSubscriptionManager(app);
 	}
 
-	getModels() {
-		const models = {};
-
-		models.user = require('./models/user')();
-		models.line = require('./models/line')();
-		models.transaction = require('./models/transaction')();
-
-		return models;
-	}
-
-	getServices(models) {
-		const services = {};
-
-		services.user = require('./services/user')(models, services);
-		services.line = require('./services/line')(models, services);
-		services.transaction = require('./services/transaction')(models, services);
-		services.crypto = require('./services/crypto')(models, services);
-
-		return services;
-	}
-
-	createControllers(app, services) {
-		require('./config-passport')(app, services);
-		require('./controllers/user')(app, services);
-		require('./controllers/session')(app, services);
-		require('./controllers/line')(app, services);
-		require('./controllers/transaction')(app, services);
+	createControllers(app) {
+		app.use('/api/users', userRouter);
+		app.use('/api/transactions', transactionRouter);
+		app.use('/api/session', sessionRouter);
+		app.use('/api/lines', lineRouter);
+		app.use('/api/graphql', graphqlRouter);
+		app.use('/graphiql', graphiqlExpress({
+			endpointURL: '/api/graphql',
+			subscriptionsEndpoint: '\' + (window.location.protocol === \'https\' ? \'wss://\' : \'ws://\') + window.location.host + \'/subscriptions'
+		}));
 
 		app.use(express.static(path.join(__dirname, '..', 'dist', 'dev')));
 
 		app.use((err, req, res, next) => {
-			debug(err);
+			log(err);
 
-			if (err && err.name === 'ValidationError') {
-				const json = _(err.errors)
-					.chain()
-					.map(value => _.pick(value, 'path', 'message', 'kind', 'name'))
-					.indexBy('path')
-					.value();
-
-				return res.status(400).json({code: 400, message: json});
-			}
 			if (err && err.name === 'DuplicateKeyError') {
-				return res.status(400).json({code: 400, message: {
-					[err.field]: i18n.t('error:global.400.duplicate')
-				}});
+				return res.status(400).json({
+					code: 400, message: {
+						[err.field]: i18n.t('error:global.400.duplicate')
+					}
+				});
 			}
 
 			if (err && err.status) {
@@ -71,9 +59,25 @@ class Core {
 		});
 	}
 
-	run() {
+	createSubscriptionManager(app) {
+		this.subscriptionsServer = new SubscriptionServer(
+			{
+				subscriptionManager,
+				onConnect(connectionParams, webSocket) {
+					return {
+						user: webSocket.upgradeReq.user
+					};
+				}
+			},
+			{
+				server: this.server,
+				path: '/subscriptions',
+				verifyClient
+			}
+		);
+	}
 
+	run() {
+		this.server.listen(this.app.get('port'), () => log('Express server listening on port ' + this.app.get('port')));
 	}
 }
-
-module.exports = Core;

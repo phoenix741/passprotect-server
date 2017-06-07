@@ -1,15 +1,17 @@
 'use strict';
 
-const Promise = require('bluebird');
-global.Promise = Promise;
+import 'app-module-path/register';
+import 'server/utils/promise';
 
-var express = require('express');
-var debug = require('debug')('App:Server');
-var path = require('path');
+import express from 'express';
+import path from 'path';
 
-var app = express();
+import bootstrap from './server/bootstrap';
+import middlewares from './server/middlewares';
 
-require('./server/bootstrap')(app.get('env'));
+const app = express();
+
+bootstrap(app.get('env'));
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -18,8 +20,4 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'common', 'templates'));
 app.set('view engine', 'jade');
 
-require('./server/middlewares')(app);
-
-app.listen(app.get('port'), function () {
-	debug('Express server listening on port ' + app.get('port'));
-});
+middlewares(app);

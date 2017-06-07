@@ -17,7 +17,8 @@
 	"Marionette": true,
 	"Materialize": true,
 	"_paq": true,
-	"Integer": true
+	"Integer": true,
+  "__PASSPROTECT_CONFIG__": true
   },
   "rules": {
 	"no-use-before-define": 0,

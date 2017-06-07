@@ -1,0 +1,28 @@
+# Wallet transaction, used to synchronize lines between devices
+type WalletTransaction {
+  # Id of the transaction
+  _id: ID!,
+  # Type of the object modified (only line)
+  type: String!,
+  # Line
+  line: WalletLine,
+  # Owner of the transaction
+  user: User!,
+  # The line before the modification
+  before: WalletLine,
+  # The line after the modification
+  after: WalletLine,
+  # The modification date
+  updatedAt: Date!,
+  # A SHA-512 calculate on the modification.
+  sha512: String!
+}
+
+extend type RootQuery {
+  # Request all transactions that happen since the last synchronisation date.
+  transactions(earliest: Date!): [WalletTransaction]
+}
+
+type RootSubscription {
+  transactionAdded: WalletTransaction!
+}

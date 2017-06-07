@@ -1,0 +1,27 @@
+# Information needed to connect to the server and retreive object from database.
+input ConnectionInformationInput {
+  # Login of the user
+  username: String!,
+  # Password used for connection
+  password: String!
+}
+
+# Result of the connection
+type ConnectionInformation {
+  # Token to be used in connection information
+  token: String,
+  # The connected user
+  user: User!
+}
+
+extend type RootQuery {
+  # Request the current session
+  session: User
+}
+
+union CreateSessionResult = ConnectionInformation | Errors
+
+extend type RootMutation {
+  createSession(input: ConnectionInformationInput!): CreateSessionResult,
+  clearSession: Errors
+}
