@@ -4,7 +4,7 @@ import config from 'config';
 import {pick,omit,isString,isEmpty} from 'lodash';
 import expressPromiseRouter from 'express-promise-router';
 import i18n from 'i18next';
-import {authenticate,permission,checkPermission} from '../utils/passport';
+import {authenticate,permission} from '../utils/passport';
 import {getUser,createSessionUser,verifyPassword} from '../services/user';
 import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
