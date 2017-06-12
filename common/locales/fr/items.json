@@ -1,6 +1,7 @@
 {
   "list": {
     "title": "Ma liste",
+		"search": "Rechercher ...",
     "type": {
       "card": "Carte de paiement",
       "password": "Mot de passe",
@@ -15,6 +16,9 @@
       "label": {
         "field": "Titre du champ"
       },
+			"group": {
+				"field": "Groupe"
+			},
       "type": {
         "field": "Type de carte",
         "options": [

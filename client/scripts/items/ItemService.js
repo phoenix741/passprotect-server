@@ -19,6 +19,7 @@ export const cardTypeMapping = {
 		icon: 'credit_card',
 		color: 'red',
 		fields: {
+			group: '',
 			type: '',
 			nameOnCard: '',
 			cardNumber: '',
@@ -33,6 +34,7 @@ export const cardTypeMapping = {
 		icon: 'fingerprint',
 		color: 'blue',
 		fields: {
+			group: '',
 			username: '',
 			password: '',
 			siteUrl: '',
@@ -44,6 +46,7 @@ export const cardTypeMapping = {
 		icon: 'text_fields',
 		color: 'green',
 		fields: {
+			group: '',
 			text: '',
 			notes: ''
 		}

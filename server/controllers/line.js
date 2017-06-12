@@ -8,6 +8,7 @@ import path from 'path';
 import debug from 'debug';
 import {authenticate,permission,checkPermission} from 'server/utils/passport';
 import {getLines,getLine,removeLine,saveLine} from 'server/services/line';
+import {getGroups} from 'server/services/group';
 
 const log = debug('App:Controllers:Line');
 
@@ -27,6 +28,10 @@ export const resolvers = {
 
 		line(obj, {id}, {user}) {
 			return getLine(id).tap(line => checkPermission(user, [], line.user)).then(filterLine);
+		},
+
+		groups(obj, args, {user}) {
+			return checkPermission(user).then(() => getGroups(user));
 		}
 	},
 	User: {
@@ -290,11 +295,11 @@ router.route('/:lineId')
  * @returns {Object} The filtered object.
  */
 function filterLine(line) {
-	return pick(line, '_id', 'user', 'type', 'label', 'encryption', 'updatedAt', '_rev');
+	return pick(line, '_id', 'user', 'type', 'label', 'group', 'encryption', 'updatedAt', '_rev');
 }
 
 function sanitizeInput(input) {
-	const data = pick(input, '_id', 'user', 'type', 'label', 'encryption', '_rev');
+	const data = pick(input, '_id', 'user', 'type', 'label', 'group', 'encryption', '_rev');
 
 	const validationError = new Error();
 	validationError.status = 400;

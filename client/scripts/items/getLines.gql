@@ -3,5 +3,6 @@ query getLines {
     _id
     type
     label
+		group
   }
 }

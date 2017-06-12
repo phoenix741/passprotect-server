@@ -3,6 +3,7 @@ query getLineById($id: ID!) {
     _id
     type
     label
+		group
     encryption {
       salt
       informations {

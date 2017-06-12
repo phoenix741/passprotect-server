@@ -15,6 +15,11 @@ v-card
 					v-model="line.label",
 					v-bind:rules="labelValidation")
 
+			v-flex(xs12)
+				v-text-field(
+          :label="trans('items:item.form.group.field')"
+					v-model="line.group")
+
 			template(v-if="line.type == 'text'")
 				v-flex(xs12)
 					v-text-field(
@@ -113,7 +118,8 @@ export default {
 			passwordVisibility: false,
 			clearInformation: {},
 			typeOfCard: this.trans('items:item.form.type.options').split('+'),
-			error: {}
+			error: {},
+			groups: ['test1', 'test2']
 		};
 	},
 	methods: {
@@ -122,7 +128,7 @@ export default {
 				return;
 			}
 
-			const line = pick(this.line, ['_id', 'type', 'label', '_rev']);
+			const line = pick(this.line, ['_id', 'type', 'label', 'group', '_rev']);
 
 			encryptLine(this.clearInformation)
 				.then(encryptedInformation => (line.encryption = encryptedInformation))

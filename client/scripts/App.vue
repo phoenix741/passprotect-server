@@ -46,7 +46,8 @@
 
 		v-toolbar.indigo.darken-4(fixed,light)
 			v-toolbar-side-icon(light,@click.native.stop="drawer = !drawer")
-			v-toolbar-title {{ trans('app.title') }}
+			v-toolbar-title.hidden-xs-only {{ trans('app.title') }}
+			v-text-field(prepend-icon="search",:label="trans('items:list.search')",v-on:input="search",hide-details,single-line,light)
 		main
 			v-container
 				router-view
@@ -57,6 +58,8 @@
 <script type="text/babel">
 	import {SESSION, logout} from './user/UserService';
 	import {exportLinesAsCsv} from './items/ItemService';
+	import {bus} from './items/ItemsBus';
+	import {debounce} from 'lodash';
 
 	export default {
 		name: 'app',
@@ -73,7 +76,9 @@
 			},
 			handleExport() {
 				exportLinesAsCsv(this);
-			}
+			},
+//			search: debounce(value => bus.$emit('search-items', value), 500)
+			search: value => bus.$emit('search-items', value)
 		}
 	}
 </script>

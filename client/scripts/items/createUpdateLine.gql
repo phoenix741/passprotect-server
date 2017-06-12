@@ -4,6 +4,7 @@ mutation createUpdateLine($input: WalletLineInput!) {
 				_id
         type
         label
+				group
         encryption {
           salt
           informations {
