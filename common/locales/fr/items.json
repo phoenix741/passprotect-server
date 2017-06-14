@@ -17,7 +17,9 @@
         "field": "Titre du champ"
       },
 			"group": {
-				"field": "Groupe"
+				"field": "Groupe",
+				"new": "Groupe (nouveau)",
+        "newItem": "Nouveau groupe"
 			},
       "type": {
         "field": "Type de carte",
