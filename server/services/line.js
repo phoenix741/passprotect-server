@@ -14,6 +14,7 @@ export function getLines(user) {
 	filter.user = user._id;
 
 	const sort = {};
+	sort.group = 1;
 	sort.label = 1;
 
 	return getLinesModel(filter, sort);

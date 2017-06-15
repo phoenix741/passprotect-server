@@ -22,6 +22,8 @@ type WalletLine {
   type: String!,
   # Label of the wallet line
   label: String!,
+  # Group of the wallet line
+	group: String,
   # Encrypted content of the line (encrypted client side)
   encryption: EncryptedWalletLine!,
   # Owner of the list
@@ -40,6 +42,8 @@ input WalletLineInput {
   type: String!,
   # Label of the wallet line
   label: String!,
+  # Group of the wallet line
+	group: String,
   # Encrypted content of the line (encrypted client side)
   encryption: EncryptedWalletLineInput!,
   # Revision (modification count) of the line, used to ensure modification of the last line
@@ -51,7 +55,10 @@ extend type RootQuery {
   lines: [WalletLine],
 
   # Request a wallet line
-  line(id: ID!): WalletLine
+  line(id: ID!): WalletLine,
+
+	# Request all groups available on lines
+	groups: [String!]
 }
 
 union CreateUpdateLineResult = WalletLine | Errors

@@ -13,6 +13,7 @@ import { processMongoException, NotFoundError } from './exception';
  *        user: {type: String},
  *        label: {type: String},
  *        type: {type: String},
+ *				group: {type: String},
  *        encryption: {type: encrypted Object}
  *        updatedAt: {type: Date}
  *        _rev: {type: Number}

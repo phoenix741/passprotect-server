@@ -7,6 +7,7 @@ import {merge, find, remove, pick} from 'lodash';
 import createUpdateLine from './createUpdateLine.gql';
 import removeLineQuery from './removeLine.gql';
 import getLines from './getLines.gql';
+import getGroups from './getGroups.gql';
 import getLinesWithDetail from './getLinesWithDetail.gql';
 import downloadAsFile from 'download-as-file';
 import json2csv from 'json2csv';
@@ -19,6 +20,7 @@ export const cardTypeMapping = {
 		icon: 'credit_card',
 		color: 'red',
 		fields: {
+			group: '',
 			type: '',
 			nameOnCard: '',
 			cardNumber: '',
@@ -33,6 +35,7 @@ export const cardTypeMapping = {
 		icon: 'fingerprint',
 		color: 'blue',
 		fields: {
+			group: '',
 			username: '',
 			password: '',
 			siteUrl: '',
@@ -44,6 +47,7 @@ export const cardTypeMapping = {
 		icon: 'text_fields',
 		color: 'green',
 		fields: {
+			group: '',
 			text: '',
 			notes: ''
 		}
@@ -62,6 +66,12 @@ export function updateLine(context, line) {
 				if (!find(data.lines, line => line._id === createUpdateLine._id)) {
 					data.lines.push(createUpdateLine);
 					store.writeQuery({ query: getLines, data });
+				}
+
+				const dataGroup = store.readQuery({ query: getGroups });
+				if (!find(dataGroup.groups, group => group === createUpdateLine.group)) {
+					dataGroup.groups.push(createUpdateLine.group);
+					store.writeQuery({ query: getGroups, dataGroup });
 				}
 			},
 			optimisticResponse: {

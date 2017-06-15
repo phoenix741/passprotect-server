@@ -15,6 +15,23 @@ v-card
 					v-model="line.label",
 					v-bind:rules="labelValidation")
 
+			v-flex(xs12)
+				v-select(
+					:label="trans('items:item.form.group.field')",
+          v-bind:items="selectGroups",
+	        v-model="line.group",
+					item-text="name"
+					item-value="value")
+					template(slot="item",scope="data")
+						template(v-if="data.item.value") {{ data.item.name }}
+						div.groupSelect(v-if="!data.item.value")
+							span {{ data.item.name }}
+
+			v-flex(xs12,v-if="line.group === ''")
+				v-text-field(
+	        :label="trans('items:item.form.group.new')"
+					v-model="newGroup")
+
 			template(v-if="line.type == 'text'")
 				v-flex(xs12)
 					v-text-field(
@@ -99,8 +116,9 @@ v-card
 </template>
 
 <script type="text/babel">
-import {pick} from 'lodash';
+import {pick, map} from 'lodash';
 import {cardTypeMapping, updateLine, decryptLine, encryptLine, generate} from './ItemService';
+import getGroups from './getGroups.gql';
 
 export default {
 	props: ['line'],
@@ -113,8 +131,13 @@ export default {
 			passwordVisibility: false,
 			clearInformation: {},
 			typeOfCard: this.trans('items:item.form.type.options').split('+'),
-			error: {}
+			error: {},
+			groups: [],
+			newGroup: ''
 		};
+	},
+	apollo: {
+		groups: getGroups
 	},
 	methods: {
 		submitForm() {
@@ -122,7 +145,11 @@ export default {
 				return;
 			}
 
-			const line = pick(this.line, ['_id', 'type', 'label', '_rev']);
+			const line = pick(this.line, ['_id', 'type', 'label', 'group', '_rev']);
+
+			if (this.newGroup) {
+				line.group = this.newGroup;
+			}
 
 			encryptLine(this.clearInformation)
 				.then(encryptedInformation => (line.encryption = encryptedInformation))
@@ -141,6 +168,11 @@ export default {
 			}
 			return errors;
 		},
+		selectGroups: function() {
+			const result = map(this.groups, g => ({name: g, value: g}));
+			result.push({value: '', name: this.trans('items:item.form.group.newItem')});
+			return result;
+		},
 		cardType() {
 			return cardTypeMapping[this.line.type || 'text'];
 		}
@@ -158,3 +190,18 @@ export default {
 	}
 }
 </script>
+
+<style>
+.groupSelect {
+	width:100%;
+	text-align:center;
+	border-bottom: 1px solid #000;
+	line-height:0.1em;
+	margin:10px 0 20px;
+}
+
+.groupSelect span {
+	background:#fff;
+	padding:0 10px;
+}
+</style>
