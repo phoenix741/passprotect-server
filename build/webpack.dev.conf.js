@@ -1,0 +1,40 @@
+var utils = require('./utils')
+var webpack = require('webpack')
+var config = require('../config')
+var merge = require('webpack-merge')
+var baseWebpackConfig = require('./webpack.base.conf')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+var { graphqlPromise } = require('../common/services/graphql')
+var piwikConfig = require('./piwik.conf')
+
+// add hot-reload related code to entry chunks
+Object.keys(baseWebpackConfig.entry).forEach(function (name) {
+  baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
+})
+
+module.exports = graphqlPromise.then(graphqlSchema => {
+  return merge(baseWebpackConfig, {
+    module: {
+      rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
+    },
+    // cheap-module-eval-source-map is faster for development
+    devtool: '#cheap-module-eval-source-map',
+    plugins: [
+      new webpack.DefinePlugin(merge({
+        'process.env': config.dev.env,
+        '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema)
+      }, piwikConfig)),
+      // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
+      // https://github.com/ampedandwired/html-webpack-plugin
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'client/index.pug',
+        inject: true
+      }),
+      new FriendlyErrorsPlugin()
+    ]
+  })
+})

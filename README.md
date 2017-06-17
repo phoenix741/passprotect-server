@@ -4,19 +4,46 @@
 
 Passprotect is an single page application used to retrieve and store password, credit card, or other text securely.
 
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+
+# run unit tests
+npm run unit
+
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```
+
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
 ## How data are encrypted
 
 When the application is started you can create a user. When the user is created the application will create 2 keys :
 
-  * the master key used to encrypt (with AES-256-CTR) password, text, card. This key is generated from 32 random bytes, 
+  * the master key used to encrypt (with AES-256-CTR) password, text, card. This key is generated from 32 random bytes,
   this key is encrypted using the password of the user and salt (of 16 bytes),
-  * the session key used to encrypt JWT token. The key is generated from 32 random bytes. This key is used to encrypt 
+  * the session key used to encrypt JWT token. The key is generated from 32 random bytes. This key is used to encrypt
   the master key in the JWT token.
-  
+
 Then when the line is saved the master key is used to encrypt the data, and when the line is retrieved the master key is
 used to decrypt the data.
 
-Only the user can encrypt and decrypt it's data. The encryption and decryption is made in the nodejs part. 
+Only the user can encrypt and decrypt it's data. The encryption and decryption is made in the nodejs part.
 
 ## Installation
 
@@ -73,7 +100,7 @@ There is two images :
 
  * `phoenix741/passprotect-server:1.0.0`: contains the server part with nodejs.
  * `phoenix741/passprotect-client:1.0.0`: serve the static file of the client and is used as a proxy to the API
-  
+
 The third image is used to contains the mongodb database.
 
 ## Usage
