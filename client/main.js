@@ -16,15 +16,14 @@ import VeeValidate, { Validator } from 'vee-validate'
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
+window.Promise = Promise
+
 Validator.addLocale(veeDictionary)
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 Vue.use(VeeValidate, {errorBagName: 'veeErrors', locale: 'fr'})
-
-// Set the promise as global
-window.Promise = Promise
 
 const i18nOptions = {
   resources: resBundle,

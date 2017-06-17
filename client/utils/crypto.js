@@ -2,6 +2,7 @@
 
 import crypto from 'crypto'
 import streamToPromise from 'stream-to-promise'
+import Promise from 'bluebird'
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
 

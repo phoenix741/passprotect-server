@@ -7,6 +7,7 @@ import createSession from './createSession.gql'
 import registerUser from './registerUser.gql'
 import {generateIV, generateKey, encrypt, decrypt, createKeyDerivation} from '../../utils/crypto'
 import {parseErrors} from '../../utils/errors'
+import Promise from 'bluebird'
 
 const config = __PASSPROTECT_CONFIG__.crypto
 

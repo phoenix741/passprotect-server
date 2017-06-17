@@ -2,10 +2,11 @@
 
 'use strict'
 
+import Promise from 'bluebird'
 import {SESSION} from '../user/UserService'
 import {createKeyDerivation, decrypt, encrypt, generateIV, generatePassword} from '../../utils/crypto'
 import {parseErrors} from '../../utils/errors'
-import {merge, find, remove, pick} from 'lodash'
+import {merge, find, remove, pick, clone} from 'lodash'
 import createUpdateLine from './createUpdateLine.gql'
 import removeLineQuery from './removeLine.gql'
 import getLines from './getLines.gql'
@@ -130,11 +131,11 @@ export function encryptLine (clearInformation) {
   const generateLineKeyPromise = generateSaltPromise.then(salt => createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2))
 
   return Promise
-  .props({salt: generateSaltPromise, lineKey: generateLineKeyPromise})
-  .then(props => {
-    return encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv)
-    .then(informationEncrypted => ({salt: props.salt, informations: informationEncrypted}))
-  })
+    .props({salt: generateSaltPromise, lineKey: generateLineKeyPromise})
+    .then(props => {
+      return encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv)
+      .then(informationEncrypted => ({salt: props.salt, informations: informationEncrypted}))
+    })
 }
 
 export function decryptLine (line) {
@@ -148,9 +149,9 @@ export function decryptLine (line) {
   const generateLineKeyPromise = createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2)
 
   return generateLineKeyPromise
-  .then(lineKey => decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv))
-  .then(informationString => JSON.parse(informationString))
-  .then(clearInformation => completeFields(line.type, clearInformation))
+    .then(lineKey => decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv))
+    .then(informationString => JSON.parse(informationString))
+    .then(clearInformation => completeFields(line.type, clearInformation))
 }
 
 export function generate () {
@@ -159,8 +160,8 @@ export function generate () {
 
 export function exportLinesAsCsv (context) {
   return exportLines(context)
-  .then(data => Promise.fromCallback(cb => json2csv({data}, cb)))
-  .then(data => downloadAsFile({data, filename: 'password.csv'}))
+    .then(data => Promise.fromCallback(cb => json2csv({data}, cb)))
+    .then(data => downloadAsFile({data, filename: 'password.csv'}))
 }
 
 export function exportLines (context) {
@@ -178,19 +179,21 @@ export function exportLines (context) {
   })
 
   return query
-  .each(line => {
-    return decryptLine(line)
-    .then(decryptedContent => (line.decryptedContent = decryptedContent))
-  })
-  .map(line => {
-    const result = merge(
-      pick(line, ['label']),
-      pick(line.decryptedContent, ['username', 'password', 'siteUrl', 'notes']),
-      pick(line.decryptedContent, ['type', 'nameOnCard', 'cardNumber', 'cvv', 'expiry', 'code', 'notes']),
-      pick(line.decryptedContent, ['text', 'notes'])
-    )
-    return result
-  })
+    .map(line => {
+      const copy = clone(line)
+      return decryptLine(copy)
+        .then(decryptedContent => (copy.decryptedContent = decryptedContent))
+        .return(copy)
+    })
+    .map(line => {
+      const result = merge(
+        pick(line, ['label']),
+        pick(line.decryptedContent, ['username', 'password', 'siteUrl', 'notes']),
+        pick(line.decryptedContent, ['type', 'nameOnCard', 'cardNumber', 'cvv', 'expiry', 'code', 'notes']),
+        pick(line.decryptedContent, ['text', 'notes'])
+      )
+      return result
+    })
 }
 
 function completeFields (type, clearInformation) {
