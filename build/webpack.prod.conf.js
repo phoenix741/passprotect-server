@@ -37,7 +37,7 @@ var webpackConfig = graphqlPromise
           new webpack.DefinePlugin(merge({
             'process.env': env,
             '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema)
-          }, piwikConfig)),
+          }, piwikConfig.environments)),
           new webpack.optimize.UglifyJsPlugin({
             compress: {
               warnings: false
@@ -58,7 +58,7 @@ var webpackConfig = graphqlPromise
           // generate dist index.html with correct asset hash for caching.
           // you can customize output by editing /index.html
           // see https://github.com/ampedandwired/html-webpack-plugin
-          new HtmlWebpackPlugin({
+          new HtmlWebpackPlugin(merge({
             filename: process.env.NODE_ENV === 'testing'
               ? 'index.html'
               : config.build.index,
@@ -73,7 +73,7 @@ var webpackConfig = graphqlPromise
             },
             // necessary to consistently work with multiple chunks via CommonsChunkPlugin
             chunksSortMode: 'dependency'
-          }),
+          }, piwikConfig.htmlPluginOptions)),
           // split vendor js into its own file
           new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',

@@ -24,16 +24,16 @@ module.exports = graphqlPromise.then(graphqlSchema => {
       new webpack.DefinePlugin(merge({
         'process.env': config.dev.env,
         '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema)
-      }, piwikConfig)),
+      }, piwikConfig.environments)),
       // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       // https://github.com/ampedandwired/html-webpack-plugin
-      new HtmlWebpackPlugin({
+      new HtmlWebpackPlugin(merge({
         filename: 'index.html',
         template: 'client/index.pug',
         inject: true
-      }),
+      }, piwikConfig.htmlPluginOptions)),
       new FriendlyErrorsPlugin()
     ]
   })

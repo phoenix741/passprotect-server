@@ -23,7 +23,7 @@ html
 
 			noscript
 				p
-					img(src='#{htmlWebpackPlugin.options.piwik.siteUrl}piwik.php?idsite=#{htmlWebpackPlugin.options.piwik.siteId}' style='border:0;' alt='')
+					img(src=`${htmlWebpackPlugin.options.piwik.siteUrl}piwik.php?idsite=${htmlWebpackPlugin.options.piwik.siteId}` style='border:0;' alt='')
 			// End Piwik Code
 	body
 		#app Loading ...
