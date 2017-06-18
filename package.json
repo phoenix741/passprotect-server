@@ -22,7 +22,7 @@
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
     "server": "DEBUG=App:* babel-node server/app",
-    "build_server": "babel ./server --source-maps-inline -d ./dist/server && babel app.js --source-maps-inline -d ./dist/",
+    "build_server": "babel ./server --source-maps-inline -d ./dist/server",
     "doc": "apidoc -i server -o doc"
   },
   "main": "",

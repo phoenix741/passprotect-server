@@ -20,22 +20,20 @@ RUN npm install
 FROM dependencies AS compile
 
 COPY . .
-RUN npm run compile
+RUN npm run build_server
 
 #
 # -------- Dist -----------
 FROM base AS dist
 
-COPY client ./client
 COPY common ./common
 COPY config ./config
 COPY package.json ./
 COPY --from=dependencies /src/prod_node_modules /src/node_modules
-COPY --from=compile /src/dist/app.js /src/app.js
 COPY --from=compile /src/dist/server /src/server
 
 ENV MODE=prod
 ENV NODE_ENV=production
 
 EXPOSE 3000
-CMD ["node", "app.js"]
+CMD ["node", "server/app.js"]
