@@ -1,6 +1,6 @@
 {
   "name": "passprotect-server",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Server used to keep password of the user in a secure store",
   "author": "Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>",
   "licence": "MIT",
