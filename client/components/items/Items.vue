@@ -1,13 +1,13 @@
 <template lang="pug">
-div
+div.cardList
   h4 {{ trans('items:list.title') }}
 
   v-card
-    v-list(two-line)
-      template(v-for="(lines, title, index) in linesByGroup")
-        v-subheader(v-text="title")
-        v-list-item(v-for="(line, index) in lines",:key="line._id",v-on:click="showDetail(line, $event)")
-          v-list-tile(avatar)
+    v-container
+      v-list(two-line)
+        template(v-for="(lines, title, index) in linesByGroup")
+          v-subheader(v-text="title")
+          v-list-tile(v-for="(line, index) in lines",:key="line._id",v-on:click="showDetail(line, $event)",avatar)
             v-list-tile-avatar
               v-icon.white--text(:class="cardType(line).color") {{ cardType(line).icon }}
             v-list-tile-content
@@ -18,26 +18,25 @@ div
                 v-btn(icon,ripple,slot="activator")
                   v-icon.grey--text.text--lighten-1 delete
                 v-card
-                  v-card-row
-                    v-card-title {{ trans('items:alert.confirm_remove.title') }}
-                  v-card-row
-                    v-card-text {{ trans('items:alert.confirm_remove.message', {title: line.label}) }}
-                  v-card-row(actions)
+                  v-card-title
+                    .headline {{ trans('items:alert.confirm_remove.title') }}
+                  v-card-text {{ trans('items:alert.confirm_remove.message', {title: line.label}) }}
+                  v-card-actions
+                    v-spacer
                     v-btn.delete-btn.green--text.darken-1(flat="flat",v-on:click.native="dialog['remove' + index] = false") {{ trans('items:alert.confirm_remove.disagree') }}
                     v-btn.delete-btn.green--text.darken-1(flat="flat",v-on:click.native="remove(line, index)") {{ trans('items:alert.confirm_remove.agree') }}
-        v-divider(inset,v-if="index != groupCount - 1")
+          v-divider(inset,v-if="index != groupCount - 1")
 
-  v-btn.red(floating="floating",style="position:fixed;bottom: 45px; right: 24px;",v-on:click.native="toggleShowOptions()")
-    v-icon.white--text add
-
-  transition(name="fade")
-    div(v-if="showOptions")
-      v-btn.red(floating="floating",small,style="position:fixed;bottom: 233px; right: 32px;",v-on:click.native="createCreditCard()")
-        v-icon.white--text.white--text credit_card
-      v-btn.blue(floating="floating",small,style="position:fixed;bottom: 177px; right: 32px;",v-on:click.native="createFingerPrint()")
-        v-icon.white--text fingerprint
-      v-btn.green(floating="floating",small,style="position:fixed;bottom: 121px; right: 32px;",v-on:click.native="createTextFields()")
-        v-icon.white--text text_fields
+    v-speed-dial(:bottom="true",:right="true",:hover="true",:fixed="true")
+      v-btn.red.darken-2(slot="activator",dark,fab,hover)
+        v-icon add
+        v-icon close
+      v-btn.red(fab,dark,small,v-on:click.native="createCreditCard()")
+        v-icon credit_card
+      v-btn.blue(fab,dark,small,v-on:click.native="createFingerPrint()")
+        v-icon fingerprint
+      v-btn.green(fab,dark,small,v-on:click.native="createTextFields()")
+        v-icon text_fields
 </template>
 
 <script type="text/babel">
@@ -80,19 +79,13 @@ export default {
     }
   },
   methods: {
-    toggleShowOptions () {
-      this.showOptions = !this.showOptions
-    },
     createCreditCard () {
-      this.showOptions = false
       this.$router.push('/items/type/card')
     },
     createFingerPrint () {
-      this.showOptions = false
       this.$router.push('/items/type/password')
     },
     createTextFields () {
-      this.showOptions = false
       this.$router.push('/items/type/text')
     },
     remove (line, index) {
@@ -128,12 +121,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0
-}
-</style>

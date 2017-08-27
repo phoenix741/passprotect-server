@@ -36,7 +36,7 @@ export const resolvers = {
 				.then(data => connectSession(data))
 				.spread((user, jwtToken) =>  {
 					res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
-					return {token: 'JWT ' + jwtToken, user: filterUser(user)};
+					return {token: 'bearer ' + jwtToken, user: filterUser(user)};
 				})
 				.catch(parseErrors);
 		},
@@ -93,7 +93,7 @@ export const resolvers = {
  *             "authTag": "c2b485b1a20f025b3753e6b51e0a14e8"
  *         }
  *     },
- *     "token": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6ImRlbW8ifSwiaWF0IjoxNDc2MDQxNDg4fQ.5mtQZBLdCCv1HconHU1TrFxcbjZVMdKE3UIjNFkhm2I",
+ *     "token": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6ImRlbW8ifSwiaWF0IjoxNDc2MDQxNDg4fQ.5mtQZBLdCCv1HconHU1TrFxcbjZVMdKE3UIjNFkhm2I",
  *     "role": "user"
  *   }
  */
@@ -110,7 +110,7 @@ export const resolvers = {
  *   {
  *     "_id": "myusername",
  *     "role": "user",
- *     "token": "JWT token"
+ *     "token": "bearer token"
  *   }
  */
 
@@ -164,7 +164,7 @@ router.route('')
 		return sanitizeInput(req.body)
 			.then(data => connectSession(data))
 			.spread(function(user, jwtToken) {
-				user.token = 'JWT ' + jwtToken;
+				user.token = 'bearer ' + jwtToken;
 				res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
 				res.status(200).json(filterUser(user));
 			})

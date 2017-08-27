@@ -20,31 +20,31 @@ export function createKeyDerivation (password, salt, options) {
 export function generateIV (size) {
   return Promise
     .fromCallback(cb => crypto.randomBytes(size / 8, cb))
-    .then(iv => new Buffer(iv).toString('hex'))
+    .then(iv => Buffer.from(iv).toString('hex'))
 }
 
 export function generateKey (size) {
   return Promise
     .fromCallback(cb => crypto.randomBytes(size / 8, cb))
-    .then(iv => new Buffer(iv).toString('hex'))
+    .then(iv => Buffer.from(iv).toString('hex'))
 }
 
 export function generatePassword (size) {
   const len = size / 8
   return Promise
     .fromCallback(cb => crypto.randomBytes(len, cb))
-      .then(generatedChars => {
-        const password = new Array(len)
-        for (let i = 0; i < len; i++) {
-          password[i] = chars[generatedChars[i] % chars.length]
-        }
+    .then(generatedChars => {
+      const password = new Array(len)
+      for (let i = 0; i < len; i++) {
+        password[i] = chars[generatedChars[i] % chars.length]
+      }
 
-        return password.join('')
-      })
+      return password.join('')
+    })
 }
 
 export function encrypt (text, key, iv, options) {
-  const encryptor = crypto.createCipheriv(options.algorithm, new Buffer(key, 'hex'), new Buffer(iv, 'hex'))
+  const encryptor = crypto.createCipheriv(options.algorithm, Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'))
   encryptor.write(text)
   encryptor.end()
 
@@ -52,15 +52,15 @@ export function encrypt (text, key, iv, options) {
   return promise
     .then(content => {
       return {
-        content: new Buffer(content).toString('hex'),
+        content: Buffer.from(content).toString('hex'),
         authTag: encryptor.getAuthTag().toString('hex')
       }
     })
 }
 
 export function decrypt (text, key, iv, options) {
-  const decryptor = crypto.createDecipheriv(options.algorithm, new Buffer(key, 'hex'), new Buffer(iv, 'hex'))
-  decryptor.setAuthTag(new Buffer(text.authTag, 'hex'))
+  const decryptor = crypto.createDecipheriv(options.algorithm, Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'))
+  decryptor.setAuthTag(Buffer.from(text.authTag, 'hex'))
   decryptor.write(text.content, 'hex')
   decryptor.end()
 

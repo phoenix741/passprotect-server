@@ -28,6 +28,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /common\/locales/,
+        loader: 'i18next-resource-store-loader'
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',

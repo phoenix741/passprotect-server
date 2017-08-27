@@ -13,7 +13,7 @@ const log = debug('App:Passport');
 const jwt = Promise.promisifyAll(jsonwebtoken);
 
 const authHeaderOpts = {
-	jwtFromRequest: ExtractJwt.fromAuthHeader(),
+	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: config.get('config.jwt.secret')
 };
 
@@ -57,7 +57,7 @@ function cookieExtractor(req) {
 
 export function websocketVerifyClient(info, cb) {
 	const cookies = cookie.parse(info.req.headers.cookie) || {};
-	const authorization = (info.req.headers.authorization || 'JWT ').substr(4);
+	const authorization = (info.req.headers.authorization || 'bearer ').substr(4);
 	log('Websocket connection via ' + (cookies.jwt ? 'cookie ' : ' ') + (authorization ? 'authorization header' : ''));
 
 	const tokenJwt = cookies.jwt || authorization;

@@ -19,7 +19,7 @@
 						v-model="password"
 						v-bind:rules="passwordValidation")
 					.text-xs-center
-						v-btn(primary,light,v-on:click.native="submitForm()") {{ trans('user:login.dialog.button.connect') }}
+						v-btn(primary,dark,v-on:click.native="submitForm()") {{ trans('user:login.dialog.button.connect') }}
 					div.mt-5
 						| 	{{ trans('user:login.dialog.button.noaccount') }}
 						router-link(to="/register") {{ trans('user:login.dialog.button.signup') }}

@@ -1,9 +1,8 @@
 <template lang="pug">
 v-card
-	v-card-row.darken-1(v-bind:class="cardType.color")
-		v-card-title
-			span.white--text {{ trans(cardType.label) }}
-			v-spacer
+	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
+		v-toolbar-title {{ trans(cardType.label) }}
+
 	v-card-text
 		v-layout(row,wrap)
 			v-flex(xs12)
@@ -109,10 +108,10 @@ v-card
 
 			v-flex(xs12)
 				.text-xs-center
-					v-btn(primary,light,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
+					v-btn(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
 					template(v-if="line.type == 'password'")
 						v-spacer
-						v-btn(primary,light,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
+						v-btn(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
 </template>
 
 <script type="text/babel">
@@ -152,9 +151,9 @@ export default {
       }
 
       encryptLine(this.clearInformation)
-      .then(encryptedInformation => (line.encryption = encryptedInformation))
-      .then(() => updateLine(this, line))
-      .then(() => this.$router.push('/items'))
+        .then(encryptedInformation => (line.encryption = encryptedInformation))
+        .then(() => updateLine(this, line))
+        .then(() => this.$router.push('/items'))
     },
     generatePassword () {
       generate().then(password => (this.clearInformation.password = password))

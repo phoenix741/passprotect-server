@@ -9,7 +9,7 @@ import App from './App'
 import router from './router'
 
 import {init as i18nInit} from 'i18next'
-import resBundle from 'i18next-resource-store-loader!../common/locales'
+import resBundle from '../common/locales'
 import Promise from 'bluebird'
 import Vuetify from 'vuetify'
 import veeDictionary from 'vee-validate/dist/locale/fr'

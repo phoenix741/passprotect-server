@@ -1,4 +1,4 @@
-/* global __PASSPROTECT_CONFIG__ */
+/* global __PASSPROTECT_CONFIG__, localStorage */
 
 'use strict'
 
@@ -50,21 +50,21 @@ export function login (context, creds, redirect) {
 export function signup (context, creds, redirect) {
   // Idem login avec mutation signup + récup token
   return generateMasterKey(creds.username, creds.password)
-  .then(function (encryption) {
-    return context.$apollo.mutate({
-      mutation: registerUser,
-      variables: {
-        input: {
-          _id: creds.username,
-          password: creds.password,
-          encryption
+    .then(function (encryption) {
+      return context.$apollo.mutate({
+        mutation: registerUser,
+        variables: {
+          input: {
+            _id: creds.username,
+            password: creds.password,
+            encryption
+          }
         }
-      }
+      })
     })
-  })
-  .tap(result => parseErrors(result.data.registerUser))
-  .then(() => login(context, creds, redirect))
-  .catch(err => (context.error = err))
+    .tap(result => parseErrors(result.data.registerUser))
+    .then(() => login(context, creds, redirect))
+    .catch(err => (context.error = err))
 }
 
 export function logout (context) {

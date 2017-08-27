@@ -59,69 +59,69 @@ export const cardTypeMapping = {
 
 export function updateLine (context, line) {
   return context.$apollo
-  .mutate({
-    mutation: createUpdateLine,
-    variables: {
-      input: line
-    },
-    update (store, { data: { createUpdateLine } }) {
-      const data = store.readQuery({ query: getLines })
-      if (!find(data.lines, line => line._id === createUpdateLine._id)) {
-        data.lines.push(createUpdateLine)
-        store.writeQuery({ query: getLines, data })
-      }
+    .mutate({
+      mutation: createUpdateLine,
+      variables: {
+        input: line
+      },
+      update (store, { data: { createUpdateLine } }) {
+        const data = store.readQuery({ query: getLines })
+        if (!find(data.lines, line => line._id === createUpdateLine._id)) {
+          data.lines.push(createUpdateLine)
+          store.writeQuery({ query: getLines, data })
+        }
 
-      const dataGroup = store.readQuery({ query: getGroups })
-      if (!find(dataGroup.groups, group => group === createUpdateLine.group)) {
-        dataGroup.groups.push(createUpdateLine.group)
-        store.writeQuery({ query: getGroups, dataGroup })
-      }
-    },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      createUpdateLine: merge(
-        {
-          __typename: 'WalletLine',
-          updatedAt: (new Date()).getTime(),
-          encryption: {
-            __typename: 'EncryptedWalletLine',
-            informations: {
-              __typename: 'EncryptedContent'
+        const dataGroup = store.readQuery({ query: getGroups })
+        if (!find(dataGroup.groups, group => group === createUpdateLine.group)) {
+          dataGroup.groups.push(createUpdateLine.group)
+          store.writeQuery({ query: getGroups, dataGroup })
+        }
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createUpdateLine: merge(
+          {
+            __typename: 'WalletLine',
+            updatedAt: (new Date()).getTime(),
+            encryption: {
+              __typename: 'EncryptedWalletLine',
+              informations: {
+                __typename: 'EncryptedContent'
+              }
             }
-          }
-        },
-        line
-      )
-    }
-  })
-  .tap(result => parseErrors(result.data.createUpdateLine))
-  .catch(err => (context.error = err))
+          },
+          line
+        )
+      }
+    })
+    .tap(result => parseErrors(result.data.createUpdateLine))
+    .catch(err => (context.error = err))
 }
 
 export function removeLine (context, lineId) {
   return context.$apollo
-  .mutate({
-    mutation: removeLineQuery,
-    variables: {
-      id: lineId
-    },
-    update (store, { data: { removeLine } }) {
-      const data = store.readQuery({ query: getLines })
-      if (!removeLine.errors || !removeLine.errors.length) {
-        remove(data.lines, line => line._id === lineId)
-        store.writeQuery({ query: getLines, data })
+    .mutate({
+      mutation: removeLineQuery,
+      variables: {
+        id: lineId
+      },
+      update (store, { data: { removeLine } }) {
+        const data = store.readQuery({ query: getLines })
+        if (!removeLine.errors || !removeLine.errors.length) {
+          remove(data.lines, line => line._id === lineId)
+          store.writeQuery({ query: getLines, data })
+        }
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        removeLine: {
+          __typename: 'Errors',
+          errors: []
+        }
       }
-    },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      removeLine: {
-        __typename: 'Errors',
-        errors: []
-      }
-    }
-  })
-  .tap(result => parseErrors(result.data.removeLineQuery))
-  .catch(err => (context.error = err))
+    })
+    .tap(result => parseErrors(result.data.removeLineQuery))
+    .catch(err => (context.error = err))
 }
 
 export function encryptLine (clearInformation) {
@@ -133,8 +133,8 @@ export function encryptLine (clearInformation) {
   return Promise
     .props({salt: generateSaltPromise, lineKey: generateLineKeyPromise})
     .then(props => {
-      return encrypt(new Buffer(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv)
-      .then(informationEncrypted => ({salt: props.salt, informations: informationEncrypted}))
+      return encrypt(Buffer.from(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv)
+        .then(informationEncrypted => ({salt: props.salt, informations: informationEncrypted}))
     })
 }
 
