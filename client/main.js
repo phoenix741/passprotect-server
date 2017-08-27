@@ -16,6 +16,8 @@ import VeeValidate, { Validator } from 'vee-validate'
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
+import 'any-promise/register/bluebird'
+
 window.Promise = Promise
 
 Validator.addLocale(veeDictionary)
