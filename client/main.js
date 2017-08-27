@@ -1,5 +1,7 @@
 'use strict'
 
+import 'any-promise/register/bluebird'
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -15,8 +17,6 @@ import VeeValidate, { Validator } from 'vee-validate'
 
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
-
-import 'any-promise/register/bluebird'
 
 Validator.addLocale(veeDictionary)
 
