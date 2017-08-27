@@ -11,6 +11,7 @@ COPY package.json /src
 # -------- Dependencies --------
 FROM base as dependencies
 
+RUN apk add --no-cache make gcc g++ python
 RUN npm install --production
 RUN mv node_modules prod_node_modules
 RUN npm install
