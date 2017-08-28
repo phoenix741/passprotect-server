@@ -3,6 +3,9 @@ div.cardList
   h4 {{ trans('items:list.title') }}
 
   v-card
+    v-toolbar.indigo.darken-4
+      v-text-field(solo,v-on:input="search",prepend-icon="search")
+
     v-container
       v-list(two-line)
         template(v-for="(lines, title, index) in linesByGroup")
@@ -46,7 +49,7 @@ import {SESSION} from '../user/UserService'
 import {cardTypeMapping, removeLine} from './ItemService'
 import {bus} from './ItemsBus'
 import getLines from './getLines.gql'
-import {filter, groupBy, size} from 'lodash'
+import {filter, groupBy, size, debounce} from 'lodash'
 import AnalyticsMixin from '../../utils/piwik'
 
 export default {
@@ -100,7 +103,8 @@ export default {
     cardType (line) {
       line = line || {}
       return cardTypeMapping[line.type || 'text']
-    }
+    },
+    search: debounce(value => bus.$emit('search-items', value), 500)
   },
   beforeRouteEnter (to, from, next) {
     if (!SESSION.authenticated) {

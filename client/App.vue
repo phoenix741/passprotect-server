@@ -44,9 +44,6 @@
 			v-toolbar-title {{ trans('app.title') }}
 
 		main
-			v-toolbar.indigo.darken-4(v-if="SESSION.authenticated")
-				v-text-field(solo,:label="trans('items:list.search')",v-on:input="search",prepend-icon="search")
-
 			v-container
 				router-view
 
@@ -57,8 +54,6 @@
 <script type="text/babel">
 import {SESSION, logout} from './components/user/UserService'
 import {exportLinesAsCsv} from './components/items/ItemService'
-import {bus} from './components/items/ItemsBus'
-import {debounce} from 'lodash'
 
 export default {
   name: 'app',
@@ -75,8 +70,7 @@ export default {
     },
     handleExport () {
       exportLinesAsCsv(this)
-    },
-    search: debounce(value => bus.$emit('search-items', value), 500)
+    }
   }
 }
 </script>
