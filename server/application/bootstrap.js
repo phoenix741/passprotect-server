@@ -11,12 +11,12 @@ const log = debug('app:bootstrap');
 export default function bootstrap(environment) {
 	// Init i18n
 	const i18nOption = {
-		ns: ['translation', 'error', 'contact', 'user'],
+		ns: ['translation', 'error', 'items', 'user'],
 		lng: 'fr',
 		fallbackLng: 'fr',
 		backend: {
-			loadPath: path.join(__dirname, '..', 'common', 'locales', '{{lng}}', '{{ns}}.json'),
-			addPath: path.join(__dirname, '..', 'common', 'locales', '{{lng}}', '{{ns}}.missing.json')
+			loadPath: path.join(__dirname, '..', '..', 'common', 'locales', '{{lng}}', '{{ns}}.json'),
+			addPath: path.join(__dirname, '..', '..', 'common', 'locales', '{{lng}}', '{{ns}}.missing.json')
 		},
 
 		saveMissing: environment === 'development'
