@@ -18,6 +18,8 @@ import VeeValidate, { Validator } from 'vee-validate'
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
+global.Promise = Promise
+
 Validator.addLocale(veeDictionary)
 
 Vue.config.productionTip = false
