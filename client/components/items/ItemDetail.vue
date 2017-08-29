@@ -11,14 +11,14 @@ v-card
 					:data-vv-as="trans('items:item.form.label.field')",
 					v-validate="'required'",
 					name="label",
-					v-model="line.label",
+					v-model="lineToModify.label",
 					v-bind:rules="labelValidation")
 
 			v-flex(xs12)
 				v-select(
 					:label="trans('items:item.form.group.field')",
           v-bind:items="selectGroups",
-	        v-model="line.group",
+	        v-model="lineToModify.group",
 					item-text="name"
 					item-value="value")
 					template(slot="item",scope="data")
@@ -26,12 +26,12 @@ v-card
 						div.groupSelect(v-if="!data.item.value")
 							span {{ data.item.name }}
 
-			v-flex(xs12,v-if="line.group === ''")
+			v-flex(xs12,v-if="lineToModify.group === ''")
 				v-text-field(
 	        :label="trans('items:item.form.group.new')"
 					v-model="newGroup")
 
-			template(v-if="line.type == 'text'")
+			template(v-if="lineToModify.type == 'text'")
 				v-flex(xs12)
 					v-text-field(
 						:label="trans('items:item.form.text.field')",
@@ -39,7 +39,7 @@ v-card
 						multi-line,
 						auto-grow)
 
-			template(v-if="line.type == 'card'")
+			template(v-if="lineToModify.type == 'card'")
 				v-flex(xs12)
 					v-select(
 						:label="trans('items:item.form.type.field')",
@@ -80,7 +80,7 @@ v-card
 						:type="codeVisibility ? 'text' : 'password'"
 						v-model="clearInformation.code")
 
-			template(v-if="line.type == 'password'")
+			template(v-if="lineToModify.type == 'password'")
 				v-flex(xs12)
 					v-text-field(
 						:label="trans('items:item.form.username.field')",
@@ -109,13 +109,13 @@ v-card
 			v-flex(xs12)
 				.text-xs-center
 					v-btn(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
-					template(v-if="line.type == 'password'")
+					template(v-if="lineToModify.type == 'password'")
 						v-spacer
 						v-btn(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
 </template>
 
 <script type="text/babel">
-import {pick, map} from 'lodash'
+import {pick, map, cloneDeep} from 'lodash'
 import {cardTypeMapping, updateLine, decryptLine, encryptLine, generate} from './ItemService'
 import getGroups from './getGroups.gql'
 
@@ -124,6 +124,7 @@ export default {
   name: 'item-detail',
   data () {
     return {
+      lineToModify: cloneDeep(this.line),
       cardNumberVisibility: false,
       cvvVisibility: false,
       codeVisibility: false,
@@ -144,7 +145,7 @@ export default {
         return
       }
 
-      const line = pick(this.line, ['_id', 'type', 'label', 'group', '_rev'])
+      const line = pick(this.lineToModify, ['_id', 'type', 'label', 'group', '_rev'])
 
       if (this.newGroup) {
         line.group = this.newGroup
@@ -173,11 +174,11 @@ export default {
       return result
     },
     cardType () {
-      return cardTypeMapping[this.line.type || 'text']
+      return cardTypeMapping[this.lineToModify.type || 'text']
     }
   },
   watch: {
-    line: {
+    lineToModify: {
       immediate: true,
       handler: function (val) {
         if (!val.type) {
