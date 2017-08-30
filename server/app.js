@@ -19,4 +19,4 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, '..', 'common', 'templates'));
 app.set('view engine', 'jade');
 
-middlewares(app);
+export default middlewares(app);

@@ -46,4 +46,6 @@ export default function middlewares(app) {
 
 	const core = new Core(app);
 	core.run();
+
+  return core;
 }

@@ -1,12 +1,12 @@
 <template lang="pug">
-v-card
+v-card.detail-card
 	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
 		v-toolbar-title {{ trans(cardType.label) }}
 
 	v-card-text
 		v-layout(row,wrap)
 			v-flex(xs12)
-				v-text-field(
+				v-text-field#label-input(
 					:label="trans('items:item.form.label.field')"
 					:data-vv-as="trans('items:item.form.label.field')",
 					v-validate="'required'",
@@ -15,7 +15,7 @@ v-card
 					v-bind:rules="labelValidation")
 
 			v-flex(xs12)
-				v-select(
+				v-select#group-select(
 					:label="trans('items:item.form.group.field')",
           v-bind:items="selectGroups",
 	        v-model="lineToModify.group",
@@ -27,13 +27,13 @@ v-card
 							span {{ data.item.name }}
 
 			v-flex(xs12,v-if="lineToModify.group === ''")
-				v-text-field(
+				v-text-field#group-input(
 	        :label="trans('items:item.form.group.new')"
 					v-model="newGroup")
 
 			template(v-if="lineToModify.type == 'text'")
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#text-input(
 						:label="trans('items:item.form.text.field')",
 						v-model="clearInformation.text",
 						multi-line,
@@ -100,7 +100,7 @@ v-card
 						v-model="clearInformation.siteUrl")
 
 			v-flex(xs12)
-				v-text-field(
+				v-text-field#notes-input(
 					:label="trans('items:item.form.notes.field')",
 					v-model="clearInformation.notes",
 					multi-line,
@@ -108,7 +108,7 @@ v-card
 
 			v-flex(xs12)
 				.text-xs-center
-					v-btn(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
+					v-btn#detail-button(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
 					template(v-if="lineToModify.type == 'password'")
 						v-spacer
 						v-btn(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}

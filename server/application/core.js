@@ -80,4 +80,8 @@ export class Core {
 	run() {
 		this.server.listen(this.app.get('port'), () => log('Express server listening on port ' + this.app.get('port')));
 	}
+
+  stop() {
+		this.server.close();
+  }
 }

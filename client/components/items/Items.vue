@@ -4,18 +4,18 @@ div.cardList
 
   v-card
     v-toolbar.indigo.darken-4
-      v-text-field(solo,v-on:input="search",prepend-icon="search")
+      v-text-field.search-input(solo,v-on:input="search",prepend-icon="search")
 
     v-container
       v-list(two-line)
         template(v-for="(lines, title, index) in linesByGroup")
-          v-subheader(v-text="title")
+          v-subheader.group-title(v-text="title")
           v-list-tile(v-for="(line, index) in lines",:key="line._id",v-on:click="showDetail(line, $event)",avatar)
             v-list-tile-avatar
               v-icon.white--text(:class="cardType(line).color") {{ cardType(line).icon }}
             v-list-tile-content
-              v-list-tile-title {{ line.label }}
-              v-list-tile-sub-title {{ trans(cardType(line).label) }}
+              v-list-tile-title.line-title {{ line.label }}
+              v-list-tile-sub-title.line-type {{ trans(cardType(line).label) }}
             v-list-tile-action
               v-dialog(v-model="dialog['remove' + index]")
                 v-btn(icon,ripple,slot="activator")
@@ -31,14 +31,14 @@ div.cardList
           v-divider(inset,v-if="index != groupCount - 1")
 
     v-speed-dial(:bottom="true",:right="true",:hover="true",:fixed="true")
-      v-btn.red.darken-2(slot="activator",dark,fab,hover)
+      v-btn#items-add-button.red.darken-2(slot="activator",dark,fab,hover)
         v-icon add
         v-icon close
-      v-btn.red(fab,dark,small,v-on:click.native="createCreditCard()")
+      v-btn#items-add-card-button.red(fab,dark,small,v-on:click.native="createCreditCard()")
         v-icon credit_card
-      v-btn.blue(fab,dark,small,v-on:click.native="createFingerPrint()")
+      v-btn#items-add-password-button.blue(fab,dark,small,v-on:click.native="createFingerPrint()")
         v-icon fingerprint
-      v-btn.green(fab,dark,small,v-on:click.native="createTextFields()")
+      v-btn#items-add-text-button.green(fab,dark,small,v-on:click.native="createTextFields()")
         v-icon text_fields
 </template>
 

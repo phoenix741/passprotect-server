@@ -21,7 +21,8 @@ export default {
       title: trans('items:item.title_creation'),
       line: {
         label: '',
-        type: this.type
+        type: this.type,
+        group: ''
       }
     }
   },
