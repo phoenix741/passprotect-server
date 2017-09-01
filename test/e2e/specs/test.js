@@ -3,7 +3,7 @@
 
 const { random } = require('lodash')
 
-const WAIT_TIMEOUT = 60000
+const WAIT_TIMEOUT = 5000
 
 const username = 'demo_' + random(1000000, 9999999)
 const password = 'demodemo'
