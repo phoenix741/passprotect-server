@@ -17,8 +17,8 @@ v-card.detail-card
 			v-flex(xs12)
 				v-select#group-select(
 					:label="trans('items:item.form.group.field')",
-          v-bind:items="selectGroups",
-	        v-model="lineToModify.group",
+					v-bind:items="selectGroups",
+					v-model="lineToModify.group",
 					item-text="name"
 					item-value="value")
 					template(slot="item",scope="data")
@@ -28,7 +28,7 @@ v-card.detail-card
 
 			v-flex(xs12,v-if="lineToModify.group === ''")
 				v-text-field#group-input(
-	        :label="trans('items:item.form.group.new')"
+					:label="trans('items:item.form.group.new')"
 					v-model="newGroup")
 
 			template(v-if="lineToModify.type == 'text'")
