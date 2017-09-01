@@ -24,7 +24,7 @@ v-card.detail-card
 					template(slot="item",scope="data")
 						template(v-if="data.item.value") {{ data.item.name }}
 						div.groupSelect(v-if="!data.item.value")
-							span {{ data.item.name }}
+							span#empty-item {{ data.item.name }}
 
 			v-flex(xs12,v-if="lineToModify.group === ''")
 				v-text-field#group-input(
@@ -41,18 +41,18 @@ v-card.detail-card
 
 			template(v-if="lineToModify.type == 'card'")
 				v-flex(xs12)
-					v-select(
+					v-select#type-of-card-select(
 						:label="trans('items:item.form.type.field')",
 						v-bind:items="typeOfCard",
 						v-model="clearInformation.type")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#name-on-card-input(
 						:label="trans('items:item.form.nameOnCard.field')",
 						v-model="clearInformation.nameOnCard")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#card-number-input(
 						:label="trans('items:item.form.cardNumber.field')",
 						:append-icon="cardNumberVisibility ? 'visibility' : 'visibility_off'"
 						:append-icon-cb="() => (cardNumberVisibility = !cardNumberVisibility)"
@@ -60,7 +60,7 @@ v-card.detail-card
 						v-model="clearInformation.cardNumber")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#cvv-input(
 						:label="trans('items:item.form.cvv.field')",
 						:append-icon="cvvVisibility ? 'visibility' : 'visibility_off'"
 						:append-icon-cb="() => (cvvVisibility = !cvvVisibility)"
@@ -68,12 +68,12 @@ v-card.detail-card
 						v-model="clearInformation.cvv")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#expiry-input(
 						:label="trans('items:item.form.expiry.field')",
 						v-model="clearInformation.expiry")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#code-input(
 						:label="trans('items:item.form.code.field')",
 						:append-icon="codeVisibility ? 'visibility' : 'visibility_off'"
 						:append-icon-cb="() => (codeVisibility = !codeVisibility)"
@@ -82,12 +82,12 @@ v-card.detail-card
 
 			template(v-if="lineToModify.type == 'password'")
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#username-input(
 						:label="trans('items:item.form.username.field')",
 						v-model="clearInformation.username")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#password-input(
 						:label="trans('items:item.form.password.field')",
 						:append-icon="passwordVisibility ? 'visibility' : 'visibility_off'"
 						:append-icon-cb="() => (passwordVisibility = !passwordVisibility)"
@@ -95,7 +95,7 @@ v-card.detail-card
 						v-model="clearInformation.password")
 
 				v-flex(xs12)
-					v-text-field(
+					v-text-field#siteurl-input(
 						:label="trans('items:item.form.siteUrl.field')",
 						v-model="clearInformation.siteUrl")
 

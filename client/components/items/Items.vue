@@ -7,7 +7,7 @@ div.cardList
       v-text-field.search-input(solo,v-on:input="search",prepend-icon="search")
 
     v-container
-      v-list(two-line)
+      v-list#items-list(two-line)
         template(v-for="(lines, title, index) in linesByGroup")
           v-subheader.group-title(v-text="title")
           v-list-tile(v-for="(line, index) in lines",:key="line._id",v-on:click="showDetail(line, $event)",avatar)
