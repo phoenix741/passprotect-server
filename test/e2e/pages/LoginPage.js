@@ -13,6 +13,7 @@ module.exports = {
   commands: [{
     check () {
       this
+        .waitForElementVisible('#app', WAIT_TIMEOUT)
         .assert.elementPresent('@loginButton')
         .assert.elementPresent('@registerLink')
         .assert.elementPresent('@username')
@@ -29,13 +30,19 @@ module.exports = {
       return this.api
     },
 
-    login (username, password) {
+    login (username, password, submit = false) {
       this
+        .waitForElementVisible('#app', WAIT_TIMEOUT)
         .assert.elementCount('input', 2)
         .waitForElementVisible('@username', WAIT_TIMEOUT)
         .setValue('@username', username)
         .waitForElementVisible('@password', WAIT_TIMEOUT)
         .setValue('@password', password)
+
+      if (submit) {
+        this.submit()
+      }
+
       return this.api
     },
 

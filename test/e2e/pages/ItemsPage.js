@@ -4,7 +4,7 @@ const WAIT_TIMEOUT = 5000
 
 module.exports = {
   elements: {
-    search: '.search-input',
+    search: '.search-input input',
 
     addButton: '#items-add-button',
     addTextButton: '#items-add-text-button',
@@ -60,13 +60,33 @@ module.exports = {
       return this.api
     },
 
-    assertItem (indice, group, title, type) {
+    search (search) {
+      this
+        .waitForElementVisible('@search', WAIT_TIMEOUT)
+        .setValue('@search', search)
+      return this.api
+    },
+
+    assertItem (indice, title, type) {
+      this
+        .assert.containsText(`#items-list > li:nth-child(${indice}) .line-title`, title)
+        .assert.containsText(`#items-list > li:nth-child(${indice}) .line-type`, type)
+      return this.api
+    },
+
+    assertItemWithGroup (indice, group, title, type) {
       this
         .waitForElementVisible('@search', WAIT_TIMEOUT)
 
         .assert.containsText(`#items-list > li:nth-child(${indice})`, group)
-        .assert.containsText(`#items-list > li:nth-child(${indice + 1}) .line-title`, title)
-        .assert.containsText(`#items-list > li:nth-child(${indice + 1}) .line-type`, type)
+        .assertItem(indice + 1, title, type)
+      return this.api
+    },
+
+    selectItem (indice) {
+      this
+        .waitForElementVisible('@search', WAIT_TIMEOUT)
+        .click(`#items-list > li:nth-child(${indice}) .line-title`)
       return this.api
     }
   }]

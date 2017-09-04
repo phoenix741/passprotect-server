@@ -20,6 +20,9 @@ const ELEMENT_PASSWORD_PASSWORD = 'MyPassword'
 const ELEMENT_PASSWORD_SITEURL = 'http://siteUrl.fr'
 const ELEMENT_PASSWORD_NOTES = 'Some notes for password'
 
+const ELEMENT_PASSWORD_2_LABEL = 'Password2'
+const ELEMENT_PASSWORD_2_USERNAME = 'Username2'
+
 const ELEMENT_CARD_LABEL = 'Element of card'
 const ELEMENT_CARD_GROUP = 'Group of card'
 const ELEMENT_CARD_NAMEONCARD = 'My name is J'
@@ -38,7 +41,6 @@ module.exports = {
 
     browser
       .url(devServer)
-      .waitForElementVisible('#app', WAIT_TIMEOUT)
       .page.LoginPage().check()
   },
 
@@ -56,7 +58,6 @@ module.exports = {
 
     browser
       .url(devServer)
-      .waitForElementVisible('#app', WAIT_TIMEOUT)
       .page.LoginPage().login(username, password)
       .page.LoginPage().submit()
       .page.ItemsPage().checkPageShown()
@@ -70,7 +71,7 @@ module.exports = {
       .page.ItemPage().setGroup(ELEMENT_TEXT_GROUP)
       .page.ItemPage().submit()
 
-      .page.ItemsPage().assertItem(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
+      .page.ItemsPage().assertItemWithGroup(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
   },
 
   'Add a password page': function (browser) {
@@ -81,8 +82,8 @@ module.exports = {
       .page.ItemPage().setGroup(ELEMENT_PASSWORD_GROUP)
       .page.ItemPage().submit()
 
-      .page.ItemsPage().assertItem(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
-      .page.ItemsPage().assertItem(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
+      .page.ItemsPage().assertItemWithGroup(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
+      .page.ItemsPage().assertItemWithGroup(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
   },
 
   'Add a cvv page': function (browser) {
@@ -93,9 +94,77 @@ module.exports = {
       .page.ItemPage().setGroup(ELEMENT_CARD_GROUP)
       .page.ItemPage().submit()
 
-      .page.ItemsPage().assertItem(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
-      .page.ItemsPage().assertItem(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
-      .page.ItemsPage().assertItem(7, ELEMENT_CARD_GROUP, ELEMENT_CARD_LABEL, 'Carte de paiement')
+      .page.ItemsPage().assertItemWithGroup(1, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
+      .page.ItemsPage().assertItemWithGroup(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
+      .page.ItemsPage().assertItemWithGroup(7, ELEMENT_CARD_GROUP, ELEMENT_CARD_LABEL, 'Carte de paiement')
+
+      .end()
+  },
+
+  'Test visualisation of text': function (browser) {
+    const devServer = browser.globals.devServerURL
+
+    browser
+      .url(devServer)
+      .page.LoginPage().login(username, password, true)
+      .page.ItemsPage().checkPageShown()
+
+      .page.ItemsPage().selectItem(8)
+      .page.ItemVisualisationPage().checkText(ELEMENT_TEXT_LABEL, ELEMENT_TEXT_CONTENT, ELEMENT_TEXT_NOTES)
+
+      .end()
+  },
+
+  'Test visualisation of password': function (browser) {
+    const devServer = browser.globals.devServerURL
+
+    browser
+      .url(devServer)
+      .page.LoginPage().login(username, password, true)
+      .page.ItemsPage().checkPageShown()
+
+      .page.ItemsPage().selectItem(5)
+      .page.ItemVisualisationPage().checkPassword(ELEMENT_PASSWORD_LABEL, ELEMENT_PASSWORD_USERNAME, ELEMENT_PASSWORD_PASSWORD, ELEMENT_PASSWORD_SITEURL, ELEMENT_PASSWORD_NOTES)
+
+      .end()
+  },
+
+  'Test visualisation of card': function (browser) {
+    const devServer = browser.globals.devServerURL
+
+    browser
+      .url(devServer)
+      .page.LoginPage().login(username, password, true)
+      .page.ItemsPage().checkPageShown()
+
+      .page.ItemsPage().selectItem(2)
+      .page.ItemVisualisationPage().checkCard(ELEMENT_CARD_LABEL, ELEMENT_CARD_NAMEONCARD, ELEMENT_CARD_CARDNUMBER, ELEMENT_CARD_CVV, ELEMENT_CARD_EXPIRY, ELEMENT_CARD_CODE, ELEMENT_CARD_NOTE)
+
+      .end()
+  },
+
+  'Add a second password and make a search': function (browser) {
+    const devServer = browser.globals.devServerURL
+
+    browser
+      .url(devServer)
+      .page.LoginPage().login(username, password, true)
+      .page.ItemsPage().checkPageShown()
+
+      .page.ItemsPage().addPassword()
+
+      .page.ItemPage().fillInPassword(ELEMENT_PASSWORD_2_LABEL, ELEMENT_PASSWORD_2_USERNAME, '', '', '')
+      .page.ItemPage().setGroup(ELEMENT_PASSWORD_GROUP)
+      .page.ItemPage().submit()
+
+      .page.ItemsPage().assertItemWithGroup(1, ELEMENT_CARD_GROUP, ELEMENT_CARD_LABEL, 'Carte de paiement')
+      .page.ItemsPage().assertItemWithGroup(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
+      .page.ItemsPage().assertItem(6, ELEMENT_PASSWORD_2_LABEL, 'Mot de passe')
+      .page.ItemsPage().assertItemWithGroup(8, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
+
+      .page.ItemsPage().search(ELEMENT_PASSWORD_2_LABEL)
+      .pause(600)
+      .page.ItemsPage().assertItemWithGroup(1, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_2_LABEL, 'Mot de passe')
 
       .end()
   }
