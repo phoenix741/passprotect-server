@@ -21,7 +21,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.mjs,.vue client server test/unit/specs test/e2e/specs",
-    "doc": "apidoc -i server -o doc"
+    "doc": "apidoc -f .*\\.mjs -i server -o doc"
   },
   "main": "",
   "engines": {
