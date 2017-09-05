@@ -1,11 +1,9 @@
-'use strict';
+import {isString, omit} from 'lodash'
+import {promise as dbPromise} from '../utils/db'
+import i18n from 'i18next'
+import { ObjectID } from 'mongodb'
 
-import {isString, omit}  from 'lodash';
-import {promise as dbPromise} from '../utils/db';
-import i18n from 'i18next';
-import { ObjectID } from 'mongodb';
-
-import { processMongoException, NotFoundError } from './exception';
+import { processMongoException, NotFoundError } from './exception'
 
 /*
  * Model of a wallet line contains :
@@ -13,58 +11,58 @@ import { processMongoException, NotFoundError } from './exception';
  *        user: {type: String},
  *        label: {type: String},
  *        type: {type: String},
- *				group: {type: String},
+ *        group: {type: String},
  *        encryption: {type: encrypted Object}
  *        updatedAt: {type: Date}
  *        _rev: {type: Number}
  *
  * And all other informations that a user want to store in the wallet line (depending on the wallet).
  */
-export function getLines(filter, sort) {
-	const find = {};
+export function getLines (filter, sort) {
+  const find = {}
 
-	if (isString(filter.user)) {
-		find.user = filter.user;
-	}
+  if (isString(filter.user)) {
+    find.user = filter.user
+  }
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('walletlines').find(find).sort(sort).toArray(cb));
-	});
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('walletlines').find(find).sort(sort).toArray(cb))
+  })
 }
 
-export function getLine(id, _rev) {
-	const query = { _id: new ObjectID(id) };
-	if (_rev !== undefined) {
-		query._rev = _rev;
-	}
+export function getLine (id, _rev) {
+  const query = { _id: new ObjectID(id) }
+  if (_rev !== undefined) {
+    query._rev = _rev
+  }
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('walletlines').findOne(query, cb));
-	}).then(line => processNotFound(id, line));
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('walletlines').findOne(query, cb))
+  }).then(line => processNotFound(id, line))
 }
 
-export function saveLine(line) {
-	const cleanLine = omit(line, '_rev');
-	const revision = line._rev;
-	const query = { _id: new ObjectID(line._id) };
-	if (revision) {
-		query._rev = revision;
-	}
+export function saveLine (line) {
+  const cleanLine = omit(line, '_rev')
+  const revision = line._rev
+  const query = { _id: new ObjectID(line._id) }
+  if (revision) {
+    query._rev = revision
+  }
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true }, cb)).then(doc => doc.value);
-	}).catch(processMongoException);
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true }, cb)).then(doc => doc.value)
+  }).catch(processMongoException)
 }
 
-export function removeLine(id) {
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }, cb));
-	}).then(line => processNotFound(id, line));
+export function removeLine (id) {
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }, cb))
+  }).then(line => processNotFound(id, line))
 }
 
-function processNotFound(lineId, line) {
-	if (!line) {
-		throw new NotFoundError(i18n.t('error:line.404.lineNotFound', { lineId }));
-	}
-	return line;
+function processNotFound (lineId, line) {
+  if (!line) {
+    throw new NotFoundError(i18n.t('error:line.404.lineNotFound', { lineId }))
+  }
+  return line
 }

@@ -1,18 +1,16 @@
-'use strict';
+import debug from 'debug'
+import {getGroups as getGroupsModel} from '../models/group'
 
-import debug from 'debug';
-import {getGroups as getGroupsModel} from '../models/group';
+const log = debug('App:Service:Group')
 
-const log = debug('App:Service:Group');
+export function getGroups (user) {
+  log('Get all groups from user ', user._id)
 
-export function getGroups(user) {
-	log('Get all groups from user ', user._id);
+  const filter = {}
+  filter.user = user._id
 
-	const filter = {};
-	filter.user = user._id;
+  const sort = {}
+  sort.group = 1
 
-	const sort = {};
-	sort.group = 1;
-
-	return getGroupsModel(filter, sort);
+  return getGroupsModel(filter, sort)
 }

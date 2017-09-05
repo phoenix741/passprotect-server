@@ -1,20 +1,20 @@
-import './application/utils/promise';
+import './application/utils/promise'
 
-import express from 'express';
-import path from 'path';
+import express from 'express'
+import path from 'path'
 
-import bootstrap from './application/bootstrap';
-import middlewares from './application/middlewares';
+import bootstrap from './application/bootstrap'
+import middlewares from './application/middlewares'
 
-const app = express();
+const app = express()
 
-bootstrap(app.get('env'));
+bootstrap(app.get('env'))
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3000)
 
 // view engine setup
-app.set('views', path.join(__dirname, '..', 'common', 'templates'));
-app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, '..', 'common', 'templates'))
+app.set('view engine', 'jade')
 
-export default middlewares(app);
+export default middlewares(app)

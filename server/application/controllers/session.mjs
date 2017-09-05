@@ -1,61 +1,59 @@
-'use strict';
+import config from 'config'
+import {pick, omit, isString, isEmpty} from 'lodash'
+import expressPromiseRouter from 'express-promise-router'
+import i18n from 'i18next'
+import {authenticate, permission} from '../utils/passport'
+import {getUser, createSessionUser, verifyPassword} from '../services/user'
+import jsonwebtoken from 'jsonwebtoken'
+import fs from 'fs'
+import path from 'path'
+import debug from 'debug'
 
-import config from 'config';
-import {pick,omit,isString,isEmpty} from 'lodash';
-import expressPromiseRouter from 'express-promise-router';
-import i18n from 'i18next';
-import {authenticate,permission} from '../utils/passport';
-import {getUser,createSessionUser,verifyPassword} from '../services/user';
-import jsonwebtoken from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
-import debug from 'debug';
+const log = debug('App:Controllers:Session')
 
-const log = debug('App:Controllers:Session');
+const router = expressPromiseRouter()
+const jwt = Promise.promisifyAll(jsonwebtoken)
 
-const router = expressPromiseRouter();
-const jwt = Promise.promisifyAll(jsonwebtoken);
+export default router
 
-export default router;
-
-log('Load session type definition');
+log('Load session type definition')
 export const typeDefs = [
-	fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
-];
+  fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
+]
 
 export const resolvers = {
-	RootQuery: {
-		session(obj, args, {user}) {
-			return filterUser(user);
-		}
-	},
+  RootQuery: {
+    session (obj, args, {user}) {
+      return filterUser(user)
+    }
+  },
 
-	RootMutation: {
-		createSession(obj, {input}, {res}) {
-			return sanitizeInput(input)
-				.then(data => connectSession(data))
-				.spread((user, jwtToken) =>  {
-					res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
-					return {token: 'bearer ' + jwtToken, user: filterUser(user)};
-				})
-				.catch(parseErrors);
-		},
+  RootMutation: {
+    createSession (obj, {input}, {res}) {
+      return sanitizeInput(input)
+        .then(data => connectSession(data))
+        .spread((user, jwtToken) => {
+          res.cookie('jwt', jwtToken, {httpOnly: true})
+          return {token: 'bearer ' + jwtToken, user: filterUser(user)}
+        })
+        .catch(parseErrors)
+    },
 
-		clearSession(obj, args, {res}) {
-			res.clearCookie('jwt');
-		}
-	},
+    clearSession (obj, args, {res}) {
+      res.clearCookie('jwt')
+    }
+  },
 
-	CreateSessionResult: {
-		__resolveType(obj) {
-			if (obj.errors) {
-				return 'Errors';
-			}
+  CreateSessionResult: {
+    __resolveType (obj) {
+      if (obj.errors) {
+        return 'Errors'
+      }
 
-			return 'ConnectionInformation';
-		}
-	}
-};
+      return 'ConnectionInformation'
+    }
+  }
+}
 
 /**
  * @apiDefine ParamsLogin
@@ -115,121 +113,121 @@ export const resolvers = {
  */
 
 router.route('')
-/**
- * @api {get} /api/session Request a session
+  /**
+   * @api {get} /api/session Request a session
 
- * @apiDescription Request the current session of the user.
- *
- * @apiName GetSession
- * @apiGroup Session
- * @apiPermission ROLE_USER
- *
- * @apiUse ResponseGet
- *
- * @apiError Unauthorized Only a connected admin can see informations
- *
- * @apiErrorExample {json} Unauthorized:
- *     HTTP/1.1 401 Unauthorized
- *     {
- *       "code": 401,
- *       "message": "Unauthorized"
- *     }
- */
-	.get(authenticate(), permission(), (req, res) => {
-		res.status(200).json(filterUser(req.user));
-	})
+   * @apiDescription Request the current session of the user.
+   *
+   * @apiName GetSession
+   * @apiGroup Session
+   * @apiPermission ROLE_USER
+   *
+   * @apiUse ResponseGet
+   *
+   * @apiError Unauthorized Only a connected admin can see informations
+   *
+   * @apiErrorExample {json} Unauthorized:
+   *     HTTP/1.1 401 Unauthorized
+   *     {
+   *       "code": 401,
+   *       "message": "Unauthorized"
+   *     }
+   */
+  .get(authenticate(), permission(), (req, res) => {
+    res.status(200).json(filterUser(req.user))
+  })
 
-/**
- * @api {post} /api/session Create a session
+  /**
+   * @api {post} /api/session Create a session
 
- * @apiDescription Register the user session
- *
- * @apiName PostSession
- * @apiGroup Session
- * @apiPermission ROLE_USER
- *
- * @apiUse ParamsLogin
- * @apiUse ResponseGet
- *
- * @apiError Unauthorized The user can't be found
- *
- * @apiErrorExample {json} Unauthorized:
- *     HTTP/1.1 401 Unauthorized
- *     {
- *           "code": 401,
- *       "message": "Unauthorized"
- *     }
- */
-	.post((req, res) => {
-		return sanitizeInput(req.body)
-			.then(data => connectSession(data))
-			.spread(function(user, jwtToken) {
-				user.token = 'bearer ' + jwtToken;
-				res.cookie('jwt', jwtToken, {httpOnly: true/*, secure: true*/});
-				res.status(200).json(filterUser(user));
-			})
-			.catch(err => {
-				if (err.status === 404) {
-					return res.status(401).send();
-				}
-				throw err;
-			});
-	})
+   * @apiDescription Register the user session
+   *
+   * @apiName PostSession
+   * @apiGroup Session
+   * @apiPermission ROLE_USER
+   *
+   * @apiUse ParamsLogin
+   * @apiUse ResponseGet
+   *
+   * @apiError Unauthorized The user can't be found
+   *
+   * @apiErrorExample {json} Unauthorized:
+   *     HTTP/1.1 401 Unauthorized
+   *     {
+   *           "code": 401,
+   *       "message": "Unauthorized"
+   *     }
+   */
+  .post((req, res) => {
+    return sanitizeInput(req.body)
+      .then(data => connectSession(data))
+      .spread(function (user, jwtToken) {
+        user.token = 'bearer ' + jwtToken
+        res.cookie('jwt', jwtToken, {httpOnly: true})
+        res.status(200).json(filterUser(user))
+      })
+      .catch(err => {
+        if (err.status === 404) {
+          return res.status(401).send()
+        }
+        throw err
+      })
+  })
 
-/**
- * @api {delete} /api/session Delete a session
+  /**
+   * @api {delete} /api/session Delete a session
 
- * @apiDescription Delete the user session
- *
- * @apiName DeleteSession
- * @apiGroup Session
- * @apiPermission ROLE_USER
- *
- */
-	.delete((req, res) => {
-		req.logout();
-		res.clearCookie('jwt');
-		res.status(204).send();
-	});
+   * @apiDescription Delete the user session
+   *
+   * @apiName DeleteSession
+   * @apiGroup Session
+   * @apiPermission ROLE_USER
+   *
+   */
+  .delete((req, res) => {
+    req.logout()
+    res.clearCookie('jwt')
+    res.status(204).send()
+  })
 
-function sanitizeInput(input) {
-	const data = pick(input, 'username', 'password');
+function sanitizeInput (input) {
+  const data = pick(input, 'username', 'password')
 
-	const validationError = new Error();
-	validationError.status = 401;
-	if (!isString(data.username) || isEmpty(data.username)) {
-		validationError.message = i18n.t('error:user.401.username');
-		return Promise.reject(validationError);
-	}
+  const validationError = new Error()
+  validationError.status = 401
+  if (!isString(data.username) || isEmpty(data.username)) {
+    validationError.message = i18n.t('error:user.401.username')
+    return Promise.reject(validationError)
+  }
 
-	if (!isString(data.password) || isEmpty(data.password)) {
-		validationError.message = i18n.t('error:user.401.password');
-		return Promise.reject(validationError);
-	}
+  if (!isString(data.password) || isEmpty(data.password)) {
+    validationError.message = i18n.t('error:user.401.password')
+    return Promise.reject(validationError)
+  }
 
-	return Promise.resolve(data);
+  return Promise.resolve(data)
 }
 
-function connectSession({username, password}) {
-	const user = getUser(username);
+function connectSession ({username, password}) {
+  const user = getUser(username)
 
-	const jwtToken = user
-		.then(user => verifyPassword(user, password))
-		.then(createSessionUser)
-		.then(user => jwt.signAsync({user}, config.get('config.jwt.secret'), {}));
+  const jwtToken = user
+    .then(user => verifyPassword(user, password))
+    .then(createSessionUser)
+    .then(user => jwt.signAsync({user}, config.get('config.jwt.secret'), {}))
 
-	return [user, jwtToken];
+  return [user, jwtToken]
 }
 
-function filterUser(user) {
-	return user ? omit(user, 'password', 'confirmationToken') : null;
+function filterUser (user) {
+  return user ? omit(user, 'password', 'confirmationToken') : null
 }
 
-function parseErrors(err) {
-	return {
-		errors: [{
-			fieldName: err.field || 'global',
-			message: err.message
-		}]
-	};
+function parseErrors (err) {
+  return {
+    errors: [{
+      fieldName: err.field || 'global',
+      message: err.message
+    }]
+  }
 }

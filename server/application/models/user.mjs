@@ -1,10 +1,8 @@
-'use strict';
+import {isString} from 'lodash'
+import {promise as dbPromise} from '../utils/db'
+import i18n from 'i18next'
 
-import {isString} from 'lodash';
-import {promise as dbPromise} from '../utils/db';
-import i18n from 'i18next';
-
-import { processMongoException, NotFoundError } from './exception';
+import { processMongoException, NotFoundError } from './exception'
 
 /*
  * Model of a user contains :
@@ -18,51 +16,51 @@ import { processMongoException, NotFoundError } from './exception';
  *
  * The encryptionKey is crypted with the password of the user and a salt.
  */
-export function getUsers(filter = {}) {
-	const find = {};
+export function getUsers (filter = {}) {
+  const find = {}
 
-	if (isString(filter.confirmationToken)) {
-		find.confirmationToken = filter.confirmationToken;
-	}
+  if (isString(filter.confirmationToken)) {
+    find.confirmationToken = filter.confirmationToken
+  }
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('users').find(find).toArray(cb));
-	});
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('users').find(find).toArray(cb))
+  })
 }
 
-export function getUser(id) {
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('users').findOne({ _id: id.toLowerCase() }, cb));
-	}).then(user => processNotFound(id, user));
+export function getUser (id) {
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('users').findOne({ _id: id.toLowerCase() }, cb))
+  }).then(user => processNotFound(id, user))
 }
 
-export function registerUser(user) {
-	normalizeUser(user);
+export function registerUser (user) {
+  normalizeUser(user)
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('users').insert(user, cb)).return(user);
-	}).catch(processMongoException);
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('users').insert(user, cb)).return(user)
+  }).catch(processMongoException)
 }
 
-export function saveUser(user) {
-	normalizeUser(user);
+export function saveUser (user) {
+  normalizeUser(user)
 
-	return dbPromise.then(db => {
-		return Promise.fromCallback(cb => db.collection('users').save(user, cb)).return(user);
-	}).catch(processMongoException);
+  return dbPromise.then(db => {
+    return Promise.fromCallback(cb => db.collection('users').save(user, cb)).return(user)
+  }).catch(processMongoException)
 }
 
-function normalizeUser(user) {
-	// The _id of the user should always in lowercase to identify quickly the user
-	user._id = user._id.toLowerCase();
-	if (!user.role) {
-		user.role = 'user';
-	}
+function normalizeUser (user) {
+  // The _id of the user should always in lowercase to identify quickly the user
+  user._id = user._id.toLowerCase()
+  if (!user.role) {
+    user.role = 'user'
+  }
 }
 
-function processNotFound(userId, user) {
-	if (!user) {
-		throw new NotFoundError(i18n.t('error:user.404.userNotFound', { userId: userId }));
-	}
-	return user;
+function processNotFound (userId, user) {
+  if (!user) {
+    throw new NotFoundError(i18n.t('error:user.404.userNotFound', { userId: userId }))
+  }
+  return user
 }
