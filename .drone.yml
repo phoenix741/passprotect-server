@@ -1,4 +1,10 @@
 pipeline:
+    test:
+        image: node:8-alpine
+        commands:
+            - npm install
+            - npm run e2e -- --config test/e2e/nightwatch.docker.conf.js
+
     nodejs:
         image: plugins/docker
         repo: phoenix741/passprotect-server
@@ -10,3 +16,10 @@ pipeline:
         repo: phoenix741/passprotect-client
         tags: develop
         dockerfile: Dockerfile.nginx
+
+services:
+    selenium:
+        image: selenium/standalone-chrome
+
+    mongodb:
+        image: mongo:3.5
