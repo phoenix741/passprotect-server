@@ -1,5 +1,3 @@
-'use strict';
-
 import './application/utils/promise';
 
 import express from 'express';

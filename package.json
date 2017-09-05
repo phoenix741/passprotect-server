@@ -15,14 +15,12 @@
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
-    "start": "DEBUG=App:* babel-node server/app",
+    "start": "DEBUG=App:* node -r @std/esm server/app",
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue client server test/unit/specs test/e2e/specs",
-    "server": "DEBUG=App:* babel-node server/app",
-    "build_server": "babel ./server --source-maps-inline -d ./dist/server",
     "doc": "apidoc -i server -o doc"
   },
   "main": "",
@@ -31,6 +29,7 @@
     "npm": ">= 3.0.0"
   },
   "dependencies": {
+    "@std/esm": "^0.7.1",
     "bcrypt-nodejs": "~0.0.3",
     "bluebird": "~3.5.0",
     "body-parser": "~1.17.2",
@@ -171,5 +170,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "@std/esm": {
+    "cjs": true
+  }
 }
