@@ -22,32 +22,21 @@ export default {
       document.title = this.title
 
       if (__PIWIK_ENABLED__) {
-        let timeMs = null
-        if (this.startGenerationTimeMs) {
-          timeMs = (new Date()).getTime() - this.startGenerationTimeMs
-        }
-
+        const timeMs = (new Date()).getTime() - this.startGenerationTimeMs
         trackPageView(this.$route.path, document.title, SESSION.username, timeMs)
       }
     }
   }
 }
 
-function trackPageView (url, title, user, generationTimeMs, keywords, count) {
-  if (__PIWIK_ENABLED__) {
-    window._paq = window._paq || []
+function trackPageView (url, title, user, generationTimeMs) {
+  window._paq = window._paq || []
 
-    _paq.push(['setCustomUrl', url])
-    title && _paq.push(['setDocumentTitle', title])
-    generationTimeMs && _paq.push(['setGenerationTimeMs', generationTimeMs])
-    user && _paq.push(['setUserId', user])
+  _paq.push(['setCustomUrl', url])
+  title && _paq.push(['setDocumentTitle', title])
+  _paq.push(['setGenerationTimeMs', generationTimeMs])
+  user && _paq.push(['setUserId', user])
 
-    _paq.push(['enableLinkTracking'])
-
-    if (keywords) {
-      _paq.push(['trackSiteSearch', keywords, null, count])
-    } else {
-      _paq.push(['trackPageView'])
-    }
-  }
+  _paq.push(['enableLinkTracking'])
+  _paq.push(['trackPageView'])
 }

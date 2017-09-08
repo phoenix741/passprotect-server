@@ -23,7 +23,6 @@ var webpackConfig = merge(baseConfig, {
     new webpack.DefinePlugin({
       'process.env': require('../config/test.env'),
       __GRAPHQL_SCHEMA__: JSON.stringify({}),
-      __PIWIK_ENABLED__: false,
       __PASSPROTECT_CONFIG__: JSON.stringify(config.get('config.client'))
     })
   ]

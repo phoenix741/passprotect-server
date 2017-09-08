@@ -1,4 +1,4 @@
-import { mount } from 'avoriaz'
+import { shallow } from 'vue-test-utils'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import LoginInjector from '!!vue-loader?inject!@/components/user/Login' // eslint-disable-line
@@ -8,18 +8,14 @@ describe('Login.vue', () => {
   it('should render correct contents', () => {
     const loginHandler = sinon.spy()
 
-    const Login = LoginInjector({
+    const LoginWithMocks = LoginInjector({
       './UserService': {
         login: loginHandler
       }
     })
-    console.log(Login)
     const $route = { path: 'http://www.example-path.com' }
-    const LoginComponent = mount(Login, {
-      globals: {
-        $route
-      }
-    })
+
+    const LoginComponent = shallow(LoginWithMocks, { intercept: { $route } })
 
     const data = {
       username: 'myusername',
