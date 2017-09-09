@@ -42,7 +42,7 @@ describe('piwik.js', () => {
 
     it('Test a vue without piwik activated', () => {
       SESSION.username && delete SESSION.username
-  
+
       shallow(MyVue, { intercept: { $route } })
 
       expect(document.title).to.equal('title')
