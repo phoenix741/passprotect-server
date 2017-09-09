@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import LoginInjector from '!!vue-loader?inject!@/components/user/Login' // eslint-disable-line
 
-// vue-test-utils ???
 describe('Login.vue', () => {
   it('should render correct contents', () => {
     const loginHandler = sinon.spy()
@@ -13,6 +12,8 @@ describe('Login.vue', () => {
         login: loginHandler
       }
     })
+
+    console.log(LoginWithMocks)
     const $route = { path: 'http://www.example-path.com' }
 
     const LoginComponent = shallow(LoginWithMocks, { intercept: { $route } })
