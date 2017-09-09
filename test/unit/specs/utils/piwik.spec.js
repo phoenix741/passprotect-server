@@ -41,6 +41,8 @@ describe('piwik.js', () => {
     })
 
     it('Test a vue without piwik activated', () => {
+      SESSION.username && delete SESSION.username
+  
       shallow(MyVue, { intercept: { $route } })
 
       expect(document.title).to.equal('title')
@@ -56,7 +58,6 @@ describe('piwik.js', () => {
     it('Test with a username', () => {
       SESSION.username = 'myusername'
       shallow(MyVue, { intercept: { $route } })
-
       expect(document.title).to.equal('title')
       expect(window._paq).to.deep.equal([
         ['setCustomUrl', 'http://www.example-path.com'],

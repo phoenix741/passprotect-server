@@ -34,8 +34,8 @@ export function login (context, creds, redirect) {
       SESSION.clearKey = clearKey
       SESSION.authenticated = true
 
-      localStorage.setItem('username', SESSION.username)
       localStorage.setItem('jwtToken', SESSION.jwtToken)
+      localStorage.setItem('username', SESSION.username)
       localStorage.setItem('clearKey', SESSION.clearKey)
 
       if (redirect) {
