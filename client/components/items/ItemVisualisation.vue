@@ -161,8 +161,8 @@ export default {
     }
   },
   watch: {
-    line (val) {
-      decryptLine(val).then(newValue => (this.clearInformation = newValue))
+    async line (val) {
+      this.clearInformation = await decryptLine(val)
     }
   },
   apollo: {

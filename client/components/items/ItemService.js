@@ -2,7 +2,7 @@
 
 'use strict'
 
-import Promise from 'bluebird'
+import promisify from 'es6-promisify'
 import {SESSION} from '../user/UserService'
 import {createKeyDerivation, decrypt, encrypt, generateIV, generatePassword} from '../../utils/crypto'
 import {parseErrors} from '../../utils/errors'
@@ -16,6 +16,8 @@ import downloadAsFile from 'download-as-file'
 import json2csv from 'json2csv'
 
 const config = __PASSPROTECT_CONFIG__.crypto
+
+const json2csvAsync = promisify(json2csv)
 
 export const cardTypeMapping = {
   card: {
@@ -57,13 +59,11 @@ export const cardTypeMapping = {
   }
 }
 
-export function updateLine (context, line) {
-  return context.$apollo
-    .mutate({
+export async function updateLine (context, line) {
+  try {
+    const result = await context.$apollo.mutate({
       mutation: createUpdateLine,
-      variables: {
-        input: line
-      },
+      variables: { input: line },
       update (store, { data: { createUpdateLine } }) {
         const data = store.readQuery({ query: getLines })
         if (!find(data.lines, line => line._id === createUpdateLine._id)) {
@@ -79,32 +79,30 @@ export function updateLine (context, line) {
       },
       optimisticResponse: {
         __typename: 'Mutation',
-        createUpdateLine: merge(
-          {
-            __typename: 'WalletLine',
-            updatedAt: (new Date()).getTime(),
-            encryption: {
-              __typename: 'EncryptedWalletLine',
-              informations: {
-                __typename: 'EncryptedContent'
-              }
+        createUpdateLine: merge({
+          __typename: 'WalletLine',
+          updatedAt: (new Date()).getTime(),
+          encryption: {
+            __typename: 'EncryptedWalletLine',
+            informations: {
+              __typename: 'EncryptedContent'
             }
-          },
-          line
-        )
+          }
+        }, line)
       }
     })
-    .tap(result => parseErrors(result.data.createUpdateLine))
-    .catch(err => (context.error = err))
+
+    parseErrors(result.data.createUpdateLine)
+  } catch (err) {
+    context.error = err
+  }
 }
 
-export function removeLine (context, lineId) {
-  return context.$apollo
-    .mutate({
+export async function removeLine (context, lineId) {
+  try {
+    const result = await context.$apollo.mutate({
       mutation: removeLineQuery,
-      variables: {
-        id: lineId
-      },
+      variables: { id: lineId },
       update (store, { data: { removeLine } }) {
         const data = store.readQuery({ query: getLines })
         if (!removeLine.errors || !removeLine.errors.length) {
@@ -120,52 +118,51 @@ export function removeLine (context, lineId) {
         }
       }
     })
-    .tap(result => parseErrors(result.data.removeLineQuery))
-    .catch(err => (context.error = err))
+
+    parseErrors(result.data.removeLineQuery)
+  } catch (err) {
+    context.error = err
+  }
 }
 
-export function encryptLine (clearInformation) {
+export async function encryptLine (clearInformation) {
   const informationsString = JSON.stringify(clearInformation)
 
-  const generateSaltPromise = generateIV(config.ivSize)
-  const generateLineKeyPromise = generateSaltPromise.then(salt => createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2))
+  const salt = await generateIV(config.ivSize)
+  const lineKey = await createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2)
 
-  return Promise
-    .props({salt: generateSaltPromise, lineKey: generateLineKeyPromise})
-    .then(props => {
-      return encrypt(Buffer.from(informationsString, 'utf-8'), props.lineKey.key, props.lineKey.iv, config.cypherIv)
-        .then(informationEncrypted => ({salt: props.salt, informations: informationEncrypted}))
-    })
+  const informations = await encrypt(Buffer.from(informationsString, 'utf-8'), lineKey.key, lineKey.iv, config.cypherIv)
+
+  return {salt, informations}
 }
 
-export function decryptLine (line) {
+export async function decryptLine (line) {
   if (!line.encryption || !line.encryption.informations) {
-    return Promise.resolve(completeFields(line.type, {}))
+    return completeFields(line.type, {})
   }
 
   const salt = line.encryption.salt
   const informationsEncrypted = line.encryption.informations
 
-  const generateLineKeyPromise = createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2)
+  const lineKey = await createKeyDerivation(SESSION.clearKey, salt, config.pbkdf2)
+  const informationString = await decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv)
 
-  return generateLineKeyPromise
-    .then(lineKey => decrypt(informationsEncrypted, lineKey.key, lineKey.iv, config.cypherIv))
-    .then(informationString => JSON.parse(informationString))
-    .then(clearInformation => completeFields(line.type, clearInformation))
+  return completeFields(line.type, JSON.parse(informationString))
 }
 
-export function generate () {
+export async function generate () {
   return generatePassword(128)
 }
 
-export function exportLinesAsCsv (context) {
-  return exportLines(context)
-    .then(data => Promise.fromCallback(cb => json2csv({data}, cb)))
-    .then(data => downloadAsFile({data, filename: 'password.csv'}))
+export async function exportLinesAsCsv (context) {
+  const data = await exportLines(context)
+  const csv = await json2csvAsync({data})
+
+  return downloadAsFile({data: csv, filename: 'password.csv'})
 }
 
-export function exportLines (context) {
-  const query = new Promise(function (resolve, reject) {
+export async function exportLines (context) {
+  const query = await new Promise(function (resolve, reject) {
     context.$apollo.addSmartQuery('lines', {
       query: getLinesWithDetail,
       result ({data}) {
@@ -178,22 +175,17 @@ export function exportLines (context) {
     })
   })
 
-  return query
-    .map(line => {
-      const copy = clone(line)
-      return decryptLine(copy)
-        .then(decryptedContent => (copy.decryptedContent = decryptedContent))
-        .return(copy)
-    })
-    .map(line => {
-      const result = merge(
-        pick(line, ['label']),
-        pick(line.decryptedContent, ['username', 'password', 'siteUrl', 'notes']),
-        pick(line.decryptedContent, ['type', 'nameOnCard', 'cardNumber', 'cvv', 'expiry', 'code', 'notes']),
-        pick(line.decryptedContent, ['text', 'notes'])
-      )
-      return result
-    })
+  return Promise.all(query.map(async line => {
+    const copy = clone(line)
+    copy.decryptedContent = await decryptLine(copy)
+
+    return merge(
+      pick(copy, ['label']),
+      pick(copy.decryptedContent, ['username', 'password', 'siteUrl', 'notes']),
+      pick(copy.decryptedContent, ['type', 'nameOnCard', 'cardNumber', 'cvv', 'expiry', 'code', 'notes']),
+      pick(copy.decryptedContent, ['text', 'notes'])
+    )
+  }))
 }
 
 function completeFields (type, clearInformation) {

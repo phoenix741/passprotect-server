@@ -140,7 +140,7 @@ export default {
     groups: getGroups
   },
   methods: {
-    submitForm () {
+    async submitForm () {
       if (this.veeErrors.any()) {
         return
       }
@@ -151,13 +151,13 @@ export default {
         line.group = this.newGroup
       }
 
-      encryptLine(this.clearInformation)
-        .then(encryptedInformation => (line.encryption = encryptedInformation))
-        .then(() => updateLine(this, line))
-        .then(() => this.$router.push('/items'))
+      line.encryption = await encryptLine(this.clearInformation)
+
+      await updateLine(this, line)
+      this.$router.push('/items')
     },
-    generatePassword () {
-      generate().then(password => (this.clearInformation.password = password))
+    async generatePassword () {
+      this.clearInformation.password = await generate()
     }
   },
   computed: {
@@ -180,11 +180,11 @@ export default {
   watch: {
     lineToModify: {
       immediate: true,
-      handler: function (val) {
+      handler: async function (val) {
         if (!val.type) {
           val = {type: 'text'}
         }
-        decryptLine(val).then(newValue => (this.clearInformation = newValue))
+        this.clearInformation = await decryptLine(val)
       }
     }
   }

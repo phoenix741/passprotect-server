@@ -26,9 +26,9 @@ describe('crypto.js', () => {
     ]
 
     createKeyDerivationTestCase.forEach(value => {
-      it(`Create a derivation key from a password ${value.password} and a salt ${value.salt}`, () => {
-        return createKeyDerivation(value.password, value.salt, config.pbkdf2)
-          .then(key => expect(key).to.deep.equal(value.expect))
+      it(`Create a derivation key from a password ${value.password} and a salt ${value.salt}`, async () => {
+        const key = await createKeyDerivation(value.password, value.salt, config.pbkdf2)
+        expect(key).to.deep.equal(value.expect)
       })
     })
   })
@@ -37,8 +37,9 @@ describe('crypto.js', () => {
     const generateIVTestCase = [256, 512, 1024, 2048]
 
     generateIVTestCase.forEach(value => {
-      it(`Generate the IV for size ${value}`, () => {
-        return generateIV(value).then(iv => expect(iv.length).to.equal(value / 4))
+      it(`Generate the IV for size ${value}`, async () => {
+        const iv = await generateIV(value)
+        expect(iv.length).to.equal(value / 4)
       })
     })
   })
@@ -47,8 +48,9 @@ describe('crypto.js', () => {
     const generateKeyTestCase = [256, 512, 1024, 2048]
 
     generateKeyTestCase.forEach(value => {
-      it(`Generate the Key for size ${value}`, () => {
-        return generateKey(value).then(key => expect(key.length).to.equal(value / 4))
+      it(`Generate the Key for size ${value}`, async () => {
+        const key = await generateKey(value)
+        expect(key.length).to.equal(value / 4)
       })
     })
   })
@@ -57,12 +59,10 @@ describe('crypto.js', () => {
     const generatePasswordTestCase = [128, 256, 512, 1024, 2048]
 
     generatePasswordTestCase.forEach(value => {
-      it(`Generate a password of a size ${value}`, () => {
-        return generatePassword(value)
-          .then(password => {
-            expect(password.length).to.equal(value / 8)
-            expect(password).to.match(/[a-zA-Z0-9!"#$%&\\'()*+,-./:;<=>?@\[\\\]\^_`{|}~]+/) // eslint-disable-line
-          })
+      it(`Generate a password of a size ${value}`, async () => {
+        const password = await generatePassword(value)
+        expect(password.length).to.equal(value / 8)
+        expect(password).to.match(/[a-zA-Z0-9!"#$%&\\'()*+,-./:;<=>?@\[\\\]\^_`{|}~]+/) // eslint-disable-line
       })
     })
   })
@@ -76,9 +76,9 @@ describe('crypto.js', () => {
     ]
 
     encryptTestCase.forEach(value => {
-      it(`Test encryption of ${value.text}`, () => {
-        return encrypt(value.text, value.key, value.iv, options)
-          .then(encryptedObject => expect(encryptedObject).to.deep.equal(value.expect))
+      it(`Test encryption of ${value.text}`, async () => {
+        const encryptedObject = await encrypt(value.text, value.key, value.iv, options)
+        expect(encryptedObject).to.deep.equal(value.expect)
       })
     })
   })
@@ -92,9 +92,9 @@ describe('crypto.js', () => {
     ]
 
     decryptTestCase.forEach(value => {
-      it(`Test decryption of ${value.text}`, () => {
-        return decrypt(value.encryptedData, value.key, value.iv, options)
-          .then(decryptedObject => expect(decryptedObject.toString()).to.equal(value.text))
+      it(`Test decryption of ${value.text}`, async () => {
+        const decryptedObject = await decrypt(value.encryptedData, value.key, value.iv, options)
+        expect(decryptedObject.toString()).to.equal(value.text)
       })
     })
   })

@@ -49,48 +49,45 @@ describe('UserService.js', () => {
       SESSION.authenticated = false
     })
 
-    it('Try to login to server with success without redirect', () => {
-      return login(context, creds)
-        .then(response => {
-          sinon.assert.calledWith(context.$router.push, '/items')
-          expect(SESSION.authenticated).to.equal(true)
-          expect(SESSION.jwtToken).to.equal('jwtToken')
-          expect(SESSION.username).to.equal('CREDENTIALS')
-          expect(SESSION.clearKey).to.equal('text to encrypt')
+    it('Try to login to server with success without redirect', async () => {
+      await login(context, creds)
 
-          expect(localStorage.getItem('jwtToken')).to.equal('jwtToken')
-          expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
-          expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
+      sinon.assert.calledWith(context.$router.push, '/items')
+      expect(SESSION.authenticated).to.equal(true)
+      expect(SESSION.jwtToken).to.equal('jwtToken')
+      expect(SESSION.username).to.equal('CREDENTIALS')
+      expect(SESSION.clearKey).to.equal('text to encrypt')
 
-          expect(context.error).to.be.an('undefined')
-        })
+      expect(localStorage.getItem('jwtToken')).to.equal('jwtToken')
+      expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
+      expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
+
+      expect(context.error).to.be.an('undefined')
     })
 
-    it('Try to login to server with success with redirect', () => {
-      return login(context, creds, 'mytest')
-        .then(response => {
-          sinon.assert.calledWith(context.$router.go, 'mytest')
-          expect(SESSION.authenticated).to.equal(true)
-          expect(SESSION.jwtToken).to.equal('jwtToken')
-          expect(SESSION.username).to.equal('CREDENTIALS')
-          expect(SESSION.clearKey).to.equal('text to encrypt')
+    it('Try to login to server with success with redirect', async () => {
+      await login(context, creds, 'mytest')
 
-          expect(localStorage.getItem('jwtToken')).to.equal('jwtToken')
-          expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
-          expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
+      sinon.assert.calledWith(context.$router.go, 'mytest')
+      expect(SESSION.authenticated).to.equal(true)
+      expect(SESSION.jwtToken).to.equal('jwtToken')
+      expect(SESSION.username).to.equal('CREDENTIALS')
+      expect(SESSION.clearKey).to.equal('text to encrypt')
 
-          expect(context.error).to.be.an('undefined')
-        })
+      expect(localStorage.getItem('jwtToken')).to.equal('jwtToken')
+      expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
+      expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
+
+      expect(context.error).to.be.an('undefined')
     })
 
-    it('Try to login to server with failure', () => {
+    it('Try to login to server with failure', async () => {
       context.$apollo.mutate = sinon.stub().returns(Promise.reject(new Error('loginerror')))
 
-      return login(context, creds)
-        .then(response => {
-          expect(context.error).to.be.an('Error')
-          expect(SESSION.authenticated).to.equal(false)
-        })
+      await login(context, creds)
+
+      expect(context.error).to.be.an('Error')
+      expect(SESSION.authenticated).to.equal(false)
     })
   })
 
@@ -120,26 +117,22 @@ describe('UserService.js', () => {
       SESSION.authenticated = false
     })
 
-    it('Sign with no error', () => {
-      return signup(context, creds)
-        .then(response => {
-          sinon.assert.calledWith(context.$router.push, '/items')
-          expect(SESSION.authenticated).to.equal(true)
-          expect(SESSION.jwtToken).to.equal('jwtToken')
-          expect(SESSION.username).to.equal('CREDENTIALS')
-          expect(SESSION.clearKey).to.equal('text to encrypt')
-          expect(context.error).to.be.an('undefined')
-        })
+    it('Sign with no error', async () => {
+      await signup(context, creds)
+      sinon.assert.calledWith(context.$router.push, '/items')
+      expect(SESSION.authenticated).to.equal(true)
+      expect(SESSION.jwtToken).to.equal('jwtToken')
+      expect(SESSION.username).to.equal('CREDENTIALS')
+      expect(SESSION.clearKey).to.equal('text to encrypt')
+      expect(context.error).to.be.an('undefined')
     })
 
-    it('Sign with error', () => {
+    it('Sign with error', async () => {
       context.$apollo.mutate = sinon.stub().returns(Promise.reject(new Error('signinerror')))
 
-      return signup(context, creds)
-        .then(response => {
-          expect(context.error).to.be.an('Error')
-          expect(SESSION.authenticated).to.equal(false)
-        })
+      await signup(context, creds)
+      expect(context.error).to.be.an('Error')
+      expect(SESSION.authenticated).to.equal(false)
     })
   })
 
