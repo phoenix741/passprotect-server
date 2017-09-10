@@ -119,7 +119,7 @@ export async function removeLine (context, lineId) {
       }
     })
 
-    parseErrors(result.data.removeLineQuery)
+    parseErrors(result.data.removeLine)
   } catch (err) {
     context.error = err
   }
