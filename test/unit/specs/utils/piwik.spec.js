@@ -3,6 +3,7 @@ import AnalyticsMixin from '@/utils/piwik'
 import { shallow } from 'vue-test-utils'
 import { expect } from 'chai'
 import { useFakeTimers } from 'sinon'
+import Router from 'vue-router'
 
 let MyVue = {
   mixins: [AnalyticsMixin],
@@ -25,7 +26,6 @@ describe('piwik.js', () => {
   })
 
   describe('Piwik enabled', () => {
-    const $route = { path: 'http://www.example-path.com' }
     let clock
 
     beforeEach(() => {
@@ -41,13 +41,12 @@ describe('piwik.js', () => {
     })
 
     it('Test a vue without piwik activated', () => {
+      const mockRouter = new Router({ routes: [] })
       SESSION.username && delete SESSION.username
-
-      shallow(MyVue, { intercept: { $route } })
-
+      shallow(MyVue, { router: mockRouter })
       expect(document.title).to.equal('title')
       expect(window._paq).to.deep.equal([
-        ['setCustomUrl', 'http://www.example-path.com'],
+        ['setCustomUrl', '/'],
         ['setDocumentTitle', 'title'],
         ['setGenerationTimeMs', 0],
         ['enableLinkTracking'],
@@ -56,11 +55,12 @@ describe('piwik.js', () => {
     })
 
     it('Test with a username', () => {
+      const mockRouter = new Router({ routes: [] })
       SESSION.username = 'myusername'
-      shallow(MyVue, { intercept: { $route } })
+      shallow(MyVue, { router: mockRouter })
       expect(document.title).to.equal('title')
       expect(window._paq).to.deep.equal([
-        ['setCustomUrl', 'http://www.example-path.com'],
+        ['setCustomUrl', '/'],
         ['setDocumentTitle', 'title'],
         ['setGenerationTimeMs', 0],
         ['setUserId', 'myusername'],

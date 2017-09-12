@@ -2,9 +2,11 @@ import 'any-promise/register/bluebird'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VeeValidate from 'vee-validate'
+import VueRouter from 'vue-router'
 
 Vue.use(Vuetify)
 Vue.use(VeeValidate, {errorBagName: 'veeErrors'})
+Vue.use(VueRouter)
 
 Vue.config.productionTip = false
 Vue.prototype.trans = text => text
