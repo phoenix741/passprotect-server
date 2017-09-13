@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import Vue from 'vue'
 import Router from 'vue-router'
-import LoginInjector from '!!vue-loader?inject&transformToRequire=true!@/components/user/Login.vue' // eslint-disable-line
+import LoginInjector from '!!vue-loader?inject!@/components/user/Login.vue' // eslint-disable-line
 
 describe('Login.vue', () => {
   let LoginComponent, loginHandler

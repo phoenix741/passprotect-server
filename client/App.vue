@@ -4,7 +4,7 @@
 			v-toolbar.transparent(flat)
 				v-list.pa-0
 					v-list-tile(avatar,tag="div")
-						v-list-tile-content
+						v-list-tile-content.title-content
 							v-list-tile-title(v-if="SESSION.username") {{ SESSION.username }}
 							v-list-tile-title(v-else-if="!SESSION.username") {{ trans("user:toolbar.notlogged") }}
 						v-list-tile-action
@@ -12,28 +12,28 @@
 								v-icon chevron_left
 			v-list.pt-0(dense)
 				v-divider
-				v-list-tile(router=true,to="/login",v-if="! SESSION.authenticated")
+				v-list-tile.connect-link(router=true,to="/login",v-if="! SESSION.authenticated")
 					v-list-tile-action
 						v-icon face
 					v-list-tile-content
 						v-list-tile-title {{ trans('app.menu.connect') }}
-				v-list-tile(router=true,to="/items",v-if="!! SESSION.authenticated")
+				v-list-tile.items-link(router=true,to="/items",v-if="!! SESSION.authenticated")
 					v-list-tile-action
 						v-icon list
 					v-list-tile-content
 						v-list-tile-title {{ trans('app.menu.items') }}
-				v-list-tile(v-if="!! SESSION.authenticated",v-on:click.native="handleExport()")
+				v-list-tile.export-link(v-if="!! SESSION.authenticated",v-on:click.native="handleExport()")
 					v-list-tile-action
 						v-icon import_export
 					v-list-tile-content
 						v-list-tile-title {{ trans('app.menu.export') }}
 				v-divider
-				v-list-tile(v-if="!! SESSION.authenticated",v-on:click.native="handleLogout()")
+				v-list-tile.logout-link(v-if="!! SESSION.authenticated",v-on:click.native="handleLogout()")
 					v-list-tile-action
 						v-icon power_settings_new
 					v-list-tile-content
 						v-list-tile-title {{ trans('app.menu.logout') }}
-				v-list-tile(router=true,to="/about")
+				v-list-tile.about-link(router=true,to="/about")
 					v-list-tile-action
 						v-icon chat_bubble
 					v-list-tile-content

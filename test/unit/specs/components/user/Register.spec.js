@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import Vue from 'vue'
 import Router from 'vue-router'
-import RegisterInjector from '!!vue-loader?inject&transformToRequire=true!@/components/user/Register.vue' // eslint-disable-line
+import RegisterInjector from '!!vue-loader?inject!@/components/user/Register.vue' // eslint-disable-line
 
 describe('Register.vue', () => {
   let RegisterComponent, signupHandler
