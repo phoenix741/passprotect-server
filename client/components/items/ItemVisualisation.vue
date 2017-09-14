@@ -1,7 +1,7 @@
 <template lang="pug">
 v-card.visualisation-card
 	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
-		v-toolbar-title {{ trans(cardType.label) }}
+		v-toolbar-title#title-label {{ trans(cardType.label) }}
 		v-spacer
 		v-btn#edit-button.white--text(icon,router=true,:to="'/items/' + line._id + '/edit'")
 			v-icon mode_edit
@@ -23,7 +23,7 @@ v-card.visualisation-card
 				v-list-tile-title {{ trans('items:item.form.text.field') }}
 				v-list-tile-sub-title#text-text {{ clearInformation.text }}
 			v-list-tile-action
-				v-icon(dark,v-on:click="copyToClipboard(clearInformation.text)") content_copy
+				v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.text)") content_copy
 
 	template(v-if="line.type == 'card'")
 		v-list(two-line)
@@ -40,7 +40,7 @@ v-card.visualisation-card
 					v-list-tile-title#name-on-card-text {{ clearInformation.nameOnCard }}
 					v-list-tile-sub-title {{ trans('items:item.form.nameOnCard.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.nameOnCard)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.nameOnCard)") content_copy
 			v-list-tile(v-if="clearInformation.cardNumber")
 				v-list-tile-action
 					v-icon.indigo--text
@@ -48,7 +48,7 @@ v-card.visualisation-card
 					v-list-tile-title#card-number-text {{ clearInformation.cardNumber }}
 					v-list-tile-sub-title {{ trans('items:item.form.cardNumber.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.cardNumber)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.cardNumber)") content_copy
 			v-list-tile(v-if="clearInformation.cvv")
 				v-list-tile-action
 					v-icon.indigo--text
@@ -56,7 +56,7 @@ v-card.visualisation-card
 					v-list-tile-title#cvv-text {{ clearInformation.cvv }}
 					v-list-tile-sub-title {{ trans('items:item.form.cvv.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.cvv)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.cvv)") content_copy
 			v-list-tile(v-if="clearInformation.code")
 				v-list-tile-action
 					v-icon.indigo--text
@@ -64,7 +64,7 @@ v-card.visualisation-card
 					v-list-tile-title#code-text {{ clearInformation.code }}
 					v-list-tile-sub-title {{ trans('items:item.form.code.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.code)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.code)") content_copy
 			v-list-tile(v-if="clearInformation.expiry")
 				v-list-tile-action
 					v-icon.indigo--text
@@ -72,7 +72,7 @@ v-card.visualisation-card
 					v-list-tile-title#expiry-text {{ clearInformation.expiry }}
 					v-list-tile-sub-title {{ trans('items:item.form.expiry.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.expiry)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.expiry)") content_copy
 
 		v-divider(inset)
 		v-list(two-line)
@@ -92,7 +92,7 @@ v-card.visualisation-card
 					v-list-tile-title#username-text {{ clearInformation.username }}
 					v-list-tile-sub-title {{ trans('items:item.form.username.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.username)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.username)") content_copy
 
 			v-list-tile(v-if="clearInformation.password")
 				v-list-tile-action
@@ -101,7 +101,7 @@ v-card.visualisation-card
 					v-list-tile-title#password-text {{ clearInformation.password }}
 					v-list-tile-sub-title {{ trans('items:item.form.password.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.password)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.password)") content_copy
 
 		v-divider(inset)
 		v-list(two-line)
@@ -112,7 +112,7 @@ v-card.visualisation-card
 					v-list-tile-title#siteurl-text {{ clearInformation.siteUrl }}
 					v-list-tile-sub-title {{ trans('items:item.form.siteUrl.field') }}
 				v-list-tile-action
-					v-icon(dark,v-on:click="copyToClipboard(clearInformation.siteUrl)") content_copy
+					v-icon.copy-button(dark,v-on:click="copyToClipboard(clearInformation.siteUrl)") content_copy
 
 	v-divider(inset)
 	v-list(three-line,v-if="clearInformation.notes")
@@ -125,8 +125,6 @@ v-card.visualisation-card
 </template>
 
 <script type="text/babel">
-/* global trans */
-
 import copy from 'clipboard-copy'
 import {SESSION} from '../user/UserService'
 import getLine from './getLine.gql'
@@ -139,7 +137,7 @@ export default {
   name: 'item-visualisation',
   data () {
     return {
-      title: trans('items:item.title_visualisation'),
+      title: this.trans('items:item.title_visualisation'),
       line: {},
       clearInformation: {}
     }
@@ -147,6 +145,9 @@ export default {
   methods: {
     copyToClipboard (label) {
       copy(label)
+    },
+    async decryptClearInformation (val) {
+      this.clearInformation = await decryptLine(val)
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -161,8 +162,8 @@ export default {
     }
   },
   watch: {
-    async line (val) {
-      this.clearInformation = await decryptLine(val)
+    line (val) {
+      this.decryptClearInformation(val)
     }
   },
   apollo: {

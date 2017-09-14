@@ -1,11 +1,8 @@
 /* global __GRAPHQL_SCHEMA__ */
 
-import Vue from 'vue'
 import VueApollo from 'vue-apollo'
 import { ApolloClient, createNetworkInterface, IntrospectionFragmentMatcher } from 'apollo-client'
 import { getAuthHeader } from '../components/user/UserService'
-
-Vue.use(VueApollo)
 
 const schema = __GRAPHQL_SCHEMA__
 

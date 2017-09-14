@@ -15,6 +15,7 @@ import Vuetify from 'vuetify'
 import veeDictionary from 'vee-validate/dist/locale/fr'
 import VeeValidate, { Validator } from 'vee-validate'
 
+import VueApollo from 'vue-apollo'
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
@@ -23,6 +24,7 @@ import {checkAuth} from './components/user/UserService'
 
   Vue.config.productionTip = false
 
+  Vue.use(VueApollo)
   Vue.use(Vuetify)
   Vue.use(VeeValidate, {errorBagName: 'veeErrors', locale: 'fr'})
 
