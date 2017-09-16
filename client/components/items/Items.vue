@@ -18,7 +18,7 @@ div.cardList
               v-list-tile-sub-title.line-type {{ trans(cardType(line).label) }}
             v-list-tile-action
               v-dialog(v-model="dialog['remove' + index]")
-                v-btn(icon,ripple,slot="activator")
+                v-btn.item-delete-btn(icon,ripple,slot="activator")
                   v-icon.grey--text.text--lighten-1 delete
                 v-card
                   v-card-title
@@ -26,7 +26,7 @@ div.cardList
                   v-card-text {{ trans('items:alert.confirm_remove.message', {title: line.label}) }}
                   v-card-actions
                     v-spacer
-                    v-btn.delete-btn.green--text.darken-1(flat="flat",v-on:click.native="dialog['remove' + index] = false") {{ trans('items:alert.confirm_remove.disagree') }}
+                    v-btn.cancel-btn.green--text.darken-1(flat="flat",v-on:click.native="dialog['remove' + index] = false") {{ trans('items:alert.confirm_remove.disagree') }}
                     v-btn.delete-btn.green--text.darken-1(flat="flat",v-on:click.native="remove(line, index)") {{ trans('items:alert.confirm_remove.agree') }}
           v-divider(inset,v-if="index != groupCount - 1")
 
@@ -43,11 +43,8 @@ div.cardList
 </template>
 
 <script type="text/babel">
-/* global trans */
-
 import {SESSION} from '../user/UserService'
 import {cardTypeMapping, removeLine} from './ItemService'
-import {bus} from './ItemsBus'
 import getLines from './getLines.gql'
 import {filter, groupBy, size, debounce} from 'lodash'
 import AnalyticsMixin from '../../utils/piwik'
@@ -55,15 +52,13 @@ import AnalyticsMixin from '../../utils/piwik'
 export default {
   name: 'items',
   mixins: [AnalyticsMixin],
-  created () {
-    bus.$on('search-items', value => (this.filter = value))
-  },
   data () {
     return {
-      title: trans('items:list.title'),
+      title: this.trans('items:list.title'),
       showOptions: false,
       dialog: {},
-      filter: ''
+      filter: '',
+      lines: []
     }
   },
   computed: {
@@ -104,7 +99,9 @@ export default {
       line = line || {}
       return cardTypeMapping[line.type || 'text']
     },
-    search: debounce(value => bus.$emit('search-items', value), 500)
+    search (value) {
+      debounce(value => (this.filter = value), 500)(value)
+    }
   },
   beforeRouteEnter (to, from, next) {
     if (!SESSION.authenticated) {

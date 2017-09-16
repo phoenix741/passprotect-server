@@ -42,6 +42,8 @@ describe('piwik.js', () => {
 
     it('Test a vue without piwik activated', () => {
       const mockRouter = new Router({ routes: [] })
+      mockRouter.push('/')
+
       SESSION.username && delete SESSION.username
       shallow(MyVue, { router: mockRouter })
       expect(document.title).to.equal('title')
@@ -56,6 +58,8 @@ describe('piwik.js', () => {
 
     it('Test with a username', () => {
       const mockRouter = new Router({ routes: [] })
+      mockRouter.push('/')
+
       SESSION.username = 'myusername'
       shallow(MyVue, { router: mockRouter })
       expect(document.title).to.equal('title')

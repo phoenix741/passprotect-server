@@ -13,6 +13,11 @@ Vue.prototype.trans = text => text
 
 window.__PIWIK_ENABLED__ = false
 
+// Create the v-app necessary to vuetify
+const app = document.createElement('div')
+app.setAttribute('data-app', true)
+document.body.appendChild(app)
+
 // require all test files (files that ends with .spec.js)
 const testsContext = require.context('./specs', true, /\.spec$/)
 testsContext.keys().forEach(testsContext)
