@@ -7,8 +7,9 @@ import ItemVisualisationInjector from '!!vue-loader?inject!@/components/items/It
 import {cardTypeMapping} from '@/components/items/ItemService'
 
 describe('ItemVisualisation.vue', () => {
-  let ItemVisualisationComponent, copyHandler
+  let ItemVisualisationComponent, ItemVisualisationWithMocks, copyHandler, mockRouter
   const SESSION = {
+    authenticated: true,
     clearKey: 'ee958f6809e430c9b8ff10b3cbec138f9150e0af1a00557144825fd5011e82ab'
   }
   const decryptedLine = {group: '', type: 'VISA', nameOnCard: 'MON NOM', cardNumber: '12345678910', cvv: '123', expiry: '12/20', code: '1234', notes: ''}
@@ -33,7 +34,7 @@ describe('ItemVisualisation.vue', () => {
 
   beforeEach(() => {
     copyHandler = sinon.spy()
-    const ItemVisualisationWithMocks = ItemVisualisationInjector({
+    ItemVisualisationWithMocks = ItemVisualisationInjector({
       'clipboard-copy': copyHandler,
       '../user/UserService': {
         SESSION
@@ -45,11 +46,16 @@ describe('ItemVisualisation.vue', () => {
       '../../utils/piwik': {}
     })
 
-    const mockRouter = new Router({ routes: [ { path: '/items/:id/edit', name: 'edit_items' } ] })
+    mockRouter = new Router({ routes: [
+      { path: '/items/:id', name: 'visualisation_tems' },
+      { path: '/items/:id/edit', name: 'edit_items' }
+    ] })
 
     ItemVisualisationComponent = shallow(ItemVisualisationWithMocks, {
       router: mockRouter
     })
+
+    SESSION.authenticated = true
   })
 
   it('should render correct contents', async () => {
@@ -81,5 +87,35 @@ describe('ItemVisualisation.vue', () => {
       sinon.assert.calledOnce(copyHandler)
       copyHandler.reset()
     }
+  })
+
+  it('Test that beforeRouteEnter is executed - authenticated', async () => {
+    const to = '/to'
+    const from = '/from'
+    const next = sinon.spy()
+
+    ItemVisualisationComponent.vm.$options.beforeRouteEnter.forEach(beforeRouteEnter => {
+      beforeRouteEnter(to, from, next)
+    })
+
+    sinon.assert.calledWith(next)
+  })
+
+  it('Test that beforeRouteEnter is executed - not authenticated', async () => {
+    const to = '/to'
+    const from = '/from'
+    const next = sinon.spy()
+
+    SESSION.authenticated = false
+
+    ItemVisualisationComponent.vm.$options.beforeRouteEnter.forEach(beforeRouteEnter => {
+      beforeRouteEnter(to, from, next)
+    })
+
+    sinon.assert.calledWith(next, '/login')
+  })
+
+  it('Check how the line is get by apollo', function () {
+    expect(ItemVisualisationComponent.vm.$options.apollo.line.variables.call({id: 'id'})).to.deep.equal({id: 'id'})
   })
 })
