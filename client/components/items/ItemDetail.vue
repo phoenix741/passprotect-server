@@ -1,7 +1,7 @@
 <template lang="pug">
 v-card.detail-card
 	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
-		v-toolbar-title {{ trans(cardType.label) }}
+		v-toolbar-title#title-label {{ trans(cardType.label) }}
 
 	v-card-text
 		v-layout(row,wrap)
@@ -158,6 +158,12 @@ export default {
     },
     async generatePassword () {
       this.clearInformation.password = await generate()
+    },
+    async decryptClearInformation (val) {
+      if (!val.type) {
+        val = {type: 'text'}
+      }
+      this.clearInformation = await decryptLine(val)
     }
   },
   computed: {
@@ -180,12 +186,7 @@ export default {
   watch: {
     lineToModify: {
       immediate: true,
-      handler: async function (val) {
-        if (!val.type) {
-          val = {type: 'text'}
-        }
-        this.clearInformation = await decryptLine(val)
-      }
+      handler: async val => this.decryptClearInformation(val)
     }
   }
 }

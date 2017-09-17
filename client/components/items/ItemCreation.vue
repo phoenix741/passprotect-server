@@ -3,8 +3,6 @@ item-detail(v-bind:line="line")
 </template>
 
 <script type="text/babel">
-/* global trans */
-
 import ItemDetail from './ItemDetail.vue'
 import {SESSION} from '../user/UserService'
 import AnalyticsMixin from '../../utils/piwik'
@@ -18,7 +16,7 @@ export default {
   name: 'item-creation',
   data () {
     return {
-      title: trans('items:item.title_creation'),
+      title: this.trans('items:item.title_creation'),
       line: {
         label: '',
         type: this.type,
