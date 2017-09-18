@@ -6,10 +6,6 @@ import express from 'express'
 import http from 'http'
 
 import {websocketVerifyClient as verifyClient} from './config-passport'
-import userRouter from './controllers/user'
-import sessionRouter from './controllers/session'
-import lineRouter from './controllers/line'
-import transactionRouter from './controllers/transaction'
 import graphqlRouter, {subscriptionManager} from './controllers/graphql'
 import { graphiqlExpress } from 'graphql-server-express'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
@@ -26,10 +22,6 @@ export class Core {
   }
 
   createControllers (app) {
-    app.use('/api/users', userRouter)
-    app.use('/api/transactions', transactionRouter)
-    app.use('/api/session', sessionRouter)
-    app.use('/api/lines', lineRouter)
     app.use('/api/graphql', graphqlRouter)
     app.use('/graphiql', graphiqlExpress({
       endpointURL: '/api/graphql',

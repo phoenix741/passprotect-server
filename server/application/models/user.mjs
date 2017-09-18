@@ -23,31 +23,32 @@ export function getUsers (filter = {}) {
     find.confirmationToken = filter.confirmationToken
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('users').find(find).toArray(cb))
-  })
+  return dbPromise
+    .then(db => db.collection('users').find(find).toArray())
 }
 
 export function getUser (id) {
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('users').findOne({ _id: id.toLowerCase() }, cb))
-  }).then(user => processNotFound(id, user))
+  return dbPromise
+    .then(db => db.collection('users').findOne({ _id: id.toLowerCase() }))
+    .then(user => processNotFound(id, user))
 }
 
 export function registerUser (user) {
   normalizeUser(user)
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('users').insert(user, cb)).return(user)
-  }).catch(processMongoException)
+  return dbPromise
+    .then(db => db.collection('users').insert(user))
+    .then(() => user)
+    .catch(processMongoException)
 }
 
 export function saveUser (user) {
   normalizeUser(user)
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('users').save(user, cb)).return(user)
-  }).catch(processMongoException)
+  return dbPromise
+    .then(db => db.collection('users').save(user))
+    .then(() => user)
+    .catch(processMongoException)
 }
 
 function normalizeUser (user) {

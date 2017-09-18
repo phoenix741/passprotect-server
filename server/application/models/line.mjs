@@ -25,9 +25,7 @@ export function getLines (filter, sort) {
     find.user = filter.user
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('walletlines').find(find).sort(sort).toArray(cb))
-  })
+  return dbPromise.then(db => db.collection('walletlines').find(find).sort(sort).toArray())
 }
 
 export function getLine (id, _rev) {
@@ -36,9 +34,9 @@ export function getLine (id, _rev) {
     query._rev = _rev
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('walletlines').findOne(query, cb))
-  }).then(line => processNotFound(id, line))
+  return dbPromise
+    .then(db => db.collection('walletlines').findOne(query))
+    .then(line => processNotFound(id, line))
 }
 
 export function saveLine (line) {
@@ -49,15 +47,16 @@ export function saveLine (line) {
     query._rev = revision
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true }, cb)).then(doc => doc.value)
-  }).catch(processMongoException)
+  return dbPromise
+    .then(db => db.collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true }))
+    .then(doc => doc.value)
+    .catch(processMongoException)
 }
 
 export function removeLine (id) {
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }, cb))
-  }).then(line => processNotFound(id, line))
+  return dbPromise
+    .then(db => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }))
+    .then(line => processNotFound(id, line))
 }
 
 function processNotFound (lineId, line) {

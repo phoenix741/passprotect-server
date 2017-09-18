@@ -6,9 +6,10 @@ import debug from 'debug'
 import {getUserFromSession} from './services/user'
 import cookie from 'cookie'
 import jsonwebtoken from 'jsonwebtoken'
+import {promisify} from 'util'
 
 const log = debug('App:Passport')
-const jwt = Promise.promisifyAll(jsonwebtoken)
+const jwtVerifyAsync = promisify(jsonwebtoken.verify)
 
 const authHeaderOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -60,8 +61,7 @@ export function websocketVerifyClient (info, cb) {
 
   const tokenJwt = cookies.jwt || authorization
 
-  return jwt
-    .verifyAsync(tokenJwt, config.get('config.jwt.secret'))
+  return jwtVerifyAsync(tokenJwt, config.get('config.jwt.secret'))
     .then(tokenJwt => getUserFromSession(tokenJwt.user))
     .then(user => {
       log(`User ${user._id} connected on the websocket`)

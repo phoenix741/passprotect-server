@@ -8,7 +8,5 @@ export function getGroups (filter, sort) {
     find.user = filter.user
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('walletlines').distinct('group', find, cb))
-  })
+  return dbPromise.then(db => db.collection('walletlines').distinct('group', find))
 }

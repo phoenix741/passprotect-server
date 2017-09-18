@@ -22,13 +22,12 @@ export function getTransactions (filter) {
     find.updatedAt = { '$gte': filter.earliest }
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('transactions').find(find).sort({ updatedAt: 1 }).toArray(cb))
-  })
+  return dbPromise.then(db => db.collection('transactions').find(find).sort({ updatedAt: 1 }).toArray())
 }
 
 export function createTransaction (transaction) {
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb)).then(doc => doc.ops[0])
-  }).catch(processMongoException)
+  return dbPromise
+    .then(db => db.collection('transactions').insert(transaction))
+    .then(doc => doc.ops[0])
+    .catch(processMongoException)
 }

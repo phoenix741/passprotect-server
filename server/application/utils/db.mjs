@@ -9,13 +9,14 @@ export let db = null
 
 export function connection () {
   if (!promise) {
-    promise = Promise
-      .fromCallback(cb => MongoClient.connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'), cb))
-      .then((database) => {
+    promise = MongoClient
+      .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
+      .then(database => {
         log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
         db = database
         return database
-      }).catch(err => {
+      })
+      .catch(err => {
         promise = null
         throw err
       })
