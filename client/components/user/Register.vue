@@ -34,7 +34,7 @@
 						v-bind:rules="passwordRepeatValidation")
 
 			.text-xs-center
-				v-btn(primary,light,v-on:click.native="submitForm()") {{ trans('user:register.form.validation.field') }}
+				v-btn.register-button(primary,dark,v-on:click.native="submitForm()") {{ trans('user:register.form.validation.field') }}
 </template>
 
 <script type="text/babel">

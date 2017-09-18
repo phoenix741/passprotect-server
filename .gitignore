@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+.esm-cache
 doc
 node_modules/
 dist/

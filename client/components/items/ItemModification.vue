@@ -3,8 +3,6 @@ item-detail(v-bind:line="line")
 </template>
 
 <script type="text/babel">
-/* global trans */
-
 import ItemDetail from './ItemDetail.vue'
 import {SESSION} from '../user/UserService'
 import getLine from './getLine.gql'
@@ -19,7 +17,7 @@ export default {
   name: 'item-modification',
   data () {
     return {
-      title: trans('items:item.title_modification'),
+      title: this.trans('items:item.title_modification'),
       line: {}
     }
   },
