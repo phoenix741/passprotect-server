@@ -111,7 +111,7 @@ v-card.detail-card
 					v-btn#detail-button(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
 					template(v-if="lineToModify.type == 'password'")
 						v-spacer
-						v-btn(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
+						v-btn#generate-password(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
 </template>
 
 <script type="text/babel">
