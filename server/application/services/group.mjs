@@ -3,7 +3,7 @@ import {getGroups as getGroupsModel} from '../models/group'
 
 const log = debug('App:Service:Group')
 
-export function getGroups (user) {
+export async function getGroups (user) {
   log('Get all groups from user ', user._id)
 
   const filter = {}

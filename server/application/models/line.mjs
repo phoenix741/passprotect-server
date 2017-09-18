@@ -1,5 +1,5 @@
 import {isString, omit} from 'lodash'
-import {promise as dbPromise} from '../utils/db'
+import {promise as db} from '../utils/db'
 import i18n from 'i18next'
 import { ObjectID } from 'mongodb'
 
@@ -18,28 +18,28 @@ import { processMongoException, NotFoundError } from './exception'
  *
  * And all other informations that a user want to store in the wallet line (depending on the wallet).
  */
-export function getLines (filter, sort) {
+export async function getLines (filter, sort) {
   const find = {}
 
   if (isString(filter.user)) {
     find.user = filter.user
   }
 
-  return dbPromise.then(db => db.collection('walletlines').find(find).sort(sort).toArray())
+  return (await db).collection('walletlines').find(find).sort(sort).toArray()
 }
 
-export function getLine (id, _rev) {
+export async function getLine (id, _rev) {
   const query = { _id: new ObjectID(id) }
   if (_rev !== undefined) {
     query._rev = _rev
   }
 
-  return dbPromise
-    .then(db => db.collection('walletlines').findOne(query))
-    .then(line => processNotFound(id, line))
+  const line = (await db).collection('walletlines').findOne(query)
+  processNotFound(id, line)
+  return line
 }
 
-export function saveLine (line) {
+export async function saveLine (line) {
   const cleanLine = omit(line, '_rev')
   const revision = line._rev
   const query = { _id: new ObjectID(line._id) }
@@ -47,21 +47,22 @@ export function saveLine (line) {
     query._rev = revision
   }
 
-  return dbPromise
-    .then(db => db.collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true }))
-    .then(doc => doc.value)
-    .catch(processMongoException)
+  try {
+    const doc = await (await db).collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true })
+    return doc.value
+  } catch (err) {
+    processMongoException(err)
+  }
 }
 
-export function removeLine (id) {
-  return dbPromise
-    .then(db => db.collection('walletlines').deleteOne({ _id: new ObjectID(id) }))
-    .then(line => processNotFound(id, line))
+export async function removeLine (id) {
+  const line = await (await db).collection('walletlines').deleteOne({ _id: new ObjectID(id) })
+  processNotFound(id, line)
+  return line
 }
 
 function processNotFound (lineId, line) {
   if (!line) {
     throw new NotFoundError(i18n.t('error:line.404.lineNotFound', { lineId }))
   }
-  return line
 }

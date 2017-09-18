@@ -6,7 +6,7 @@ import {transactionAdded} from '../services/subscriptions'
 
 const log = debug('App:Service:LineTransaction')
 
-export function getTransactions (user, params = {}) {
+export async function getTransactions (user, params = {}) {
   log(`Get all transaction of the user ${user._id} after ${params.earliest}`)
 
   const filter = {}
@@ -16,7 +16,7 @@ export function getTransactions (user, params = {}) {
   return getTransactionsModel(filter)
 }
 
-export function createTransaction (type, before, after) {
+export async function createTransaction (type, before, after) {
   const base = after || before
   if (!base) {
     return null
@@ -32,5 +32,6 @@ export function createTransaction (type, before, after) {
     sha512: after && crypto.createHash('sha512').update(after.encryption.informations.content).digest('hex')
   }
 
-  return createTransactionModel(transaction).tap(transactionAdded)
+  const model = await createTransactionModel(transaction)
+  await transactionAdded(model)
 }

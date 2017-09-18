@@ -6,7 +6,7 @@ import {hashPassword, checkPassword} from './crypto'
 
 const log = debug('App:Service:User')
 
-export function getUsers (params = {}) {
+export async function getUsers (params = {}) {
   log('Get all users with params ', params)
 
   const filter = pick(params, 'confirmationToken')
@@ -14,7 +14,7 @@ export function getUsers (params = {}) {
   return getUsersModel(filter)
 }
 
-export function getUser (id) {
+export async function getUser (id) {
   log('Get the user with id', id)
   return getUserModel(id)
 }
@@ -24,41 +24,36 @@ export function getUser (id) {
  * @param {Object} user clear user
  * @returns {Promise} promise on the token.
  */
-export function createSessionUser (user) {
+export async function createSessionUser (user) {
   log('Create the session payload for user ', user._id)
   const payload = pick(user, '_id')
 
-  return Promise.resolve(payload)
+  return payload
 }
 
-export function getUserFromSession (payload) {
+export async function getUserFromSession (payload) {
   log('Get the user for the payload ', payload._id)
 
   return getUser(payload._id)
 }
 
-export function verifyPassword (user, password) {
+export async function verifyPassword (user, password) {
   log('Verify the password of the user ', user._id)
 
-  return checkPassword(password, user.password)
-    .then(isValid => {
-      if (!isValid) {
-        throw new AuthorizationError('User or password invalid')
-      }
-    })
-    .return(user)
+  const isValid = await checkPassword(password, user.password)
+  if (!isValid) {
+    throw new AuthorizationError('User or password invalid')
+  }
+  return user
 }
 
-export function registerUser (user) {
+export async function registerUser (user) {
   log(`Create the user with the id ${user._id}`)
 
   user.creationAt = new Date()
 
-  const hashPasswordPromise = hashPassword(user.password)
+  const hash = await hashPassword(user.password)
+  user.password = hash
 
-  return hashPasswordPromise
-    .then(hash => {
-      user.password = hash
-      return registerUserModel(user)
-    })
+  return registerUserModel(user)
 }

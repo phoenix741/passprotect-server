@@ -1,5 +1,5 @@
 import {isString} from 'lodash'
-import {promise as dbPromise} from '../utils/db'
+import {promise as db} from '../utils/db'
 import i18n from 'i18next'
 
 import { processMongoException, NotFoundError } from './exception'
@@ -16,39 +16,42 @@ import { processMongoException, NotFoundError } from './exception'
  *
  * The encryptionKey is crypted with the password of the user and a salt.
  */
-export function getUsers (filter = {}) {
+export async function getUsers (filter = {}) {
   const find = {}
 
   if (isString(filter.confirmationToken)) {
     find.confirmationToken = filter.confirmationToken
   }
 
-  return dbPromise
-    .then(db => db.collection('users').find(find).toArray())
+  return (await db).collection('users').find(find).toArray()
 }
 
-export function getUser (id) {
-  return dbPromise
-    .then(db => db.collection('users').findOne({ _id: id.toLowerCase() }))
-    .then(user => processNotFound(id, user))
+export async function getUser (id) {
+  const user = await (await db).collection('users').findOne({ _id: id.toLowerCase() })
+  processNotFound(id, user)
+  return user
 }
 
-export function registerUser (user) {
+export async function registerUser (user) {
   normalizeUser(user)
 
-  return dbPromise
-    .then(db => db.collection('users').insert(user))
-    .then(() => user)
-    .catch(processMongoException)
+  try {
+    await (await db).collection('users').insert(user)
+    return user
+  } catch (err) {
+    processMongoException(err)
+  }
 }
 
-export function saveUser (user) {
+export async function saveUser (user) {
   normalizeUser(user)
 
-  return dbPromise
-    .then(db => db.collection('users').save(user))
-    .then(() => user)
-    .catch(processMongoException)
+  try {
+    await (await db).collection('users').save(user)
+    return user
+  } catch (err) {
+    processMongoException(err)
+  }
 }
 
 function normalizeUser (user) {
@@ -63,5 +66,4 @@ function processNotFound (userId, user) {
   if (!user) {
     throw new NotFoundError(i18n.t('error:user.404.userNotFound', { userId: userId }))
   }
-  return user
 }
