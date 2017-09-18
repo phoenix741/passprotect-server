@@ -31,7 +31,6 @@
   "dependencies": {
     "@std/esm": "^0.8.3",
     "bcrypt": "^1.0.3",
-    "bluebird": "~3.5.0",
     "body-parser": "~1.18.0",
     "config": "~1.26.2",
     "cookie": "~0.3.1",
