@@ -139,7 +139,11 @@ describe('ItemService.js', () => {
     })
 
     it('Update the line, with functional error', async () => {
-      context.$apollo.mutate = sinon.stub().returns(Promise.resolve({data: {removeLine: {errors: [{fieldName: 'fieldName', message: 'message'}]}}}))
+      const NO_ERROR = {data: {removeLine: {errors: [{fieldName: 'fieldName', message: 'message'}]}}}
+      context.$apollo.mutate = sinon.stub().callsFake(async function (object) {
+        object.update(store, NO_ERROR)
+        return NO_ERROR
+      })
       await removeLine(context, lineId)
       expect(context.error).to.be.an('error')
     })
