@@ -15,31 +15,42 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    users (obj, args, {user}) {
-      return checkPermission(user, ['admin']).then(getUsers).then(users => users.map(filterUser))
+    async users (obj, args, {user}) {
+      checkPermission(user, ['admin'])
+      const users = await getUsers()
+      return users.map(filterUser)
     },
 
-    user (obj, {id}, {user}) {
-      return checkPermission(user, ['admin'], id).then(() => getUser(id)).then(filterUser)
+    async user (obj, {id}, {user}) {
+      checkPermission(user, ['admin'], id)
+      const dbUser = await getUser(id)
+      return filterUser(dbUser)
     }
   },
   WalletLine: {
-    user (obj, args, {user}) {
-      return checkPermission(user, ['admin'], obj.user).then(() => getUser(obj.user)).then(filterUser)
+    async user (obj, args, {user}) {
+      checkPermission(user, ['admin'], obj.user)
+      const dbUser = await getUser(obj.user)
+      return filterUser(dbUser)
     }
   },
   WalletTransaction: {
-    user (obj, {id}, {user}) {
-      return checkPermission(user, ['admin'], id).then(() => getUser(obj.user)).then(filterUser)
+    async user (obj, {id}, {user}) {
+      checkPermission(user, ['admin'], id)
+      const dbUser = getUser(obj.user)
+      return filterUser(dbUser)
     }
   },
 
   RootMutation: {
-    registerUser (obj, {input}) {
-      return sanitizeUser(input)
-        .then(data => registerUser(data))
-        .then(filterUser)
-        .catch(parseErrors)
+    async registerUser (obj, {input}) {
+      try {
+        const data = sanitizeUser(input)
+        const user = await registerUser(data)
+        return filterUser(user)
+      } catch (err) {
+        return parseErrors(err)
+      }
     }
   },
 
@@ -61,34 +72,34 @@ function sanitizeUser (input) {
   validationError.status = 400
   if (!isString(data._id) || isEmpty(data._id)) {
     validationError.message = i18n.t('error:user.400._id')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   if (!isString(data.password) || isEmpty(data.password) || data.password.length < 8) {
     validationError.message = i18n.t('error:user.400.password')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   if (!isObject(data.encryption)) {
     validationError.message = i18n.t('error:user.400.encryption')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   data.encryption = pick(data.encryption, 'salt', 'encryptedKey')
 
   if (!isObject(data.encryption.encryptedKey) || !isString(data.encryption.salt)) {
     validationError.message = i18n.t('error:user.400.encryption')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   data.encryption.encryptedKey = pick(data.encryption.encryptedKey, 'content', 'authTag')
 
   if (!isString(data.encryption.encryptedKey.content) || !isString(data.encryption.encryptedKey.authTag)) {
     validationError.message = i18n.t('error:user.400.encryption')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
-  return Promise.resolve(data)
+  return data
 }
 
 function filterUser (user) {

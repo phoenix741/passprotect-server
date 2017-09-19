@@ -25,15 +25,16 @@ passport.use('authHeader', new JwtStrategy(authHeaderOpts, processAuthHeaderPayl
 passport.use('cookie', new JwtStrategy(cookiesOpts, processCookiePayload))
 passport.use('anonymous', new AnonymousStrategy())
 
-function processPayload (jwtPayload, done) {
-  return getUserFromSession(jwtPayload.user)
-    .catch(err => {
-      if (err.status === 404) {
-        return false
-      }
-      throw err
-    })
-    .asCallback(done)
+async function processPayload (jwtPayload, done) {
+  try {
+    const user = getUserFromSession(jwtPayload.user)
+    done(null, user)
+  } catch (err) {
+    if (err.status === 404) {
+      return done(null, false)
+    }
+    done(err)
+  }
 }
 
 function processAuthHeaderPayload (jwtPayload, done) {
@@ -54,22 +55,22 @@ function cookieExtractor (req) {
   return token
 }
 
-export function websocketVerifyClient (info, cb) {
+export async function websocketVerifyClient (info, cb) {
   const cookies = cookie.parse(info.req.headers.cookie) || {}
   const authorization = (info.req.headers.authorization || 'bearer ').substr(4)
   log('Websocket connection via ' + (cookies.jwt ? 'cookie ' : ' ') + (authorization ? 'authorization header' : ''))
 
   const tokenJwt = cookies.jwt || authorization
 
-  return jwtVerifyAsync(tokenJwt, config.get('config.jwt.secret'))
-    .then(tokenJwt => getUserFromSession(tokenJwt.user))
-    .then(user => {
-      log(`User ${user._id} connected on the websocket`)
-      info.req.user = user
-      cb(true) // eslint-disable-line standard/no-callback-literal
-    })
-    .catch(err => {
-      log('Can\'t connect token ' + tokenJwt + ' because of ' + err.message)
-      cb(false, err.status) // eslint-disable-line standard/no-callback-literal
-    })
+  try {
+    const payload = await jwtVerifyAsync(tokenJwt, config.get('config.jwt.secret'))
+    const user = await getUserFromSession(payload.user)
+
+    log(`User ${user._id} connected on the websocket`)
+    info.req.user = user
+    cb(true) // eslint-disable-line standard/no-callback-literal
+  } catch (err) {
+    log('Can\'t connect token ' + tokenJwt + ' because of ' + err.message)
+    cb(false, err.status) // eslint-disable-line standard/no-callback-literal
+  }
 }

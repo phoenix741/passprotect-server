@@ -16,50 +16,61 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    lines (obj, args, {user}) {
-      return checkPermission(user).then(() => getLines(user)).map(line => checkPermission(user, [], line.user).return(line)).map(filterLine)
+    async lines (obj, args, {user}) {
+      checkPermission(user)
+      const lines = await getLines(user)
+      lines.forEach(line => checkPermission(user, [], line.user))
+      return lines.map(filterLine)
     },
 
-    line (obj, {id}, {user}) {
-      return getLine(id).tap(line => checkPermission(user, [], line.user)).then(filterLine)
+    async line (obj, {id}, {user}) {
+      const line = await getLine(id)
+      checkPermission(user, [], line.user)
+      return filterLine(line)
     },
 
-    groups (obj, args, {user}) {
-      return checkPermission(user).then(() => getGroups(user))
+    async groups (obj, args, {user}) {
+      checkPermission(user)
+      return getGroups(user)
     }
   },
   User: {
-    lines (obj, args, {user}) {
-      return getLines(obj._id).map(line => checkPermission(user, [], line.user).return(line)).map(filterLine)
+    async lines (obj, args, {user}) {
+      const line = await getLines(obj._id)
+      checkPermission(user, [], line.user)
+
+      return line.map(filterLine)
     }
   },
 
   RootMutation: {
-    createUpdateLine (obj, {input}, {user}) {
-      let checkPermissionPromise = Promise.resolve(input)
-      if (input._id) {
-        checkPermissionPromise = getLine(input._id)
-          .tap(line => checkPermission(user, [], line.user))
-          .then(line => {
-            input._id = line._id
-            return input
-          })
-      }
+    async createUpdateLine (obj, {input}, {user}) {
+      try {
+        if (input._id) {
+          const line = await getLine(input._id)
+          checkPermission(user, [], line.user)
+          input._id = line._id
+        }
 
-      input.user = user._id
-      return checkPermissionPromise
-        .then(input => sanitizeInput(input))
-        .then(data => saveLine(data))
-        .then(filterLine)
-        .catch(parseErrors)
+        input.user = user._id
+
+        const data = await sanitizeInput(input)
+        const line = await saveLine(data)
+        return filterLine(line)
+      } catch (err) {
+        return parseErrors(err)
+      }
     },
 
-    removeLine (obj, {id}, {user}) {
-      return getLine(id)
-        .tap(line => checkPermission(user, [], line.user))
-        .then(() => removeLine(id))
-        .then(() => ({errors: []}))
-        .catch(parseErrors)
+    async removeLine (obj, {id}, {user}) {
+      try {
+        const line = await getLine(id)
+        checkPermission(user, [], line.user)
+        await removeLine(id)
+        return {errors: []}
+      } catch (err) {
+        return parseErrors(err)
+      }
     }
   },
 
@@ -91,15 +102,15 @@ function sanitizeInput (input) {
   const typeChoices = ['card', 'password', 'text']
   if (!includes(typeChoices, data.type)) {
     validationError.message = i18n.t('error:line.400.type', {choices: typeChoices.join(', ')})
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   if (!isString(data.label) || isEmpty(data.label)) {
     validationError.message = i18n.t('error:line.400.label')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
-  return Promise.resolve(data)
+  return data
 }
 
 function parseErrors (err) {

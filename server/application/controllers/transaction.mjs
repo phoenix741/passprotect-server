@@ -14,10 +14,11 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    transactions (obj, {earliest}, {user}) {
+    async transactions (obj, {earliest}, {user}) {
+      checkPermission(user)
       earliest = moment(earliest).toDate()
 
-      return checkPermission(user).then(() => getTransactions(user, {earliest}))
+      return getTransactions(user, {earliest})
     }
   },
 

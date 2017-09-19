@@ -25,14 +25,16 @@ export const resolvers = {
   },
 
   RootMutation: {
-    createSession (obj, {input}, {res}) {
-      return sanitizeInput(input)
-        .then(data => connectSession(data))
-        .spread((user, jwtToken) => {
-          res.cookie('jwt', jwtToken, {httpOnly: true})
-          return {token: 'bearer ' + jwtToken, user: filterUser(user)}
-        })
-        .catch(parseErrors)
+    async createSession (obj, {input}, {res}) {
+      try {
+        const data = sanitizeInput(input)
+        const {user, jwtToken} = await connectSession(data)
+
+        res.cookie('jwt', jwtToken, {httpOnly: true})
+        return {token: 'bearer ' + jwtToken, user: filterUser(user)}
+      } catch (err) {
+        return parseErrors(err)
+      }
     },
 
     clearSession (obj, args, {res}) {
@@ -58,24 +60,22 @@ function sanitizeInput (input) {
   validationError.status = 401
   if (!isString(data.username) || isEmpty(data.username)) {
     validationError.message = i18n.t('error:user.401.username')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
   if (!isString(data.password) || isEmpty(data.password)) {
     validationError.message = i18n.t('error:user.401.password')
-    return Promise.reject(validationError)
+    throw validationError
   }
 
-  return Promise.resolve(data)
+  return data
 }
 
-function connectSession ({username, password}) {
-  const user = getUser(username)
-
-  const jwtToken = user
-    .then(user => verifyPassword(user, password))
-    .then(createSessionUser)
-    .then(user => jwtSignAsync({user}, config.get('config.jwt.secret'), {}))
+async function connectSession ({username, password}) {
+  const user = await getUser(username)
+  await verifyPassword(user, password)
+  const payload = await createSessionUser(user)
+  const jwtToken = await jwtSignAsync({user: payload}, config.get('config.jwt.secret'), {})
 
   return [user, jwtToken]
 }
