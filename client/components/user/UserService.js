@@ -82,9 +82,12 @@ export function checkAuth () {
 }
 
 export function getAuthHeader () {
-  return {
-    Authorization: localStorage.getItem('jwtToken')
+  if (localStorage.getItem('jwtToken')) {
+    return {
+      Authorization: localStorage.getItem('jwtToken')
+    }
   }
+  return {}
 }
 
 async function generateMasterKey (user, password) {

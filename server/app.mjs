@@ -1,18 +1,33 @@
 import express from 'express'
-import path from 'path'
+import logger from 'morgan-debug'
+import errorHandler from 'errorhandler'
 
-import bootstrap from './application/bootstrap'
-import middlewares from './application/middlewares'
+import i18n from 'i18next'
+import i18nMiddleware from 'i18next-express-middleware'
+
+import { Core } from './core'
+import { connection as dbConnection } from './utils/db'
+import { bootstrap } from './utils/i18n'
 
 const app = express()
 
-bootstrap(app.get('env'))
-
-// all environments
 app.set('port', process.env.PORT || 3000)
 
-// view engine setup
-app.set('views', path.join(__dirname, '..', 'common', 'templates'))
-app.set('view engine', 'jade')
+app.use((req, res, next) => {
+  dbConnection()
+  next()
+})
 
-export default middlewares(app)
+app.use(logger('App:Express', 'dev'))
+if (app.get('env') === 'development') {
+  app.use(errorHandler())
+}
+
+app.use(i18nMiddleware.handle(i18n, {
+  removeLngFromUrl: false
+}))
+
+bootstrap(app.get('env'))
+
+const core = new Core(app)
+core.run()

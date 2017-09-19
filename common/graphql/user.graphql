@@ -38,9 +38,6 @@ input RegistrationUser {
 }
 
 type RootQuery {
-  # Request the list of users from the database.
-  users: [User],
-
   # Request a user
   user(id: ID!): User,
 }

@@ -3,7 +3,7 @@ import i18n from 'i18next'
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import {checkPermission} from '../utils/passport'
+import {checkPermission} from '../utils/authentification'
 import {getLines, getLine, removeLine, saveLine} from '../services/line'
 import {getGroups} from '../services/group'
 
@@ -11,33 +11,32 @@ const log = debug('App:Controllers:Line')
 
 log('Load line type definition')
 export const typeDefs = [
-  fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'line.graphql'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'line.graphql'), 'utf-8')
 ]
 
 export const resolvers = {
   RootQuery: {
     async lines (obj, args, {user}) {
-      checkPermission(user)
       const lines = await getLines(user)
-      lines.forEach(line => checkPermission(user, [], line.user))
+      lines.forEach(line => checkPermission(user, line.user))
       return lines.map(filterLine)
     },
 
     async line (obj, {id}, {user}) {
       const line = await getLine(id)
-      checkPermission(user, [], line.user)
+      checkPermission(user, line.user)
       return filterLine(line)
     },
 
     async groups (obj, args, {user}) {
-      checkPermission(user)
+      console.log(await getGroups(user))
       return getGroups(user)
     }
   },
   User: {
     async lines (obj, args, {user}) {
       const line = await getLines(obj._id)
-      checkPermission(user, [], line.user)
+      checkPermission(user, line.user)
 
       return line.map(filterLine)
     }
@@ -45,10 +44,11 @@ export const resolvers = {
 
   RootMutation: {
     async createUpdateLine (obj, {input}, {user}) {
+      log(`createUpdateLine with id ${input._id}`)
       try {
         if (input._id) {
           const line = await getLine(input._id)
-          checkPermission(user, [], line.user)
+          checkPermission(user, line.user)
           input._id = line._id
         }
 
@@ -56,6 +56,7 @@ export const resolvers = {
 
         const data = await sanitizeInput(input)
         const line = await saveLine(data)
+        log(`Line will be saved with the id ${line._id}`)
         return filterLine(line)
       } catch (err) {
         return parseErrors(err)
@@ -65,7 +66,7 @@ export const resolvers = {
     async removeLine (obj, {id}, {user}) {
       try {
         const line = await getLine(id)
-        checkPermission(user, [], line.user)
+        checkPermission(user, line.user)
         await removeLine(id)
         return {errors: []}
       } catch (err) {

@@ -3,40 +3,34 @@ import i18n from 'i18next'
 import debug from 'debug'
 import fs from 'fs'
 import path from 'path'
-import {checkPermission} from '../utils/passport'
-import {getUsers, getUser, registerUser} from '../services/user'
+import {checkPermission} from '../utils/authentification'
+import {getUser, registerUser} from '../services/user'
 
 const log = debug('App:Controllers:User')
 
 log('Load user type definition')
 export const typeDefs = [
-  fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'user.graphql'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'user.graphql'), 'utf-8')
 ]
 
 export const resolvers = {
   RootQuery: {
-    async users (obj, args, {user}) {
-      checkPermission(user, ['admin'])
-      const users = await getUsers()
-      return users.map(filterUser)
-    },
-
     async user (obj, {id}, {user}) {
-      checkPermission(user, ['admin'], id)
+      checkPermission(user, id)
       const dbUser = await getUser(id)
       return filterUser(dbUser)
     }
   },
   WalletLine: {
     async user (obj, args, {user}) {
-      checkPermission(user, ['admin'], obj.user)
+      checkPermission(user, obj.user)
       const dbUser = await getUser(obj.user)
       return filterUser(dbUser)
     }
   },
   WalletTransaction: {
     async user (obj, {id}, {user}) {
-      checkPermission(user, ['admin'], id)
+      checkPermission(user, id)
       const dbUser = getUser(obj.user)
       return filterUser(dbUser)
     }

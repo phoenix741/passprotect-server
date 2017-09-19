@@ -14,7 +14,7 @@ const jwtSignAsync = promisify(jsonwebtoken.sign)
 
 log('Load session type definition')
 export const typeDefs = [
-  fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
 ]
 
 export const resolvers = {
@@ -30,15 +30,10 @@ export const resolvers = {
         const data = sanitizeInput(input)
         const {user, jwtToken} = await connectSession(data)
 
-        res.cookie('jwt', jwtToken, {httpOnly: true})
         return {token: 'bearer ' + jwtToken, user: filterUser(user)}
       } catch (err) {
         return parseErrors(err)
       }
-    },
-
-    clearSession (obj, args, {res}) {
-      res.clearCookie('jwt')
     }
   },
 
@@ -77,7 +72,7 @@ async function connectSession ({username, password}) {
   const payload = await createSessionUser(user)
   const jwtToken = await jwtSignAsync({user: payload}, config.get('config.jwt.secret'), {})
 
-  return [user, jwtToken]
+  return {user, jwtToken}
 }
 
 function filterUser (user) {

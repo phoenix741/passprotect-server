@@ -57,9 +57,6 @@ export async function saveUser (user) {
 function normalizeUser (user) {
   // The _id of the user should always in lowercase to identify quickly the user
   user._id = user._id.toLowerCase()
-  if (!user.role) {
-    user.role = 'user'
-  }
 }
 
 function processNotFound (userId, user) {

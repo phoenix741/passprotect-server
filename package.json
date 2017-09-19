@@ -4,14 +4,6 @@
   "description": "Server used to keep password of the user in a secure store",
   "author": "Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>",
   "licence": "MIT",
-  "apidoc": {
-    "title": "Passprotect REST API documentation",
-    "url": "http://localhost:3000",
-    "template": {
-      "withCompare": false,
-      "withGenerator": true
-    }
-  },
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -20,8 +12,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.mjs,.vue client server test/unit/specs test/e2e/specs",
-    "doc": "apidoc -f .*\\.mjs -i server -o doc"
+    "lint": "eslint --ext .js,.mjs,.vue client server test/unit/specs test/e2e/specs"
   },
   "main": "",
   "engines": {
@@ -34,10 +25,10 @@
     "body-parser": "~1.18.0",
     "config": "~1.26.2",
     "cookie": "~0.3.1",
-    "cookie-parser": "~1.4.3",
     "debug": "~3.0.1",
     "errorhandler": "~1.5.0",
     "express": "~4.15.4",
+    "express-jwt": "^5.3.0",
     "graphql": "~0.11.3",
     "graphql-server-express": "~1.1.2",
     "graphql-subscriptions": "~0.4.4",
@@ -47,21 +38,15 @@
     "i18next-node-fs-backend": "~1.0.0",
     "jsonwebtoken": "~8.0.0",
     "lodash": "~4.17.4",
-    "method-override": "~2.3.9",
     "moment": "~2.18.1",
     "mongodb": "~2.2.31",
     "morgan": "~1.8.2",
     "morgan-debug": "~2.0.0",
-    "passport": "~0.4.0",
-    "passport-anonymous": "~1.0.1",
-    "passport-jwt": "~3.0.0",
-    "permission": "~1.0.4",
     "serve-favicon": "~2.4.3",
     "stream-to-promise": "~2.2.0",
     "subscriptions-transport-ws": "~0.8.3"
   },
   "devDependencies": {
-    "apidoc": "~0.17.6",
     "apollo-client": "~1.9.2",
     "autoprefixer": "~7.1.4",
     "babel-cli": "~6.26.0",
@@ -108,7 +93,6 @@
     "extract-text-webpack-plugin": "~3.0.0",
     "file-loader": "~0.11.2",
     "friendly-errors-webpack-plugin": "~1.6.1",
-    "geckodriver": "^1.8.1",
     "html-loader": "~0.5.1",
     "html-webpack-plugin": "~2.30.1",
     "http-proxy-middleware": "~0.17.4",

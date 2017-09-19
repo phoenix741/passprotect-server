@@ -2,25 +2,21 @@ import { flatten, merge } from 'lodash'
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import {authenticate} from '../utils/passport'
 import { graphqlExpress } from 'graphql-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { SubscriptionManager } from 'graphql-subscriptions'
-
-import {pubsub} from '../services/subscriptions'
 
 import {typeDefs as userTypeDefs, resolvers as userResolvers} from './user'
 import {typeDefs as lineTypeDefs, resolvers as lineResolvers} from './line'
 import {typeDefs as sessionTypeDefs, resolvers as sessionResolvers} from './session'
-import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers, setupFunctions as transactionSetupFunctions} from './transaction'
+import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers} from './transaction'
 
 const log = debug('App:Controllers:GraphQL')
 
 log('Load common type definitions')
 const typeDefs = flatten([
-  fs.readFileSync(path.join(__dirname, '..', '..', '..', 'common', 'graphql', 'common.graphql'), 'utf-8'),
+  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'common.graphql'), 'utf-8'),
   userTypeDefs,
   lineTypeDefs,
   sessionTypeDefs,
@@ -46,12 +42,8 @@ const GraphQLScalarDate = new GraphQLScalarType({
 
 const resolvers = merge({Date: GraphQLScalarDate}, userResolvers, lineResolvers, sessionResolvers, transactionResolvers)
 
-const setupFunctions = merge(transactionSetupFunctions)
-
 log('Create the graphql schema')
-const schema = makeExecutableSchema({typeDefs, resolvers, logger: {log}})
-
-export const subscriptionManager = new SubscriptionManager({schema, pubsub, setupFunctions})
+export const schema = makeExecutableSchema({typeDefs, resolvers, logger: {log}})
 
 const graphqlRouter = graphqlExpress((req, res) => ({
   schema,
@@ -61,4 +53,4 @@ const graphqlRouter = graphqlExpress((req, res) => ({
   }
 }))
 
-export default [authenticate(), graphqlRouter]
+export default graphqlRouter

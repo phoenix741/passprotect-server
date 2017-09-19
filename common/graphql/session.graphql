@@ -22,6 +22,5 @@ extend type RootQuery {
 union CreateSessionResult = ConnectionInformation | Errors
 
 extend type RootMutation {
-  createSession(input: ConnectionInformationInput!): CreateSessionResult,
-  clearSession: Errors
+  createSession(input: ConnectionInformationInput!): CreateSessionResult
 }
