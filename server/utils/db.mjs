@@ -1,4 +1,4 @@
-import {MongoClient} from 'mongodb'
+import {MongoClient, Logger} from 'mongodb'
 import config from 'config'
 import debug from 'debug'
 
@@ -13,6 +13,7 @@ export function connection () {
       .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
       .then(database => {
         log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
+        Logger.setLevel('debug')
         db = database
         return database
       })

@@ -44,9 +44,9 @@ export async function processPayload (req, res, next) {
  * @param {String} userId User ID to compare to the user
  */
 export function checkPermission (user, userId) {
-  log(`Check that the user ${user._id} have acces to a resource that the owner is ${userId}`)
+  log(`Check that the user ${(user || {})._id} have acces to a resource that the owner is ${userId}`)
   if (user) {
-    if (!userId || userId !== user._id) {
+    if (userId && userId !== user._id) {
       throw new Error('The user isn\'t authorized to view this resource')
     }
   } else {

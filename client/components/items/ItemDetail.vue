@@ -186,7 +186,9 @@ export default {
   watch: {
     lineToModify: {
       immediate: true,
-      handler: async val => this.decryptClearInformation(val)
+      async handler (val) {
+        this.decryptClearInformation(val)
+      }
     }
   }
 }
