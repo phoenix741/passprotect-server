@@ -30,7 +30,8 @@ export async function saveLine (line) {
 
   const oldLine = await getLineIfAvailable(line._id, line._rev)
   const newLine = await saveLineModel(line)
-  return createTransaction('line', oldLine, newLine)
+  await createTransaction('line', oldLine, newLine)
+  return newLine
 }
 
 export async function removeLine (id) {

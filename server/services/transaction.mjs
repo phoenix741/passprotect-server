@@ -34,4 +34,5 @@ export async function createTransaction (type, before, after) {
 
   const model = await createTransactionModel(transaction)
   await transactionAdded(model)
+  return model
 }
