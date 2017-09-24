@@ -1,12 +1,11 @@
 import {isString} from 'lodash'
-import {promise as db} from '../utils/db'
+import {connection} from '../utils/db'
 
-export async function getGroups (filter, sort) {
+export async function getGroups (filter) {
   const find = {}
 
   if (isString(filter.user)) {
     find.user = filter.user
   }
-
-  return (await db).collection('walletlines').distinct('group', find)
+  return (await connection()).collection('walletlines').distinct('group', find)
 }

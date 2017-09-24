@@ -1,5 +1,5 @@
 import {isString, omit} from 'lodash'
-import {promise as db} from '../utils/db'
+import {connection} from '../utils/db'
 import i18n from 'i18next'
 import { ObjectID } from 'mongodb'
 
@@ -25,7 +25,7 @@ export async function getLines (filter, sort) {
     find.user = filter.user
   }
 
-  return (await db).collection('walletlines').find(find).sort(sort).toArray()
+  return (await connection()).collection('walletlines').find(find).sort(sort).toArray()
 }
 
 export async function getLine (id, _rev) {
@@ -34,7 +34,7 @@ export async function getLine (id, _rev) {
     query._rev = _rev
   }
 
-  const line = (await db).collection('walletlines').findOne(query)
+  const line = (await connection()).collection('walletlines').findOne(query)
   processNotFound(id, line)
   return line
 }
@@ -48,7 +48,7 @@ export async function saveLine (line) {
   }
 
   try {
-    const doc = await (await db).collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true })
+    const doc = await (await connection()).collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true })
     return doc.value
   } catch (err) {
     processMongoException(err)
@@ -56,7 +56,7 @@ export async function saveLine (line) {
 }
 
 export async function removeLine (id) {
-  const line = await (await db).collection('walletlines').deleteOne({ _id: new ObjectID(id) })
+  const line = await (await connection()).collection('walletlines').deleteOne({ _id: new ObjectID(id) })
   processNotFound(id, line)
   return line
 }

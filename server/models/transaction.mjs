@@ -1,5 +1,5 @@
 import {isString, isDate} from 'lodash'
-import {promise as db} from '../utils/db'
+import {connection} from '../utils/db'
 
 import { processMongoException } from './exception'
 
@@ -22,12 +22,12 @@ export async function getTransactions (filter) {
     find.updatedAt = { '$gte': filter.earliest }
   }
 
-  return (await db).collection('transactions').find(find).sort({ updatedAt: 1 }).toArray()
+  return (await connection()).collection('transactions').find(find).sort({ updatedAt: 1 }).toArray()
 }
 
 export async function createTransaction (transaction) {
   try {
-    const doc = await (await db).collection('transactions').insert(transaction)
+    const doc = await (await connection()).collection('transactions').insert(transaction)
     return doc.ops[0]
   } catch (err) {
     processMongoException(err)

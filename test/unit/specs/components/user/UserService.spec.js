@@ -194,9 +194,7 @@ describe('UserService.js', () => {
       expect(SESSION.username).to.equal('xxx')
       expect(SESSION.clearKey).to.equal('yyy')
 
-      expect(getAuthHeader()).to.deep.equal({
-        Authorization: ''
-      })
+      expect(getAuthHeader()).to.deep.equal({})
     })
   })
 })

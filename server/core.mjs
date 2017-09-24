@@ -1,10 +1,12 @@
 import debug from 'debug'
 import config from 'config'
 
+import errorHandler from 'errorhandler'
 import bodyParser from 'body-parser'
 import expressJwt from 'express-jwt'
 import http from 'http'
 
+import { connection } from './utils/db'
 import {websocketVerifyClient as verifyClient, processPayload} from './utils/authentification'
 import graphqlRouter, {schema} from './controllers/graphql'
 import { graphiqlExpress } from 'graphql-server-express'
@@ -26,6 +28,13 @@ export class Core {
       secret: config.get('config.jwt.secret'),
       credentialsRequired: false,
       requestProperty: 'payload'
+    }
+    this.app.use((req, res, next) => {
+      connection()
+      next()
+    })
+    if (this.app.get('env') === 'development') {
+      this.app.use(errorHandler())
     }
     this.app.use(expressJwt(jwtOption).unless({ path: ['/graphiql'] }))
     this.app.use(processPayload)
@@ -66,6 +75,7 @@ export class Core {
   }
 
   run () {
+    connection().catch(err => log('Can\'t connect to mongodb', err))
     this.server.listen(this.app.get('port'), () => log('Express server listening on port ' + this.app.get('port')))
   }
 

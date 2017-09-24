@@ -1,5 +1,5 @@
 import {isString} from 'lodash'
-import {promise as db} from '../utils/db'
+import {connection} from '../utils/db'
 import i18n from 'i18next'
 
 import { processMongoException, NotFoundError } from './exception'
@@ -23,11 +23,11 @@ export async function getUsers (filter = {}) {
     find.confirmationToken = filter.confirmationToken
   }
 
-  return (await db).collection('users').find(find).toArray()
+  return (await connection()).collection('users').find(find).toArray()
 }
 
 export async function getUser (id) {
-  const user = await (await db).collection('users').findOne({ _id: id.toLowerCase() })
+  const user = await (await connection()).collection('users').findOne({ _id: id.toLowerCase() })
   processNotFound(id, user)
   return user
 }
@@ -36,7 +36,7 @@ export async function registerUser (user) {
   normalizeUser(user)
 
   try {
-    await (await db).collection('users').insert(user)
+    await (await connection()).collection('users').insert(user)
     return user
   } catch (err) {
     processMongoException(err)

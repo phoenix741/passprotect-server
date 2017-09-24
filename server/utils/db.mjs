@@ -4,8 +4,7 @@ import debug from 'debug'
 
 const log = debug('App:Utils:Db')
 
-export let promise = null
-export let db = null
+let promise = null
 
 export function connection () {
   if (!promise) {
@@ -13,7 +12,6 @@ export function connection () {
       .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
       .then(database => {
         log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
-        db = database
         return database
       })
       .catch(err => {
@@ -24,5 +22,3 @@ export function connection () {
 
   return promise
 }
-
-connection().catch(err => log('Can\'t connect to mongodb', err))
