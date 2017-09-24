@@ -1,4 +1,4 @@
-import {pick, includes, isString, isEmpty} from 'lodash'
+import {pick, isString, isEmpty} from 'lodash'
 import i18n from 'i18next'
 import fs from 'fs'
 import path from 'path'
@@ -106,7 +106,7 @@ function sanitizeInput (input) {
   validationError.status = 400
 
   const typeChoices = ['card', 'password', 'text']
-  if (!includes(typeChoices, data.type)) {
+  if (!typeChoices.includes(data.type)) {
     validationError.message = i18n.t('error:line.400.type', {choices: typeChoices.join(', ')})
     throw validationError
   }

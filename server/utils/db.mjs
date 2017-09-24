@@ -1,4 +1,4 @@
-import {MongoClient} from 'mongodb'
+import mongodb from 'mongodb'
 import config from 'config'
 import debug from 'debug'
 
@@ -8,7 +8,7 @@ let promise = null
 
 export function connection () {
   if (!promise) {
-    promise = MongoClient
+    promise = mongodb.MongoClient
       .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
       .then(database => {
         log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
