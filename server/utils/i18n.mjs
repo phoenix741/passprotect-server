@@ -6,7 +6,7 @@ import i18n from 'i18next'
 
 const log = debug('app:bootstrap')
 
-export default function bootstrap (environment) {
+export function bootstrap (environment) {
   // Init i18n
   const i18nOption = {
     ns: ['translation', 'error', 'items', 'user'],

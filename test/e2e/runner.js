@@ -1,7 +1,6 @@
 // 1. start the dev server using production config
 process.env.NODE_ENV = 'testing'
 var server = require('../../build/dev-server.js')
-var back = require('../../server/launcher.js')
 
 server.ready.then(() => {
   // 2. run the nightwatch test suite against it
@@ -24,13 +23,11 @@ server.ready.then(() => {
 
   runner.on('exit', function (code) {
     server.close()
-    back.stop()
     process.exit(code)
   })
 
   runner.on('error', function (err) {
     server.close()
-    back.stop()
     throw err
   })
 })

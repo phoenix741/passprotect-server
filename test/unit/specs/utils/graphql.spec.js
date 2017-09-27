@@ -13,9 +13,7 @@ describe('graphql.js', () => {
       middlewares.forEach(m => m.applyMiddleware(req, next))
       expect(req).to.deep.equal({
         options: {
-          headers: {
-            Authorization: ''
-          }
+          headers: {}
         }
       })
       sinon.assert.calledWith(next)

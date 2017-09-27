@@ -1,5 +1,5 @@
 import {isString, isDate} from 'lodash'
-import {promise as dbPromise} from '../utils/db'
+import {connection} from '../utils/db'
 
 import { processMongoException } from './exception'
 
@@ -12,7 +12,7 @@ import { processMongoException } from './exception'
  *
  * And all other informations that a user want to store in the wallet line (depending on the wallet).
  */
-export function getTransactions (filter) {
+export async function getTransactions (filter) {
   const find = {}
 
   if (isString(filter.user)) {
@@ -22,13 +22,14 @@ export function getTransactions (filter) {
     find.updatedAt = { '$gte': filter.earliest }
   }
 
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('transactions').find(find).sort({ updatedAt: 1 }).toArray(cb))
-  })
+  return (await connection()).collection('transactions').find(find).sort({ updatedAt: 1 }).toArray()
 }
 
-export function createTransaction (transaction) {
-  return dbPromise.then(db => {
-    return Promise.fromCallback(cb => db.collection('transactions').insert(transaction, cb)).then(doc => doc.ops[0])
-  }).catch(processMongoException)
+export async function createTransaction (transaction) {
+  try {
+    const doc = await (await connection()).collection('transactions').insert(transaction)
+    return doc.ops[0]
+  } catch (err) {
+    processMongoException(err)
+  }
 }

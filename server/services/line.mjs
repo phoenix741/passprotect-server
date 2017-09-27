@@ -5,7 +5,7 @@ import {createTransaction} from '../services/transaction'
 
 const log = debug('App:Service:Line')
 
-export function getLines (user) {
+export async function getLines (user) {
   log('Get all lines from user ', user._id)
 
   const filter = {}
@@ -18,30 +18,37 @@ export function getLines (user) {
   return getLinesModel(filter, sort)
 }
 
-export function getLine (id) {
+export async function getLine (id) {
   log(`Get the line with id ${id}`)
   return getLineModel(id)
 }
 
-export function saveLine (line) {
+export async function saveLine (line) {
   log(`Create the line of type ${line.type}`)
 
   line.updatedAt = new Date()
 
-  return getLineIfAvailable(line._id, line._rev)
-    .then(function (oldLine) {
-      return saveLineModel(line).tap(newLine => createTransaction('line', oldLine, newLine))
-    })
+  const oldLine = await getLineIfAvailable(line._id, line._rev)
+  const newLine = await saveLineModel(line)
+  await createTransaction('line', oldLine, newLine)
+  return newLine
 }
 
-export function removeLine (id) {
+export async function removeLine (id) {
   log(`Remove the line with the id ${id}`)
 
-  return getLineIfAvailable(id)
-    .tap(() => removeLineModel(id))
-    .tap(oldLine => createTransaction('line', oldLine))
+  const oldLine = await getLineIfAvailable(id)
+  await removeLineModel(id)
+  return createTransaction('line', oldLine)
 }
 
-function getLineIfAvailable (id, rev) {
-  return getLineModel(id, rev).catch(NotFoundError, () => null)
+async function getLineIfAvailable (id, rev) {
+  try {
+    return getLineModel(id, rev)
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      return null
+    }
+    throw err
+  }
 }
