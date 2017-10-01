@@ -28,4 +28,4 @@ ENV MODE=prod
 ENV NODE_ENV=production
 
 EXPOSE 3000
-CMD ["node", "server/app.js"]
+CMD ["node", "-r", "@std/esm", "server/app"]
