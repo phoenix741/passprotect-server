@@ -1,9 +1,14 @@
 pipeline:
     test:
-        image: node:8-alpine
+        image: node:8
         commands:
+            - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+            - sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list'
+            - apt update && apt install -y google-chrome-stable
+
             - npm install
-            - npm run e2e -- --config test/e2e/nightwatch.docker.conf.js
+            - npm run unit
+            - npm run e2e:docker
 
     nodejs:
         image: plugins/docker

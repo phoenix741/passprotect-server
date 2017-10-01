@@ -1,6 +1,7 @@
 .DS_Store
 .idea
 .esm-cache
+.nyc_output
 doc
 node_modules/
 dist/

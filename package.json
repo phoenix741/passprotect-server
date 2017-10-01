@@ -13,6 +13,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "unit:server": "nyc -e mjs --reporter=text --reporter=text-summary mocha -r @std/esm --recursive test/**/*.mjs",
     "e2e": "concurrently -k -s first \"node -r @std/esm server/app\" \"node test/e2e/runner.js\"",
+    "e2e:docker": "concurrently -k -s first \"node -r @std/esm server/app\" \"node test/e2e/runner.js --config test/e2e/nightwatch.docker.conf.js\"",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.mjs,.vue client server test/unit/specs test/e2e/specs"
   },
@@ -102,6 +103,7 @@
     "i18next-resource-store-loader": "0.1.2",
     "img-loader": "~2.0.0",
     "inject-loader": "^3.0.1",
+    "is-docker": "^1.1.0",
     "jquery": "~3.2.1",
     "json-loader": "~0.5.7",
     "json2csv": "~3.11.2",
