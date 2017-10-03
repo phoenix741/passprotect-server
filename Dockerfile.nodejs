@@ -1,7 +1,7 @@
 #
 # -------- Base ---------
 
-FROM node:8-alpine as base
+FROM node:8 as base
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 
 WORKDIR /src
@@ -11,7 +11,7 @@ COPY package.json /src
 # -------- Dependencies --------
 FROM base as dependencies
 
-RUN apk add --no-cache make gcc g++ python
+RUN apt install make gcc g++ python
 RUN npm install --production
 
 #
