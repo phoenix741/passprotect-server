@@ -21,7 +21,7 @@ v-card.detail-card
 					v-model="lineToModify.group",
 					item-text="name"
 					item-value="value")
-					template(slot="item",scope="data")
+					template(slot="item",slot-scope="data")
 						template(v-if="data.item.value") {{ data.item.name }}
 						div.groupSelect(v-if="!data.item.value")
 							span#empty-item {{ data.item.name }}

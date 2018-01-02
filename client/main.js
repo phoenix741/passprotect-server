@@ -12,7 +12,7 @@ import promisify from 'es6-promisify'
 import {init as i18nInit} from 'i18next'
 import resBundle from '../common/locales'
 import Vuetify from 'vuetify'
-import veeDictionary from 'vee-validate/dist/locale/fr'
+import veeDictionaryFr from 'vee-validate/dist/locale/fr'
 import VeeValidate, { Validator } from 'vee-validate'
 
 import VueApollo from 'vue-apollo'
@@ -20,7 +20,7 @@ import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
 (async function () {
-  Validator.addLocale(veeDictionary)
+  Validator.localize('fr', veeDictionaryFr)
 
   Vue.config.productionTip = false
 

@@ -1,6 +1,7 @@
 config:
     mongodb:
         host: ~
+        database: ~
         user: ~
         password: ~
         options: ~

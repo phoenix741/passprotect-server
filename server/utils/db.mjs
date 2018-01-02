@@ -10,9 +10,9 @@ export function connection () {
   if (!promise) {
     promise = mongodb.MongoClient
       .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
-      .then(database => {
+      .then(client => {
         log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
-        return database
+        return client.db(config.get('config.mongodb.database'))
       })
       .catch(err => {
         promise = null
