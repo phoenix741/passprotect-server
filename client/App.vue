@@ -1,17 +1,7 @@
 <template lang="pug">
 	v-app
-		v-navigation-drawer.pb-0(persistent,light,:mini-variant.sync="mini",v-model="drawer")
-			v-toolbar.transparent(flat)
-				v-list.pa-0
-					v-list-tile(avatar,tag="div")
-						v-list-tile-content.title-content
-							v-list-tile-title(v-if="SESSION.username") {{ SESSION.username }}
-							v-list-tile-title(v-else-if="!SESSION.username") {{ trans("user:toolbar.notlogged") }}
-						v-list-tile-action
-							v-btn(icon,@click.native.stop="mini = !mini")
-								v-icon chevron_left
-			v-list.pt-0(dense)
-				v-divider
+		v-navigation-drawer(fixed,clipped,app,v-model="drawer")
+			v-list(dense)
 				v-list-tile.connect-link(router=true,to="/login",v-if="! SESSION.authenticated")
 					v-list-tile-action
 						v-icon face
@@ -39,29 +29,27 @@
 					v-list-tile-content
 						v-list-tile-title {{ trans('app.menu.about') }}
 
-		v-toolbar.indigo.darken-4(fixed,dark)
-			v-toolbar-side-icon(@click.native.stop="drawer = !drawer")
-			v-toolbar-title {{ trans('app.title') }}
+		v-toolbar(color="indigo darken-4",dark,app,clipped-left,fixed)
+			v-toolbar-title.ml-0.pl-3(:style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 72px'")
+				v-toolbar-side-icon(@click.stop="drawer = !drawer")
+				span.hidden-xs-only {{ trans('app.title') }}
+			v-text-field.search-input(v-if="this.$route.name=='items'",light,solo,prepend-icon="search",:placeholder="trans('items:list.search')",v-on:input="search",style="max-width: 500px; min-width: 128px")
 
-		main
-			v-container
-				router-view
-
-		v-footer.indigo.darken-4(dark)
-			span © 2017
+		v-content
+			router-view
 </template>
 
 <script type="text/babel">
 import {SESSION, logout} from './components/user/UserService'
 import {exportLinesAsCsv} from './components/items/ItemService'
+import {debounce} from 'lodash'
 
 export default {
   name: 'app',
   data () {
     return {
       SESSION,
-      drawer: true,
-      mini: false
+      drawer: true
     }
   },
   methods: {
@@ -70,6 +58,9 @@ export default {
     },
     handleExport () {
       exportLinesAsCsv(this)
+    },
+    search (value) {
+      debounce(value => this.$router.push(`/items?q=${value}`), 500)(value)
     }
   }
 }

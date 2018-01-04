@@ -1,34 +1,28 @@
 <template lang="pug">
-div.cardList
-  h4 {{ trans('items:list.title') }}
-
-  v-card
-    v-toolbar.indigo.darken-4
-      v-text-field.search-input(solo,v-on:input="search",prepend-icon="search")
-
-    v-container
-      v-list#items-list(two-line)
-        template(v-for="(lines, title, index) in linesByGroup")
-          v-subheader.group-title(v-text="title")
-          v-list-tile(v-for="(line, index) in lines",:key="line._id",v-on:click="showDetail(line, $event)",avatar)
-            v-list-tile-avatar
-              v-icon.white--text(:class="cardType(line).color") {{ cardType(line).icon }}
-            v-list-tile-content
-              v-list-tile-title.line-title {{ line.label }}
-              v-list-tile-sub-title.line-type {{ trans(cardType(line).label) }}
-            v-list-tile-action
-              v-dialog(v-model="dialog['remove' + index]")
-                v-btn.item-delete-btn(icon,ripple,slot="activator")
-                  v-icon.grey--text.text--lighten-1 delete
-                v-card
-                  v-card-title
-                    .headline {{ trans('items:alert.confirm_remove.title') }}
-                  v-card-text {{ trans('items:alert.confirm_remove.message', {title: line.label}) }}
-                  v-card-actions
-                    v-spacer
-                    v-btn.cancel-btn.green--text.darken-1(flat="flat",v-on:click.native="dialog['remove' + index] = false") {{ trans('items:alert.confirm_remove.disagree') }}
-                    v-btn.delete-btn.green--text.darken-1(flat="flat",v-on:click.native="remove(line, index)") {{ trans('items:alert.confirm_remove.agree') }}
-          v-divider(inset,v-if="index != groupCount - 1")
+div
+  v-list(two-line)
+    template(v-for="(lines, title, indexGroup) in linesByGroup")
+      v-subheader.group-title(v-text="title")
+      template(v-for="(line, index) in lines")
+        v-list-tile(:key="line._id",v-on:click="showDetail(line, $event)",avatar)
+          v-list-tile-avatar
+            v-icon.white--text(:class="cardType(line).color") {{ cardType(line).icon }}
+          v-list-tile-content
+            v-list-tile-title.line-title {{ line.label }}
+            v-list-tile-sub-title.line-type {{ trans(cardType(line).label) }}
+          v-list-tile-action
+            v-dialog(v-model="dialog['remove' + index]" max-width="500px")
+              v-btn.item-delete-btn(icon,ripple,slot="activator")
+                v-icon.grey--text.text--lighten-1 delete
+              v-card
+                v-card-title
+                  .headline {{ trans('items:alert.confirm_remove.title') }}
+                v-card-text {{ trans('items:alert.confirm_remove.message', {title: line.label}) }}
+                v-card-actions
+                  v-spacer
+                  v-btn.cancel-btn.green--text.darken-1(flat="flat",ripple,v-on:click="dialog['remove' + index] = false") {{ trans('items:alert.confirm_remove.disagree') }}
+                  v-btn.delete-btn.green--text.darken-1(flat="flat",ripple,v-on:click="remove(line, index)") {{ trans('items:alert.confirm_remove.agree') }}
+        v-divider(:inset="index < lines.length - 1",v-if="index < lines.length - 1 || indexGroup != groupCount - 1")
 
     v-speed-dial(:bottom="true",:right="true",:hover="true",:fixed="true")
       v-btn#items-add-button.red.darken-2(slot="activator",dark,fab,hover)
@@ -46,24 +40,24 @@ div.cardList
 import {SESSION} from '../user/UserService'
 import {cardTypeMapping, removeLine} from './ItemService'
 import getLines from './getLines.gql'
-import {filter, groupBy, size, debounce} from 'lodash'
+import {filter, groupBy, size} from 'lodash'
 import AnalyticsMixin from '../../utils/piwik'
 
 export default {
   name: 'items',
   mixins: [AnalyticsMixin],
+  props: ['q'],
   data () {
     return {
       title: this.trans('items:list.title'),
       showOptions: false,
       dialog: {},
-      filter: '',
       lines: []
     }
   },
   computed: {
     linesByGroup () {
-      const searchFilter = !!this.filter && new RegExp('^' + this.filter)
+      const searchFilter = !!this.q && new RegExp('^' + this.q)
       const filteredLines = filter(this.lines, line => {
         if (searchFilter) {
           return searchFilter.test(line.label) || searchFilter.test(line.group)
@@ -91,16 +85,23 @@ export default {
       removeLine(this, line._id)
     },
     showDetail (line, $event) {
-      if (!$event.target.className.match(/\bdelete-btn\b/)) {
+      var target = $event.target || $event.srcElement
+
+      while (target) {
+        if (target instanceof HTMLButtonElement) {
+          break
+        }
+
+        target = target.parentNode
+      }
+
+      if (!target || !target.className.match(/\bdelete-btn\b/)) {
         this.$router.push('/items/' + line._id)
       }
     },
     cardType (line) {
       line = line || {}
       return cardTypeMapping[line.type || 'text']
-    },
-    search (value) {
-      debounce(value => (this.filter = value), 500)(value)
     }
   },
   beforeRouteEnter (to, from, next) {

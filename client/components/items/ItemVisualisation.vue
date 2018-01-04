@@ -1,11 +1,7 @@
 <template lang="pug">
-v-card.visualisation-card
-	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
-		v-toolbar-title#title-label {{ trans(cardType.label) }}
-		v-spacer
-		v-btn#edit-button.white--text(icon,router=true,:to="'/items/' + line._id + '/edit'")
-			v-icon mode_edit
-
+//		v-btn#edit-button.white--text(icon,router=true,:to="'/items/' + line._id + '/edit'")
+//			v-icon mode_edit
+div
 	v-list(two-line)
 		v-list-tile
 			v-list-tile-action

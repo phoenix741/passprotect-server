@@ -13,13 +13,13 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    {path: '/about', component: About},
-    {path: '/items', component: Items},
-    {path: '/items/type/:type', component: ItemCreation, props: true},
-    {path: '/items/:id/edit', component: ItemModification, props: true},
-    {path: '/items/:id', component: ItemVisualisation, props: true},
-    {path: '/login', component: Login},
-    {path: '/register', component: Register},
+    {name: 'about', path: '/about', component: About},
+    {name: 'items', path: '/items', component: Items, props: route => ({ q: route.query.q })},
+    {name: 'create', path: '/items/type/:type', component: ItemCreation, props: true},
+    {name: 'edit', path: '/items/:id/edit', component: ItemModification, props: true},
+    {name: 'view', path: '/items/:id', component: ItemVisualisation, props: true},
+    {name: 'login', path: '/login', component: Login},
+    {name: 'register', path: '/register', component: Register},
     {path: '*', redirect: '/items'}
   ]
 })
