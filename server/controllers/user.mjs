@@ -103,7 +103,7 @@ function filterUser (user) {
 function parseErrors (err) {
   return {
     errors: [{
-      fieldName: err.field || 'global',
+      fieldName: err.field || 'username',
       message: err.message
     }]
   }

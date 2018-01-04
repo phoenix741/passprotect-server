@@ -26,7 +26,7 @@ import {checkAuth} from './components/user/UserService'
 
   Vue.use(VueApollo)
   Vue.use(Vuetify)
-  Vue.use(VeeValidate, {errorBagName: 'veeErrors', locale: 'fr'})
+  Vue.use(VeeValidate, {locale: 'fr'})
 
   const i18nOptions = {
     resources: resBundle,

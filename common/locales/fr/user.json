@@ -18,7 +18,7 @@
         }
       },
       "password": {
-        "field": "Votre mot de passe.",
+        "field": "Votre mot de passe",
         "help": {
           "default": "Vous avez oublié votre mot de passe ...",
           "cantbeblank": "Le mot de passe ne peut être vide."

@@ -1,4 +1,5 @@
 import debug from 'debug'
+import i18n from 'i18next'
 import {pick} from 'lodash'
 import {AuthorizationError} from '../models/exception'
 import {getUsers as getUsersModel, getUser as getUserModel, registerUser as registerUserModel} from '../models/user'
@@ -42,7 +43,7 @@ export async function verifyPassword (user, password) {
 
   const isValid = await checkPassword(password, user.password)
   if (!isValid) {
-    throw new AuthorizationError('User or password invalid')
+    throw new AuthorizationError(i18n.t('error:user.404.userNotFound'))
   }
   return user
 }

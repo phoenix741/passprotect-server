@@ -1,7 +1,7 @@
 {
   "user": {
     "404": {
-      "userNotFound": "Utilisateur {{userId}} non trouvé"
+      "userNotFound": "Utilisateur {{userId}} non trouvé ou mot de passe invalide"
     },
     "400": {
       "_id": "Le nom d'utilisateur est obligatoire",

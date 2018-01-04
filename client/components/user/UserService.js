@@ -39,7 +39,7 @@ export async function login (context, creds, redirect) {
       context.$router.push('/items')
     }
   } catch (err) {
-    context.error = err
+    context.errors.add({field: err.fieldName, msg: err.message})
   }
 }
 
@@ -56,7 +56,7 @@ export async function signup (context, creds, redirect) {
 
     return await login(context, creds, redirect)
   } catch (err) {
-    context.error = err
+    context.errors.add({field: err.fieldName, msg: err.message})
   }
 }
 
@@ -71,7 +71,7 @@ export function logout (context) {
   localStorage.removeItem('clearKey')
 
   context.$apollo.provider.defaultClient.resetStore()
-  context.$router.push('/items')
+  context.$router.push('/login')
 }
 
 export function checkAuth () {

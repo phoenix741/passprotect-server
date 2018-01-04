@@ -1,28 +1,38 @@
 <template lang="pug">
-	v-layout(row,wrap)
-		v-flex(xs12,md6,offset-md3)
-			v-card
-				v-card-text
-					v-text-field.mt-5(
-						:label="trans('user:login.form.username.field')",
-						:data-vv-as="trans('user:login.form.username.field')",
-						v-validate="'required'",
-						name="username",
-						v-model="username",
-						v-bind:rules="usernameValidation")
-					v-text-field.mt-5(
-						:label="trans('user:login.form.password.field')",
-						:data-vv-as="trans('user:login.form.password.field')",
-						type="password",
-						v-validate="'required|min:8'"
-						name="password"
-						v-model="password"
-						v-bind:rules="passwordValidation")
-					.text-xs-center
-						v-btn#login-button(primary,dark,v-on:click.native="submitForm()") {{ trans('user:login.dialog.button.connect') }}
-					div.mt-5
-						| 	{{ trans('user:login.dialog.button.noaccount') }}
-						router-link#register-link(to="/register") {{ trans('user:login.dialog.button.signup') }}
+div
+  v-toolbar(color="indigo darken-4",dark,app)
+    v-toolbar-title.ml-0.pl-3
+      span {{ trans('app.title') }}
+
+  form(@submit.prevent="submit()")
+    v-layout(row,wrap)
+      v-flex(xs12,md6,offset-md3)
+        v-card
+          v-card-text
+            v-text-field.mt-5(
+              :label="trans('user:login.form.username.field')",
+              :data-vv-as="trans('user:login.form.username.field')",
+              v-model="username",
+              :error-messages="errors.collect('username')",
+              v-validate="'required'",
+              data-vv-name="username"
+              name="username"
+              required)
+            v-text-field.mt-5(
+              :label="trans('user:login.form.password.field')",
+              :data-vv-as="trans('user:login.form.password.field')",
+              v-model="password"
+              type="password",
+              :error-messages="errors.collect('password')",
+              v-validate="'required|min:8'"
+              data-vv-name="password"
+              name="password"
+              required)
+            .text-xs-center
+              v-btn#login-button(type="submit",dark,color="primary") {{ trans('user:login.dialog.button.connect') }}
+            div.mt-5
+              |   {{ trans('user:login.dialog.button.noaccount') }}
+              router-link#register-link(to="/register") {{ trans('user:login.dialog.button.signup') }}
 </template>
 
 <script type="text/babel">
@@ -30,35 +40,20 @@ import {login} from './UserService'
 import AnalyticsMixin from '../../utils/piwik'
 
 export default {
+  $validates: true,
   name: 'login',
   mixins: [AnalyticsMixin],
   data () {
     return {
       title: this.trans('user:login.dialog.title'),
       username: '',
-      password: '',
-      error: {}
-    }
-  },
-  computed: {
-    usernameValidation () {
-      const errors = this.veeErrors.collect('username').map(error => () => error)
-      if (this.error.fieldName === 'username' || this.error.fieldName === 'global') {
-        errors.push(() => this.error.message)
-      }
-      return errors
-    },
-    passwordValidation () {
-      const errors = this.veeErrors.collect('password').map(error => () => error)
-      if (this.error.fieldName === 'password') {
-        errors.push(() => this.error.message)
-      }
-      return errors
+      password: ''
     }
   },
   methods: {
-    submitForm () {
-      if (this.veeErrors.any()) {
+    async submit () {
+      const valid = await this.$validator.validateAll()
+      if (!valid) {
         return
       }
 

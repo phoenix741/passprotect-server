@@ -122,7 +122,7 @@ function sanitizeInput (input) {
 function parseErrors (err) {
   return {
     errors: [{
-      fieldName: err.field || 'global',
+      fieldName: err.field || 'label',
       message: err.message
     }]
   }
