@@ -4,7 +4,7 @@ v-card
     v-toolbar(dark,color="primary")
       v-btn(icon,@click.native="close()",dark)
         v-icon close
-      v-toolbar-title {{ trans(cardType.label) }}
+      v-toolbar-title#title-label {{ trans(cardType.label) }}
       v-spacer
       v-toolbar-items
         v-btn#generate-password(v-if="lineToModify.type == 'password'",dark,flat,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
@@ -122,6 +122,7 @@ import {cardTypeMapping, updateLine, decryptLine, encryptLine, generate} from '.
 import getGroups from './getGroups.gql'
 
 export default {
+  $validates: true,
   props: ['line'],
   name: 'item-detail',
   data () {
@@ -133,7 +134,6 @@ export default {
       passwordVisibility: false,
       clearInformation: {},
       typeOfCard: this.trans('items:item.form.type.options').split('+'),
-      error: {},
       groups: [],
       newGroup: ''
     }

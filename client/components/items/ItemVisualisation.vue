@@ -4,7 +4,7 @@ div
     v-btn(icon,exact,router=true,to="/items")
       v-icon arrow_back
     v-toolbar-title.ml-0.pl-3(:style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 72px'")
-      span {{ trans(cardType.label) }}
+      span#title-label {{ trans(cardType.label) }}
     v-spacer
     v-dialog(v-model="editDialog",fullscreen,transition="dialog-bottom-transition",:overlay="false")
       v-btn#edit-button.white--text(icon,slot="activator")

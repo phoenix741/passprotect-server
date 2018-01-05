@@ -5,7 +5,7 @@ import VeeValidate from 'vee-validate'
 import VueRouter from 'vue-router'
 
 Vue.use(Vuetify)
-Vue.use(VeeValidate, {errorBagName: 'veeErrors'})
+Vue.use(VeeValidate)
 Vue.use(VueRouter)
 
 Vue.config.productionTip = false

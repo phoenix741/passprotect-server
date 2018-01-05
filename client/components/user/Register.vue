@@ -55,6 +55,7 @@ import {signup} from './UserService'
 import AnalyticsMixin from '../../utils/piwik'
 
 export default {
+  $validates: true,
   name: 'register',
   mixins: [AnalyticsMixin],
   data () {
@@ -62,8 +63,7 @@ export default {
       title: this.trans('user:register.form.title'),
       username: '',
       password: '',
-      passwordRepeat: '',
-      error: {}
+      passwordRepeat: ''
     }
   },
   methods: {

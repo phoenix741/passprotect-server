@@ -4,6 +4,7 @@ const WAIT_TIMEOUT = 5000
 
 module.exports = {
   elements: {
+    overlay: '.overlay.overlay--active',
     search: '.search-input input',
 
     addButton: '#items-add-button',
@@ -15,6 +16,14 @@ module.exports = {
     checkPageShown () {
       this
         .waitForElementVisible('@search', WAIT_TIMEOUT)
+      return this.api
+    },
+
+    closeDrawer () {
+      this
+        .waitForElementVisible('@search', WAIT_TIMEOUT)
+        .moveToElement('@overlay', 1000, 1000)
+        .click('@overlay')
       return this.api
     },
 
@@ -39,15 +48,18 @@ module.exports = {
       this
         .waitForElementVisible('@addTextButton', WAIT_TIMEOUT)
         .click('@addTextButton')
+        .moveToElement('body', 0, 0)
       return this.api
     },
 
     addPassword () {
       this.add()
+      this.api.pause(300)
       this.checkButton()
       this
         .waitForElementVisible('@addPasswordButton', WAIT_TIMEOUT)
         .click('@addPasswordButton')
+        .moveToElement('body', 0, 0)
       return this.api
     },
 
@@ -57,6 +69,7 @@ module.exports = {
       this
         .waitForElementVisible('@addCardButton', WAIT_TIMEOUT)
         .click('@addCardButton')
+        .moveToElement('body', 0, 0)
       return this.api
     },
 
@@ -86,6 +99,7 @@ module.exports = {
     selectItem (indice) {
       this
         .waitForElementVisible('@search', WAIT_TIMEOUT)
+
         .click(`#items-list > li:nth-child(${indice}) .line-title`)
       return this.api
     }

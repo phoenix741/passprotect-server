@@ -31,7 +31,7 @@ div
     v-text-field.search-input(light,solo,prepend-icon="search",:placeholder="trans('items:list.search')",v-on:input="search",style="max-width: 500px; min-width: 128px")
 
   v-content
-    v-list(two-line)
+    v-list#items-list(two-line)
       template(v-for="(lines, title, indexGroup) in linesByGroup")
         v-subheader.group-title(v-text="title")
         template(v-for="(line, index) in lines")
@@ -70,11 +70,11 @@ div
           v-icon text_fields
 
       v-dialog(v-model="dialog.card",fullscreen,transition="dialog-bottom-transition",:overlay="false")
-        item-creation(type="card",@close="dialog.card = false")
+        item-creation(v-if="dialog.card",type="card",@close="dialog.card = false")
       v-dialog(v-model="dialog.password",fullscreen,transition="dialog-bottom-transition",:overlay="false")
-        item-creation(type="password",@close="dialog.password = false")
+        item-creation(v-if="dialog.password",type="password",@close="dialog.password = false")
       v-dialog(v-model="dialog.text",fullscreen,transition="dialog-bottom-transition",:overlay="false")
-        item-creation(type="text",@close="dialog.text = false")
+        item-creation(v-if="dialog.text",type="text",@close="dialog.text = false")
 </template>
 
 <script type="text/babel">

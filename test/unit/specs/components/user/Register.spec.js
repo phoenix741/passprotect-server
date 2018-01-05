@@ -22,7 +22,7 @@ describe('Register.vue', () => {
     })
   })
 
-  it('should render correct contents', () => {
+  it('should render correct contents', async () => {
     const data = {
       username: 'myusername',
       password: 'mypassword',
@@ -30,7 +30,7 @@ describe('Register.vue', () => {
     }
 
     RegisterComponent.setData(data)
-    RegisterComponent.find('.register-button').trigger('click')
+    await RegisterComponent.vm.submit()
 
     expect(signupHandler.called).to.equal(true)
     sinon.assert.calledWith(signupHandler, sinon.match({}), {
@@ -39,7 +39,7 @@ describe('Register.vue', () => {
     })
   })
 
-  it('Test validation of input (username and password required)', done => {
+  it('Test validation of input (username and password required)', async () => {
     const data = {
       username: ' ',
       password: ' ',
@@ -51,17 +51,16 @@ describe('Register.vue', () => {
     RegisterComponent.find('input[name="password"]').trigger('blur')
     RegisterComponent.find('input[name="passwordRepeat"]').trigger('blur')
 
-    Vue.nextTick(() => {
-      RegisterComponent.find('.register-button').trigger('click')
-      expect(RegisterComponent.html()).to.match(/The user:register.form.identity_username.field field is required./)
-      expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password1.field field is required./)
-      expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password2.field field is required./)
-      sinon.assert.notCalled(signupHandler)
-      done()
-    })
+    await Vue.nextTick()
+    await RegisterComponent.vm.submit()
+
+    expect(RegisterComponent.html()).to.match(/The user:register.form.identity_username.field field is required./)
+    expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password1.field field is required./)
+    expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password2.field field is required./)
+    sinon.assert.notCalled(signupHandler)
   })
 
-  it('Test validation of input (password must be at least 8 characters)', done => {
+  it('Test validation of input (password must be at least 8 characters)', async () => {
     const data = {
       username: 'test',
       password: 'test',
@@ -73,15 +72,14 @@ describe('Register.vue', () => {
     RegisterComponent.find('input[name="password"]').trigger('blur')
     RegisterComponent.find('input[name="passwordRepeat"]').trigger('blur')
 
-    Vue.nextTick(() => {
-      RegisterComponent.find('.register-button').trigger('click')
-      expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password1.field field must be at least 8 characters./)
-      sinon.assert.notCalled(signupHandler)
-      done()
-    })
+    await Vue.nextTick()
+    await RegisterComponent.vm.submit()
+
+    expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password1.field field must be at least 8 characters./)
+    sinon.assert.notCalled(signupHandler)
   })
 
-  it('Test validation of input (password different)', done => {
+  it('Test validation of input (password different)', async () => {
     const data = {
       username: 'test',
       password: 'testtest',
@@ -93,59 +91,10 @@ describe('Register.vue', () => {
     RegisterComponent.find('input[name="password"]').trigger('blur')
     RegisterComponent.find('input[name="passwordRepeat"]').trigger('blur')
 
-    Vue.nextTick(() => {
-      RegisterComponent.find('.register-button').trigger('click')
-      expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password2.field confirmation does not match./)
-      sinon.assert.notCalled(signupHandler)
-      done()
-    })
-  })
+    await Vue.nextTick()
+    await RegisterComponent.vm.submit()
 
-  it('Show error when username is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      passwordRepeat: 'testtest',
-      error: {fieldName: '_id', message: 'Server side server'}
-    }
-
-    RegisterComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(RegisterComponent.html()).to.match(/Server side server/)
-      done()
-    })
-  })
-
-  it('Show error when password is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      passwordRepeat: 'testtest',
-      error: {fieldName: 'password', message: 'Server side server'}
-    }
-
-    RegisterComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(RegisterComponent.html()).to.match(/Server side server/)
-      done()
-    })
-  })
-
-  it('Show error when password is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      passwordRepeat: 'testtest',
-      error: {fieldName: 'global', message: 'Server side server'}
-    }
-
-    RegisterComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(RegisterComponent.html()).to.match(/Server side server/)
-      done()
-    })
+    expect(RegisterComponent.html()).to.match(/The user:register.form.identity_password2.field confirmation does not match./)
+    sinon.assert.notCalled(signupHandler)
   })
 })

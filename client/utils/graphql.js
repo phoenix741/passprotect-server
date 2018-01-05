@@ -14,7 +14,7 @@ const httpLink = new HttpLink({
   uri: '/api/graphql'
 })
 
-const middlewareLink = new ApolloLink((operation, forward) => {
+export const middlewareLink = new ApolloLink((operation, forward) => {
   operation.setContext({ headers: getAuthHeader() })
   return forward(operation)
 })
