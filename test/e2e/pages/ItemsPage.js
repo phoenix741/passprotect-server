@@ -21,8 +21,7 @@ module.exports = {
 
     closeDrawer () {
       this
-        .waitForElementVisible('@search', WAIT_TIMEOUT)
-        .moveToElement('@overlay', 1000, 1000)
+        .moveToElement('@overlay', 10, 10)
         .click('@overlay')
       return this.api
     },
@@ -35,6 +34,7 @@ module.exports = {
     },
 
     checkButton () {
+      this.api.pause(300)
       this
         .assert.elementPresent('@addTextButton')
         .assert.elementPresent('@addCardButton')
@@ -54,7 +54,6 @@ module.exports = {
 
     addPassword () {
       this.add()
-      this.api.pause(300)
       this.checkButton()
       this
         .waitForElementVisible('@addPasswordButton', WAIT_TIMEOUT)

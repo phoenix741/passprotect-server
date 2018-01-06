@@ -32,6 +32,17 @@ module.exports = {
       desiredCapabilities: {
         browserName: 'chrome',
         javascriptEnabled: true,
+        acceptSslCerts: true,
+        chromeOptions: {
+          args: ['window-size=800,800']
+        }
+      }
+    },
+
+    firefox: {
+      desiredCapabilities: {
+        browserName: 'firefox',
+        javascriptEnabled: true,
         acceptSslCerts: true
       }
     }
