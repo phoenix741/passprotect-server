@@ -31,8 +31,6 @@ const ELEMENT_CARD_CODE = '1234'
 const ELEMENT_CARD_NOTE = 'Some notes for card'
 
 module.exports = {
-  asyncHookTimeout: 120000,
-  waitForConditionTimeout: 120000,
   'Starting the application, login page is shown': function (browser) {
     // automatically uses dev Server port from /config.index.js
     // default: http://localhost:8080
