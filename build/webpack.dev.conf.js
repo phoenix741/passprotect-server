@@ -50,7 +50,9 @@ const devWebpackConfig = graphqlPromise.then(graphqlSchema => {
     plugins: [
       new webpack.DefinePlugin(merge({
         'process.env': require('../config/dev.env'),
-        '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema)
+        '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema),
+        '__API_PATH__': JSON.stringify(config.build.apiPublicPath),
+        '__IS_CORDOVA__': JSON.stringify(process.env.BROWSER_ENV === 'cordova')
       }, piwikConfig.environments)),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.

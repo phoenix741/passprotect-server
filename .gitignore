@@ -1,6 +1,6 @@
 .DS_Store
 node_modules/
-/dist/
+/www/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -20,3 +20,5 @@ doc
 mongodb
 .nyc_output
 .esm-cache
+platforms/
+plugins/

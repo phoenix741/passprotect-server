@@ -36,7 +36,9 @@ const webpackConfig = graphqlPromise.then(graphqlSchema => {
       // http://vuejs.github.io/vue-loader/en/workflow/production.html
       new webpack.DefinePlugin(merge({
         'process.env': env,
-        '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema)
+        '__GRAPHQL_SCHEMA__': JSON.stringify(graphqlSchema),
+        '__API_PATH__': JSON.stringify(config.build.apiPublicPath),
+        '__IS_CORDOVA__': JSON.stringify(process.env.BROWSER_ENV === 'cordova')
       }, piwikConfig.environments)),
       new UglifyJsPlugin({
         uglifyOptions: {
@@ -80,7 +82,8 @@ const webpackConfig = graphqlPromise.then(graphqlSchema => {
           // https://github.com/kangax/html-minifier#options-quick-reference
         },
         // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-        chunksSortMode: 'dependency'
+        chunksSortMode: 'dependency',
+        isCordova: process.env.BROWSER_ENV === 'cordova'
       }, piwikConfig.htmlPluginOptions)),
       // keep module.id stable when vendor modules does not change
       new webpack.HashedModuleIdsPlugin(),

@@ -24,7 +24,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': require('../config/test.env'),
       __GRAPHQL_SCHEMA__: JSON.stringify({}),
-      __PASSPROTECT_CONFIG__: JSON.stringify(config.get('config.client'))
+      __PASSPROTECT_CONFIG__: JSON.stringify(config.get('config.client')),
+      __API_PATH__: JSON.stringify('/'),
+      __IS_CORDOVA__: JSON.stringify(false)
     })
   ]
 })
