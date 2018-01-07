@@ -1,5 +1,17 @@
 pipeline:
-    test:
+    e2e:
+        group: test
+        image: node:8
+        commands:
+            - npm install
+            - npm run e2e:docker
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - MONGODB_DATABASE=passprotect
+            - HOST=e2e
+
+    unit:
+        group: test
         image: node:8
         commands:
             - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -8,21 +20,20 @@ pipeline:
 
             - npm install
             - npm run unit
-            - npm run e2e:docker
-        environment:
-            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
-            - MONGODB_DATABASE=passprotect
-            - HOST=test
 
     nodejs:
+        group: build
         image: plugins/docker
         repo: phoenix741/passprotect-server
+        secrets: [ docker_username, docker_password ]
         tags: develop
         dockerfile: Dockerfile.nodejs
 
     nginx:
+        group: build
         image: plugins/docker
         repo: phoenix741/passprotect-client
+        secrets: [ docker_username, docker_password ]
         tags: develop
         dockerfile: Dockerfile.nginx
 

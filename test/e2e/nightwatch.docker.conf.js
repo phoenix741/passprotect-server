@@ -14,7 +14,7 @@ module.exports = _.merge({}, nightwatch, {
       selenium_host: 'selenium',
       silent: true,
       globals: {
-        devServerURL: 'http://test:' + (process.env.PORT || config.dev.port)
+        devServerURL: 'http://e2e:' + (process.env.PORT || config.dev.port)
       }
     }
   }

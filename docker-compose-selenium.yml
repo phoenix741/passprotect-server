@@ -1,6 +1,6 @@
 version: '2'
 services:
-    test:
+    e2e:
         image: node:8
         command: /bin/bash
         volumes:
@@ -8,7 +8,7 @@ services:
         environment:
             - MONGODB_HOST=mongodb://mongodb:27017/passprotect
             - MONGODB_DATABASE=passprotect
-            - HOST=test
+            - HOST=e2e
         stdin_open: true
         tty: true
 

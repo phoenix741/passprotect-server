@@ -1,6 +1,6 @@
 'use strict'
 
-const WAIT_TIMEOUT = 5000
+const WAIT_TIMEOUT = 20000
 
 module.exports = {
   elements: {
@@ -78,6 +78,8 @@ module.exports = {
 
     assertItem (indice, title, type) {
       this
+        .waitForElementPresent(`#items-list > li:nth-child(${indice}) .line-title`, WAIT_TIMEOUT)
+
         .assert.containsText(`#items-list > li:nth-child(${indice}) .line-title`, title)
         .assert.containsText(`#items-list > li:nth-child(${indice}) .line-type`, type)
       return this.api
@@ -86,8 +88,9 @@ module.exports = {
     assertItemWithGroup (indice, group, title, type) {
       this
         .waitForElementVisible('@search', WAIT_TIMEOUT)
+        .waitForElementPresent(`#items-list > li:nth-child(${indice}).subheader`, WAIT_TIMEOUT)
 
-        .assert.containsText(`#items-list > li:nth-child(${indice})`, group)
+        .assert.containsText(`#items-list > li:nth-child(${indice}).subheader`, group)
         .assertItem(indice + 1, title, type)
       return this.api
     },
