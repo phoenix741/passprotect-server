@@ -9,6 +9,10 @@ pipeline:
             - npm install
             - npm run unit
             - npm run e2e:docker
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - MONGODB_DATABASE=passprotect
+            - HOST=test
 
     nodejs:
         image: plugins/docker
@@ -27,4 +31,4 @@ services:
         image: selenium/standalone-chrome
 
     mongodb:
-        image: mongo:3.5
+        image: mongo:3.6

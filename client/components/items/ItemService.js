@@ -65,16 +65,24 @@ export async function updateLine (context, line) {
       mutation: createUpdateLine,
       variables: { input: line },
       update (store, { data: { createUpdateLine } }) {
-        const data = store.readQuery({ query: getLines })
-        if (!find(data.lines, line => line._id === createUpdateLine._id)) {
-          data.lines.push(createUpdateLine)
-          store.writeQuery({ query: getLines, data })
+        try {
+          const data = store.readQuery({ query: getLines })
+          if (!find(data.lines, line => line._id === createUpdateLine._id)) {
+            data.lines.push(createUpdateLine)
+            store.writeQuery({ query: getLines, data })
+          }
+        } catch (err) {
+          // Store getLines doesn't exists.
         }
 
-        const dataGroup = store.readQuery({ query: getGroups })
-        if (!find(dataGroup.groups, group => group === createUpdateLine.group)) {
-          dataGroup.groups.push(createUpdateLine.group)
-          store.writeQuery({ query: getGroups, dataGroup })
+        try {
+          const dataGroup = store.readQuery({ query: getGroups })
+          if (!find(dataGroup.groups, group => group === createUpdateLine.group)) {
+            dataGroup.groups.push(createUpdateLine.group)
+            store.writeQuery({ query: getGroups, dataGroup })
+          }
+        } catch (err) {
+          // Store getGroups doesn't exists.
         }
       },
       optimisticResponse: {
@@ -104,10 +112,14 @@ export async function removeLine (context, lineId) {
       mutation: removeLineQuery,
       variables: { id: lineId },
       update (store, { data: { removeLine } }) {
-        const data = store.readQuery({ query: getLines })
-        if (!removeLine.errors || !removeLine.errors.length) {
-          remove(data.lines, line => line._id === lineId)
-          store.writeQuery({ query: getLines, data })
+        try {
+          const data = store.readQuery({ query: getLines })
+          if (!removeLine.errors || !removeLine.errors.length) {
+            remove(data.lines, line => line._id === lineId)
+            store.writeQuery({ query: getLines, data })
+          }
+        } catch (err) {
+          // Store getLines doesn't exist
         }
       },
       optimisticResponse: {

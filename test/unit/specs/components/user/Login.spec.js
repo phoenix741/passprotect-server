@@ -22,20 +22,20 @@ describe('Login.vue', () => {
     })
   })
 
-  it('should render correct contents', () => {
+  it('should render correct contents', async () => {
     const data = {
       username: 'myusername',
       password: 'mypassword'
     }
 
     LoginComponent.setData(data)
-    LoginComponent.find('#login-button').trigger('click')
+    await LoginComponent.vm.submit()
 
     expect(loginHandler.called).to.equal(true)
     sinon.assert.calledWith(loginHandler, sinon.match({}), data)
   })
 
-  it('Test validation of input (username and password required)', done => {
+  it('Test validation of input (username and password required)', async () => {
     const data = {
       username: ' ',
       password: ' '
@@ -45,16 +45,15 @@ describe('Login.vue', () => {
     LoginComponent.find('input[name="username"]').trigger('blur')
     LoginComponent.find('input[name="password"]').trigger('blur')
 
-    Vue.nextTick(() => {
-      LoginComponent.find('#login-button').trigger('click')
-      expect(LoginComponent.html()).to.match(/The user:login.form.username.field field is required./)
-      expect(LoginComponent.html()).to.match(/The user:login.form.password.field field is required./)
-      sinon.assert.notCalled(loginHandler)
-      done()
-    })
+    await Vue.nextTick()
+    await LoginComponent.vm.submit()
+
+    expect(LoginComponent.html()).to.match(/The user:login.form.username.field field is required./)
+    expect(LoginComponent.html()).to.match(/The user:login.form.password.field field is required./)
+    sinon.assert.notCalled(loginHandler)
   })
 
-  it('Test validation of input (password must be at least 8 characters)', done => {
+  it('Test validation of input (password must be at least 8 characters)', async () => {
     const data = {
       username: 'test',
       password: 'test'
@@ -64,56 +63,10 @@ describe('Login.vue', () => {
     LoginComponent.find('input[name="username"]').trigger('blur')
     LoginComponent.find('input[name="password"]').trigger('blur')
 
-    Vue.nextTick(() => {
-      LoginComponent.find('#login-button').trigger('click')
-      expect(LoginComponent.html()).to.match(/The user:login.form.password.field field must be at least 8 characters./)
-      sinon.assert.notCalled(loginHandler)
-      done()
-    })
-  })
+    await Vue.nextTick()
+    await LoginComponent.vm.submit()
 
-  it('Show error when username is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      error: {fieldName: 'username', message: 'Server side server'}
-    }
-
-    LoginComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(LoginComponent.html()).to.match(/Server side server/)
-      done()
-    })
-  })
-
-  it('Show error when password is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      error: {fieldName: 'password', message: 'Server side server'}
-    }
-
-    LoginComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(LoginComponent.html()).to.match(/Server side server/)
-      done()
-    })
-  })
-
-  it('Show error when password is wrong server side', done => {
-    const data = {
-      username: 'test',
-      password: 'testtest',
-      error: {fieldName: 'global', message: 'Server side server'}
-    }
-
-    LoginComponent.setData(data)
-
-    Vue.nextTick(() => {
-      expect(LoginComponent.html()).to.match(/Server side server/)
-      done()
-    })
+    expect(LoginComponent.html()).to.match(/The user:login.form.password.field field must be at least 8 characters./)
+    sinon.assert.notCalled(loginHandler)
   })
 })

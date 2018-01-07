@@ -65,7 +65,6 @@ describe('ItemVisualisation.vue', () => {
     await Vue.nextTick()
 
     expect(ItemVisualisationComponent.find('#title-label').text()).to.equal('items:list.type.card')
-    expect(ItemVisualisationComponent.find('#edit-button').hasAttribute('href', '#/items/57fa5386d3cd8c0013ac93fd/edit')).to.be.true // eslint-disable-line no-unused-expressions
     expect(ItemVisualisationComponent.find('#label-text').text()).to.equal('Carte bancaire')
     expect(ItemVisualisationComponent.find('#type-of-card-text').text()).to.equal('VISA')
     expect(ItemVisualisationComponent.find('#name-on-card-text').text()).to.equal('MON NOM')

@@ -59,6 +59,7 @@ module.exports = {
       .page.LoginPage().login(username, password)
       .page.LoginPage().submit()
       .page.ItemsPage().checkPageShown()
+      .page.ItemsPage().closeDrawer()
   },
 
   'Add a text page': function (browser) {
@@ -106,6 +107,7 @@ module.exports = {
       .url(devServer)
       .page.LoginPage().login(username, password, true)
       .page.ItemsPage().checkPageShown()
+      .page.ItemsPage().closeDrawer()
 
       .page.ItemsPage().selectItem(8)
       .page.ItemVisualisationPage().checkText(ELEMENT_TEXT_LABEL, ELEMENT_TEXT_CONTENT, ELEMENT_TEXT_NOTES)
@@ -120,6 +122,7 @@ module.exports = {
       .url(devServer)
       .page.LoginPage().login(username, password, true)
       .page.ItemsPage().checkPageShown()
+      .page.ItemsPage().closeDrawer()
 
       .page.ItemsPage().selectItem(5)
       .page.ItemVisualisationPage().checkPassword(ELEMENT_PASSWORD_LABEL, ELEMENT_PASSWORD_USERNAME, ELEMENT_PASSWORD_PASSWORD, ELEMENT_PASSWORD_SITEURL, ELEMENT_PASSWORD_NOTES)
@@ -134,6 +137,7 @@ module.exports = {
       .url(devServer)
       .page.LoginPage().login(username, password, true)
       .page.ItemsPage().checkPageShown()
+      .page.ItemsPage().closeDrawer()
 
       .page.ItemsPage().selectItem(2)
       .page.ItemVisualisationPage().checkCard(ELEMENT_CARD_LABEL, ELEMENT_CARD_NAMEONCARD, ELEMENT_CARD_CARDNUMBER, ELEMENT_CARD_CVV, ELEMENT_CARD_EXPIRY, ELEMENT_CARD_CODE, ELEMENT_CARD_NOTE)
@@ -148,6 +152,7 @@ module.exports = {
       .url(devServer)
       .page.LoginPage().login(username, password, true)
       .page.ItemsPage().checkPageShown()
+      .page.ItemsPage().closeDrawer()
 
       .page.ItemsPage().addPassword()
 
@@ -157,8 +162,8 @@ module.exports = {
 
       .page.ItemsPage().assertItemWithGroup(1, ELEMENT_CARD_GROUP, ELEMENT_CARD_LABEL, 'Carte de paiement')
       .page.ItemsPage().assertItemWithGroup(4, ELEMENT_PASSWORD_GROUP, ELEMENT_PASSWORD_LABEL, 'Mot de passe')
-      .page.ItemsPage().assertItem(6, ELEMENT_PASSWORD_2_LABEL, 'Mot de passe')
-      .page.ItemsPage().assertItemWithGroup(8, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
+      .page.ItemsPage().assertItem(7, ELEMENT_PASSWORD_2_LABEL, 'Mot de passe')
+      .page.ItemsPage().assertItemWithGroup(9, ELEMENT_TEXT_GROUP, ELEMENT_TEXT_LABEL, 'Général')
 
       .page.ItemsPage().search(ELEMENT_PASSWORD_2_LABEL)
       .pause(600)

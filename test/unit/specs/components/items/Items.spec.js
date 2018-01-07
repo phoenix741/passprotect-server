@@ -7,9 +7,10 @@ import ItemsInjector from '!!vue-loader?inject!@/components/items/Items.vue' // 
 import {cardTypeMapping} from '@/components/items/ItemService'
 
 describe('Items.vue', () => {
-  let ItemsComponent, ItemsWithMocks, mockRouter, removeLineHandler
+  let ItemsComponent, ItemsWithMocks, mockRouter, removeLineHandler, logoutHandler, exportLinesAsCsvHandler
   const SESSION = {
-    authenticated: true
+    authenticated: true,
+    username: 'myusername'
   }
   const ITEMS_LIST = {
     data: {
@@ -47,14 +48,18 @@ describe('Items.vue', () => {
   }
 
   beforeEach(() => {
+    logoutHandler = sinon.spy()
+    exportLinesAsCsvHandler = sinon.spy()
     removeLineHandler = sinon.spy()
     ItemsWithMocks = ItemsInjector({
       '../user/UserService': {
-        SESSION
+        SESSION,
+        logout: logoutHandler
       },
       './ItemService': {
         cardTypeMapping,
-        removeLine: removeLineHandler
+        removeLine: removeLineHandler,
+        exportLinesAsCsv: exportLinesAsCsvHandler
       },
       '../../utils/piwik': {}
     })
@@ -71,8 +76,21 @@ describe('Items.vue', () => {
     SESSION.authenticated = true
   })
 
-  it('should render correct contents', async () => {
+  it('should render navigation drawer', () => {
+    expect(ItemsComponent.find('.items-link').html()).to.match(/app.menu.items/)
+    expect(ItemsComponent.find('.export-link').html()).to.match(/app.menu.export/)
+    expect(ItemsComponent.find('.logout-link').html()).to.match(/app.menu.logout/)
+    expect(ItemsComponent.find('.about-link').html()).to.match(/app.menu.about/)
+  })
 
+  it('log out call logout ', () => {
+    ItemsComponent.find('.logout-link').trigger('click')
+    sinon.assert.calledWith(logoutHandler, sinon.match({}))
+  })
+
+  it('export call export ', () => {
+    ItemsComponent.find('.export-link').trigger('click')
+    sinon.assert.calledWith(exportLinesAsCsvHandler, sinon.match({}))
   })
 
   it('Test that beforeRouteEnter is executed - authenticated', async () => {
@@ -105,21 +123,28 @@ describe('Items.vue', () => {
     expect(ItemsComponent.vm.$data).to.deep.equal({
       title: 'items:list.title',
       showOptions: false,
-      dialog: {},
-      filter: '',
+      drawer: true,
+      dialog: {
+        card: false,
+        password: false,
+        text: false
+      },
       lines: []
     })
     ItemsComponent.vm.$options.apollo.lines.result.call(ItemsComponent.vm, ITEMS_LIST)
     expect(ItemsComponent.vm.$data).to.deep.equal({
       title: 'items:list.title',
       showOptions: false,
+      drawer: true,
       dialog: {
+        card: false,
+        password: false,
+        text: false,
         remove0: false,
         remove1: false,
         remove2: false,
         remove3: false
       },
-      filter: '',
       lines: []
     })
   })
@@ -129,12 +154,14 @@ describe('Items.vue', () => {
       title: 'items:list.title',
       showOptions: false,
       dialog: {
+        card: false,
+        password: false,
+        text: false,
         remove0: false,
         remove1: false,
         remove2: false,
         remove3: false
       },
-      filter: '',
       lines: ITEMS_LIST.data.lines
     })
     Vue.nextTick(() => {
@@ -154,8 +181,8 @@ describe('Items.vue', () => {
     ItemsComponent.setData({
       title: 'items:list.title',
       showOptions: false,
-      dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
+      drawer: true,
+      dialog: {card: false, password: false, text: false, remove0: false, remove1: false, remove2: false, remove3: false},
       lines: ITEMS_LIST.data.lines
     })
 
@@ -163,6 +190,11 @@ describe('Items.vue', () => {
 
     await timeout(500)
     await Vue.nextTick()
+
+    expect(mockRouter.currentRoute.path).to.equal('/items')
+    expect(mockRouter.currentRoute.query).to.deep.equal({q: 'Carte'})
+
+    ItemsComponent.setProps(mockRouter.currentRoute.query)
 
     const groups = ItemsComponent.findAll('.group-title')
     const lines = ItemsComponent.findAll('.line-title')
@@ -174,61 +206,11 @@ describe('Items.vue', () => {
     expect(ItemsComponent.vm.cardType()).to.equal(cardTypeMapping['text'])
   })
 
-  it('Test Click on create credit card', async () => {
-    ItemsComponent.setData({
-      title: 'items:list.title',
-      showOptions: false,
-      dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
-      lines: ITEMS_LIST.data.lines
-    })
-
-    ItemsComponent.find('#items-add-button').trigger('click')
-    await Vue.nextTick()
-    ItemsComponent.find('#items-add-card-button').trigger('click')
-    await Vue.nextTick()
-
-    expect(mockRouter.currentRoute.path).to.equal('/items/type/card')
-  })
-
-  it('Test Click on create fingerprint', async () => {
-    ItemsComponent.setData({
-      title: 'items:list.title',
-      showOptions: false,
-      dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
-      lines: ITEMS_LIST.data.lines
-    })
-
-    ItemsComponent.find('#items-add-button').trigger('click')
-    await Vue.nextTick()
-    ItemsComponent.find('#items-add-password-button').trigger('click')
-    await Vue.nextTick()
-    expect(mockRouter.currentRoute.path).to.equal('/items/type/password')
-  })
-
-  it('Test Click on create text', async () => {
-    ItemsComponent.setData({
-      title: 'items:list.title',
-      showOptions: false,
-      dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
-      lines: ITEMS_LIST.data.lines
-    })
-
-    ItemsComponent.find('#items-add-button').trigger('click')
-    await Vue.nextTick()
-    ItemsComponent.find('#items-add-text-button').trigger('click')
-    await Vue.nextTick()
-    expect(mockRouter.currentRoute.path).to.equal('/items/type/text')
-  })
-
   it('Click on the remove button', async () => {
     ItemsComponent.setData({
       title: 'items:list.title',
       showOptions: false,
       dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
       lines: ITEMS_LIST.data.lines
     })
 
@@ -245,7 +227,6 @@ describe('Items.vue', () => {
       title: 'items:list.title',
       showOptions: false,
       dialog: {remove0: false, remove1: false, remove2: false, remove3: false},
-      filter: '',
       lines: ITEMS_LIST.data.lines
     })
 

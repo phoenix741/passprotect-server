@@ -47,7 +47,7 @@ export async function saveUser (user) {
   normalizeUser(user)
 
   try {
-    await (await db).collection('users').save(user)
+    await (await connection()).collection('users').save(user)
     return user
   } catch (err) {
     processMongoException(err)

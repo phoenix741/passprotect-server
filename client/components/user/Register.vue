@@ -1,40 +1,53 @@
 <template lang="pug">
-	v-layout(row,wrap)
-		v-flex(xs12)
-			h4.main-title {{ trans('user:register.form.title') }}
+div
+  v-toolbar(color="indigo darken-4",dark,app)
+    v-btn(icon,exact,router=true,to="/login")
+      v-icon arrow_back
+    v-toolbar-title.ml-0.pl-3
+      span {{ trans('app.title') }} - {{ trans('user:register.form.title') }}
 
-			v-layout(row,wrap)
-				v-flex(xs12)
-					v-text-field.mt-5(
-						:label="trans('user:register.form.identity_username.field')",
-						:data-vv-as="trans('user:register.form.identity_username.field')",
-						v-validate="'required'",
-						name="username",
-						v-model="username",
-						v-bind:rules="usernameValidation")
+  form(@submit.prevent="submit()")
+    v-container(grid-list-md)
+      v-layout(row,wrap)
+        v-flex(xs12)
+          v-layout(row,wrap)
+            v-flex(xs12)
+              v-text-field.mt-5(
+                :label="trans('user:register.form.identity_username.field')",
+                :data-vv-as="trans('user:register.form.identity_username.field')",
+                v-model="username",
+                :error-messages="errors.collect('username')",
+                v-validate="'required'",
+                data-vv-name="username",
+                name="username",
+                required)
 
-				v-flex(xs12,md6)
-					v-text-field.mt-5(
-						:label="trans('user:register.form.identity_password1.field')",
-						:data-vv-as="trans('user:register.form.identity_password1.field')",
-						type="password",
-						v-validate="'required|min:8'"
-						name="password"
-						v-model="password"
-						v-bind:rules="passwordValidation")
+            v-flex(xs12,md6)
+              v-text-field.mt-5(
+                :label="trans('user:register.form.identity_password1.field')",
+                :data-vv-as="trans('user:register.form.identity_password1.field')",
+                v-model="password",
+                type="password",
+                :error-messages="errors.collect('password')",
+                v-validate="'required|min:8'",
+                name="password",
+                data-vv-name="password"
+                required)
 
-				v-flex(xs12,md6)
-					v-text-field.mt-5(
-						:label="trans('user:register.form.identity_password2.field')",
-						:data-vv-as="trans('user:register.form.identity_password2.field')",
-						type="password",
-						v-validate="'required|min:8|confirmed:password'"
-						name="passwordRepeat"
-						v-model="passwordRepeat"
-						v-bind:rules="passwordRepeatValidation")
+            v-flex(xs12,md6)
+              v-text-field.mt-5(
+                :label="trans('user:register.form.identity_password2.field')",
+                :data-vv-as="trans('user:register.form.identity_password2.field')",
+                v-model="passwordRepeat"
+                type="password",
+                :error-messages="errors.collect('passwordRepeat')",
+                v-validate="'required|min:8|confirmed:password'"
+                name="passwordRepeat"
+                data-vv-name="passwordRepeat"
+                required)
 
-			.text-xs-center
-				v-btn.register-button(primary,dark,v-on:click.native="submitForm()") {{ trans('user:register.form.validation.field') }}
+          .text-xs-center
+            v-btn.register-button(type="primary",dark,color="primary") {{ trans('user:register.form.validation.field') }}
 </template>
 
 <script type="text/babel">
@@ -42,6 +55,7 @@ import {signup} from './UserService'
 import AnalyticsMixin from '../../utils/piwik'
 
 export default {
+  $validates: true,
   name: 'register',
   mixins: [AnalyticsMixin],
   data () {
@@ -49,32 +63,13 @@ export default {
       title: this.trans('user:register.form.title'),
       username: '',
       password: '',
-      passwordRepeat: '',
-      error: {}
-    }
-  },
-  computed: {
-    usernameValidation () {
-      const errors = this.veeErrors.collect('username').map(error => () => error)
-      if (this.error.fieldName === '_id' || this.error.fieldName === 'global') {
-        errors.push(() => this.error.message)
-      }
-      return errors
-    },
-    passwordValidation () {
-      const errors = this.veeErrors.collect('password').map(error => () => error)
-      if (this.error.fieldName === 'password') {
-        errors.push(() => this.error.message)
-      }
-      return errors
-    },
-    passwordRepeatValidation () {
-      return this.veeErrors.collect('passwordRepeat').map(error => () => error)
+      passwordRepeat: ''
     }
   },
   methods: {
-    submitForm () {
-      if (this.veeErrors.any()) {
+    async submit () {
+      const valid = await this.$validator.validateAll()
+      if (!valid) {
         return
       }
 

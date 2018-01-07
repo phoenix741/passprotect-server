@@ -8,6 +8,7 @@ module.exports = {
     label: '#label-input',
     notes: '#notes-input',
     groupSelect: '#group-select',
+    emptyMenu: '#empty-item',
     groupInput: '#group-input',
 
     text: '#text-input',
@@ -30,7 +31,8 @@ module.exports = {
       this
         .waitForElementVisible('@groupSelect', WAIT_TIMEOUT)
         .click('@groupSelect')
-        .click('.menu__content .list__tile #empty-item')
+        .moveToElement('@groupSelect', 0, 0)
+        .click('@emptyMenu')
         .waitForElementVisible('@groupInput', WAIT_TIMEOUT)
         .setValue('@groupInput', group)
       return this.api

@@ -1,0 +1,19 @@
+version: '2'
+services:
+    test:
+        image: node:8
+        command: /bin/bash
+        volumes:
+            - ./:/src
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - MONGODB_DATABASE=passprotect
+            - HOST=test
+        stdin_open: true
+        tty: true
+
+    selenium:
+        image: selenium/standalone-chrome
+
+    mongodb:
+        image: mongo:3.6

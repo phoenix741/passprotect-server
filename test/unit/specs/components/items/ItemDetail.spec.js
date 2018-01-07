@@ -103,11 +103,10 @@ describe('ItemDetail.vue', () => {
   it('Test validation of input label', async () => {
     const data = {
       lineToModify: {
-        label: ' '
+        label: ''
       },
       clearInformation: {},
       typeOfCard: ['VISA'],
-      error: {},
       groups: [],
       newGroup: ''
     }
@@ -116,46 +115,10 @@ describe('ItemDetail.vue', () => {
     ItemDetailComponent.find('#label-input').trigger('blur')
 
     await Vue.nextTick()
+    await ItemDetailComponent.vm.submit()
 
-    ItemDetailComponent.find('#detail-button').trigger('click')
     expect(ItemDetailComponent.html()).to.match(/The items:item.form.label.field field is required./)
     sinon.assert.notCalled(updateLineHandler)
-  })
-
-  it('Show error when label is wrong server side', async () => {
-    const data = {
-      lineToModify: {
-        label: 'test'
-      },
-      clearInformation: {},
-      typeOfCard: ['VISA'],
-      error: {fieldName: 'label', message: 'Server side server'},
-      groups: [],
-      newGroup: ''
-    }
-
-    ItemDetailComponent.setData(data)
-
-    await Vue.nextTick()
-    expect(ItemDetailComponent.html()).to.match(/Server side server/)
-  })
-
-  it('Show error when label is wrong server side', async () => {
-    const data = {
-      lineToModify: {
-        label: 'test'
-      },
-      clearInformation: {},
-      typeOfCard: ['VISA'],
-      error: {fieldName: 'global', message: 'Server side server'},
-      groups: [],
-      newGroup: ''
-    }
-
-    ItemDetailComponent.setData(data)
-
-    await Vue.nextTick()
-    expect(ItemDetailComponent.html()).to.match(/Server side server/)
   })
 
   it('Generate a password', async () => {
@@ -182,11 +145,10 @@ describe('ItemDetail.vue', () => {
     await ItemDetailComponent.vm.decryptClearInformation(ENCRYPTED_LINE)
     await Vue.nextTick()
 
-    ItemDetailComponent.find('#detail-button').trigger('click')
-    await Vue.nextTick()
+    await ItemDetailComponent.vm.submit()
 
     sinon.assert.calledWith(updateLineHandler, sinon.match({}), ENCRYPTED_LINE)
-    expect(mockRouter.currentRoute.path).to.equal('/items')
+    expect(ItemDetailComponent.emitted().close.length).to.equal(1)
   })
 
   it('Submit the form - new group', async () => {
@@ -198,13 +160,12 @@ describe('ItemDetail.vue', () => {
     await ItemDetailComponent.vm.decryptClearInformation(ENCRYPTED_LINE)
     await Vue.nextTick()
 
-    ItemDetailComponent.find('#detail-button').trigger('click')
-    await Vue.nextTick()
+    await ItemDetailComponent.vm.submit()
 
     const newLine = Object.assign({}, ENCRYPTED_LINE)
     newLine.group = 'newGroup'
 
     sinon.assert.calledWith(updateLineHandler, sinon.match({}), newLine)
-    expect(mockRouter.currentRoute.path).to.equal('/items')
+    expect(ItemDetailComponent.emitted().close.length).to.equal(1)
   })
 })

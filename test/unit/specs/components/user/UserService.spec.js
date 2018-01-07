@@ -39,6 +39,9 @@ describe('UserService.js', () => {
         $router: {
           go: function () {},
           push: function () {}
+        },
+        errors: {
+          add: sinon.spy()
         }
       }
       sinon.spy(context.$router, 'push')
@@ -62,7 +65,7 @@ describe('UserService.js', () => {
       expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
       expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
 
-      expect(context.error).to.be.an('undefined')
+      expect(context.errors.add.called).to.equal(false)
     })
 
     it('Try to login to server with success with redirect', async () => {
@@ -78,15 +81,18 @@ describe('UserService.js', () => {
       expect(localStorage.getItem('username')).to.equal('CREDENTIALS')
       expect(localStorage.getItem('clearKey')).to.equal('text to encrypt')
 
-      expect(context.error).to.be.an('undefined')
+      expect(context.errors.add.called).to.equal(false)
     })
 
     it('Try to login to server with failure', async () => {
-      context.$apollo.mutate = sinon.stub().returns(Promise.reject(new Error('loginerror')))
+      const error = new Error('loginerror')
+      error.fieldName = 'username'
+      context.$apollo.mutate = sinon.stub().returns(Promise.reject(error))
 
       await login(context, creds)
 
-      expect(context.error).to.be.an('Error')
+      expect(context.errors.add.called).to.equal(true)
+      sinon.assert.calledWith(context.errors.add, sinon.match({field: 'username', msg: 'loginerror'}))
       expect(SESSION.authenticated).to.equal(false)
     })
   })
@@ -107,6 +113,9 @@ describe('UserService.js', () => {
         $router: {
           go: function () {},
           push: function () {}
+        },
+        errors: {
+          add: sinon.spy()
         }
       }
       sinon.spy(context.$router, 'push')
@@ -124,14 +133,17 @@ describe('UserService.js', () => {
       expect(SESSION.jwtToken).to.equal('jwtToken')
       expect(SESSION.username).to.equal('CREDENTIALS')
       expect(SESSION.clearKey).to.equal('text to encrypt')
-      expect(context.error).to.be.an('undefined')
+      expect(context.errors.add.called).to.equal(false)
     })
 
     it('Sign with error', async () => {
-      context.$apollo.mutate = sinon.stub().returns(Promise.reject(new Error('signinerror')))
+      const error = new Error('signinerror')
+      error.fieldName = 'username'
+      context.$apollo.mutate = sinon.stub().returns(Promise.reject(error))
 
       await signup(context, creds)
-      expect(context.error).to.be.an('Error')
+      expect(context.errors.add.called).to.equal(true)
+      sinon.assert.calledWith(context.errors.add, sinon.match({field: 'username', msg: 'signinerror'}))
       expect(SESSION.authenticated).to.equal(false)
     })
   })
@@ -148,6 +160,9 @@ describe('UserService.js', () => {
         },
         $router: {
           push: function () {}
+        },
+        errors: {
+          add: sinon.spy()
         }
       }
       sinon.spy(context.$router, 'push')
@@ -155,7 +170,7 @@ describe('UserService.js', () => {
 
       logout(context)
 
-      sinon.assert.calledWith(context.$router.push, '/items')
+      sinon.assert.calledWith(context.$router.push, '/login')
       sinon.assert.calledOnce(context.$apollo.provider.defaultClient.resetStore)
       expect(SESSION.authenticated).to.equal(false)
       expect(SESSION.jwtToken).to.be.an('undefined')

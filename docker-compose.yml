@@ -11,6 +11,7 @@ services:
             - mongodb
         environment:
             - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - MONGODB_DATABASE=passprotect
             - NODE_ENV=production
             - DEBUG=App:*
     nginx:

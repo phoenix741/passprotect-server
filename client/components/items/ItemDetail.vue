@@ -1,117 +1,119 @@
 <template lang="pug">
-v-card.detail-card
-	v-toolbar.white--text.darken-1(v-bind:class="cardType.color")
-		v-toolbar-title#title-label {{ trans(cardType.label) }}
+v-card
+  form(@submit.prevent="submit()")
+    v-toolbar(dark,color="primary")
+      v-btn(icon,@click.native="close()",dark)
+        v-icon close
+      v-toolbar-title#title-label {{ trans(cardType.label) }}
+      v-spacer
+      v-toolbar-items
+        v-btn#generate-password(v-if="lineToModify.type == 'password'",dark,flat,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
+        v-btn#detail-button(type="submit",dark,flat) {{ trans('items:item.form.button.field') }}
 
-	v-card-text
-		v-layout(row,wrap)
-			v-flex(xs12)
-				v-text-field#label-input(
-					:label="trans('items:item.form.label.field')"
-					:data-vv-as="trans('items:item.form.label.field')",
-					v-validate="'required'",
-					name="label",
-					v-model="lineToModify.label",
-					v-bind:rules="labelValidation")
+    v-container(grid-list-md)
+      v-layout(wrap)
+        v-flex(xs12)
+          v-text-field#label-input(
+            :label="trans('items:item.form.label.field')"
+            :data-vv-as="trans('items:item.form.label.field')",
+            v-model="lineToModify.label",
+            :error-messages="errors.collect('label')",
+            v-validate="'required'",
+            data-vv-name="label",
+            name="label",
+            required)
 
-			v-flex(xs12)
-				v-select#group-select(
-					:label="trans('items:item.form.group.field')",
-					v-bind:items="selectGroups",
-					v-model="lineToModify.group",
-					item-text="name"
-					item-value="value")
-					template(slot="item",scope="data")
-						template(v-if="data.item.value") {{ data.item.name }}
-						div.groupSelect(v-if="!data.item.value")
-							span#empty-item {{ data.item.name }}
+        v-flex(xs12)
+          v-select#group-select(
+            :label="trans('items:item.form.group.field')",
+            v-bind:items="selectGroups",
+            v-model="lineToModify.group",
+            item-text="name"
+            item-value="value")
+            template(slot="item",slot-scope="data")
+              template(v-if="data.item.value") {{ data.item.name }}
+              div.groupSelect(v-if="!data.item.value")
+                span#empty-item {{ data.item.name }}
 
-			v-flex(xs12,v-if="lineToModify.group === ''")
-				v-text-field#group-input(
-					:label="trans('items:item.form.group.new')"
-					v-model="newGroup")
+        v-flex(xs12,v-if="lineToModify.group === ''")
+          v-text-field#group-input(
+            :label="trans('items:item.form.group.new')"
+            v-model="newGroup")
 
-			template(v-if="lineToModify.type == 'text'")
-				v-flex(xs12)
-					v-text-field#text-input(
-						:label="trans('items:item.form.text.field')",
-						v-model="clearInformation.text",
-						multi-line,
-						auto-grow)
+        template(v-if="lineToModify.type == 'text'")
+          v-flex(xs12)
+            v-text-field#text-input(
+              :label="trans('items:item.form.text.field')",
+              v-model="clearInformation.text",
+              multi-line,
+              auto-grow)
 
-			template(v-if="lineToModify.type == 'card'")
-				v-flex(xs12)
-					v-select#type-of-card-select(
-						:label="trans('items:item.form.type.field')",
-						v-bind:items="typeOfCard",
-						v-model="clearInformation.type")
+        template(v-if="lineToModify.type == 'card'")
+          v-flex(xs12)
+            v-select#type-of-card-select(
+              :label="trans('items:item.form.type.field')",
+              v-bind:items="typeOfCard",
+              v-model="clearInformation.type")
 
-				v-flex(xs12)
-					v-text-field#name-on-card-input(
-						:label="trans('items:item.form.nameOnCard.field')",
-						v-model="clearInformation.nameOnCard")
+          v-flex(xs12)
+            v-text-field#name-on-card-input(
+              :label="trans('items:item.form.nameOnCard.field')",
+              v-model="clearInformation.nameOnCard")
 
-				v-flex(xs12)
-					v-text-field#card-number-input(
-						:label="trans('items:item.form.cardNumber.field')",
-						:append-icon="cardNumberVisibility ? 'visibility' : 'visibility_off'"
-						:append-icon-cb="() => (cardNumberVisibility = !cardNumberVisibility)"
-						:type="cardNumberVisibility ? 'text' : 'password'"
-						v-model="clearInformation.cardNumber")
+          v-flex(xs12)
+            v-text-field#card-number-input(
+              :label="trans('items:item.form.cardNumber.field')",
+              :append-icon="cardNumberVisibility ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (cardNumberVisibility = !cardNumberVisibility)"
+              :type="cardNumberVisibility ? 'text' : 'password'"
+              v-model="clearInformation.cardNumber")
 
-				v-flex(xs12)
-					v-text-field#cvv-input(
-						:label="trans('items:item.form.cvv.field')",
-						:append-icon="cvvVisibility ? 'visibility' : 'visibility_off'"
-						:append-icon-cb="() => (cvvVisibility = !cvvVisibility)"
-						:type="cvvVisibility ? 'text' : 'password'"
-						v-model="clearInformation.cvv")
+          v-flex(xs12)
+            v-text-field#cvv-input(
+              :label="trans('items:item.form.cvv.field')",
+              :append-icon="cvvVisibility ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (cvvVisibility = !cvvVisibility)"
+              :type="cvvVisibility ? 'text' : 'password'"
+              v-model="clearInformation.cvv")
 
-				v-flex(xs12)
-					v-text-field#expiry-input(
-						:label="trans('items:item.form.expiry.field')",
-						v-model="clearInformation.expiry")
+          v-flex(xs12)
+            v-text-field#expiry-input(
+              :label="trans('items:item.form.expiry.field')",
+              v-model="clearInformation.expiry")
 
-				v-flex(xs12)
-					v-text-field#code-input(
-						:label="trans('items:item.form.code.field')",
-						:append-icon="codeVisibility ? 'visibility' : 'visibility_off'"
-						:append-icon-cb="() => (codeVisibility = !codeVisibility)"
-						:type="codeVisibility ? 'text' : 'password'"
-						v-model="clearInformation.code")
+          v-flex(xs12)
+            v-text-field#code-input(
+              :label="trans('items:item.form.code.field')",
+              :append-icon="codeVisibility ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (codeVisibility = !codeVisibility)"
+              :type="codeVisibility ? 'text' : 'password'"
+              v-model="clearInformation.code")
 
-			template(v-if="lineToModify.type == 'password'")
-				v-flex(xs12)
-					v-text-field#username-input(
-						:label="trans('items:item.form.username.field')",
-						v-model="clearInformation.username")
+        template(v-if="lineToModify.type == 'password'")
+          v-flex(xs12)
+            v-text-field#username-input(
+              :label="trans('items:item.form.username.field')",
+              v-model="clearInformation.username")
 
-				v-flex(xs12)
-					v-text-field#password-input(
-						:label="trans('items:item.form.password.field')",
-						:append-icon="passwordVisibility ? 'visibility' : 'visibility_off'"
-						:append-icon-cb="() => (passwordVisibility = !passwordVisibility)"
-						:type="passwordVisibility ? 'text' : 'password'"
-						v-model="clearInformation.password")
+          v-flex(xs12)
+            v-text-field#password-input(
+              :label="trans('items:item.form.password.field')",
+              :append-icon="passwordVisibility ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (passwordVisibility = !passwordVisibility)"
+              :type="passwordVisibility ? 'text' : 'password'"
+              v-model="clearInformation.password")
 
-				v-flex(xs12)
-					v-text-field#siteurl-input(
-						:label="trans('items:item.form.siteUrl.field')",
-						v-model="clearInformation.siteUrl")
+          v-flex(xs12)
+            v-text-field#siteurl-input(
+              :label="trans('items:item.form.siteUrl.field')",
+              v-model="clearInformation.siteUrl")
 
-			v-flex(xs12)
-				v-text-field#notes-input(
-					:label="trans('items:item.form.notes.field')",
-					v-model="clearInformation.notes",
-					multi-line,
-					auto-grow)
-
-			v-flex(xs12)
-				.text-xs-center
-					v-btn#detail-button(primary,dark,v-on:click.native="submitForm()") {{ trans('items:item.form.button.field') }}
-					template(v-if="lineToModify.type == 'password'")
-						v-spacer
-						v-btn#generate-password(primary,dark,v-on:click.native="generatePassword()") {{ trans('items:item.form.button.generate') }}
+        v-flex(xs12)
+          v-text-field#notes-input(
+            :label="trans('items:item.form.notes.field')",
+            v-model="clearInformation.notes",
+            multi-line,
+            auto-grow)
 </template>
 
 <script type="text/babel">
@@ -120,6 +122,7 @@ import {cardTypeMapping, updateLine, decryptLine, encryptLine, generate} from '.
 import getGroups from './getGroups.gql'
 
 export default {
+  $validates: true,
   props: ['line'],
   name: 'item-detail',
   data () {
@@ -131,7 +134,6 @@ export default {
       passwordVisibility: false,
       clearInformation: {},
       typeOfCard: this.trans('items:item.form.type.options').split('+'),
-      error: {},
       groups: [],
       newGroup: ''
     }
@@ -140,8 +142,9 @@ export default {
     groups: getGroups
   },
   methods: {
-    async submitForm () {
-      if (this.veeErrors.any()) {
+    async submit () {
+      const valid = await this.$validator.validateAll()
+      if (!valid) {
         return
       }
 
@@ -154,7 +157,7 @@ export default {
       line.encryption = await encryptLine(this.clearInformation)
 
       await updateLine(this, line)
-      this.$router.push('/items')
+      this.close()
     },
     async generatePassword () {
       this.clearInformation.password = await generate()
@@ -164,16 +167,12 @@ export default {
         val = {type: 'text'}
       }
       this.clearInformation = await decryptLine(val)
+    },
+    close () {
+      this.$emit('close')
     }
   },
   computed: {
-    labelValidation () {
-      const errors = this.veeErrors.collect('label').map(error => () => error)
-      if (this.error.fieldName === 'label' || this.error.fieldName === 'global') {
-        errors.push(() => this.error.message)
-      }
-      return errors
-    },
     selectGroups () {
       const result = map(this.groups, g => ({name: g, value: g}))
       result.push({value: '', name: this.trans('items:item.form.group.newItem')})

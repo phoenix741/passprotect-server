@@ -1,7 +1,8 @@
 {
   "list": {
     "title": "Ma liste",
-		"search": "Rechercher ...",
+    "search": "Rechercher ...",
+    "empty": "Liste vide, veuillez créer un nouvel élément à l'aide du bouton en bas à droite",
     "type": {
       "card": "Carte de paiement",
       "password": "Mot de passe",
@@ -62,7 +63,7 @@
         "field": "Notes"
       },
       "button": {
-        "field": "Mettre à jour",
+        "field": "Sauvegarder",
 				"generate": "Générer le mot de passe"
       }
     },

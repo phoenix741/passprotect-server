@@ -1,5 +1,5 @@
 <template lang="pug">
-item-detail(v-bind:line="line")
+item-detail(v-bind:line="line",@close="close()")
 </template>
 
 <script type="text/babel">
@@ -19,6 +19,11 @@ export default {
     return {
       title: this.trans('items:item.title_modification'),
       line: {}
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('close')
     }
   },
   beforeRouteEnter (to, from, next) {
