@@ -27,18 +27,18 @@ module.exports = {
     },
 
     add () {
+      this.api.pause(500)
       this
         .waitForElementVisible('@addButton', WAIT_TIMEOUT)
-        .moveToElement('@addButton', 0, 0)
+        .click('@addButton')
       return this.api
     },
 
     checkButton () {
-      this.api.pause(300)
       this
-        .assert.elementPresent('@addTextButton')
-        .assert.elementPresent('@addCardButton')
-        .assert.elementPresent('@addPasswordButton')
+        .waitForElementVisible('@addTextButton', WAIT_TIMEOUT)
+        .waitForElementVisible('@addCardButton', WAIT_TIMEOUT)
+        .waitForElementVisible('@addPasswordButton', WAIT_TIMEOUT)
       return this.api
     },
 
@@ -48,7 +48,6 @@ module.exports = {
       this
         .waitForElementVisible('@addTextButton', WAIT_TIMEOUT)
         .click('@addTextButton')
-        .moveToElement('body', 0, 0)
       return this.api
     },
 
@@ -58,7 +57,6 @@ module.exports = {
       this
         .waitForElementVisible('@addPasswordButton', WAIT_TIMEOUT)
         .click('@addPasswordButton')
-        .moveToElement('body', 0, 0)
       return this.api
     },
 
@@ -68,7 +66,6 @@ module.exports = {
       this
         .waitForElementVisible('@addCardButton', WAIT_TIMEOUT)
         .click('@addCardButton')
-        .moveToElement('body', 0, 0)
       return this.api
     },
 

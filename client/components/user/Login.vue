@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  v-toolbar(color="indigo darken-4",dark,app)
+  v-toolbar(color="primary",dark,app)
     v-toolbar-title.ml-0.pl-3
       span {{ trans('app.title') }}
 

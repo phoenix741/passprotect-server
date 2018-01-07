@@ -77,7 +77,6 @@ describe('Items.vue', () => {
   })
 
   it('should render navigation drawer', () => {
-    expect(ItemsComponent.find('.items-link').html()).to.match(/app.menu.items/)
     expect(ItemsComponent.find('.export-link').html()).to.match(/app.menu.export/)
     expect(ItemsComponent.find('.logout-link').html()).to.match(/app.menu.logout/)
     expect(ItemsComponent.find('.about-link').html()).to.match(/app.menu.about/)

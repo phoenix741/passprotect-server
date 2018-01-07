@@ -19,7 +19,7 @@ div
         v-list-tile-content
           v-list-tile-title {{ trans('app.menu.logout') }}
 
-  v-toolbar(color="indigo darken-4",dark,app,clipped-left,fixed)
+  v-toolbar(color="primary",dark,app,clipped-left,fixed)
     v-toolbar-title.ml-0.pl-3(:style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 72px'")
       v-toolbar-side-icon(@click.stop="drawer = !drawer")
       span.hidden-xs-only {{ trans('app.title') }}
@@ -53,7 +53,7 @@ div
         v-list-tile-content
           v-list-tile-title.text-xs-center {{ trans('items:list.empty') }}
 
-      v-speed-dial(:bottom="true",:right="true",:hover="true",:fixed="true")
+      v-speed-dial(:bottom="true",:right="true",:fixed="true")
         v-btn#items-add-button.red.darken-2(slot="activator",dark,fab,hover)
           v-icon add
           v-icon close

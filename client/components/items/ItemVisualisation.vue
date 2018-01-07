@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  v-toolbar(color="indigo darken-4",dark,app)
+  v-toolbar(color="primary",dark,app)
     v-btn(icon,exact,router=true,to="/items")
       v-icon arrow_back
     v-toolbar-title.ml-0.pl-3(:style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 72px'")

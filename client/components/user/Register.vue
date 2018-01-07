@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  v-toolbar(color="indigo darken-4",dark,app)
+  v-toolbar(color="primary",dark,app)
     v-btn(icon,exact,router=true,to="/login")
       v-icon arrow_back
     v-toolbar-title.ml-0.pl-3

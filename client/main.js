@@ -29,7 +29,11 @@ import VueCordova from 'vue-cordova'
   Vue.config.productionTip = false
 
   Vue.use(VueApollo)
-  Vue.use(Vuetify)
+  Vue.use(Vuetify, {
+    theme: {
+      primary: '#1a237e'
+    }
+  })
   Vue.use(VeeValidate, {locale: 'fr'})
   if (__IS_CORDOVA__) {
     Vue.use(VueCordova)
