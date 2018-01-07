@@ -4,7 +4,7 @@ var piwikEnable = process.env.PIWIK_ENABLED
 if (piwikEnable === undefined) {
   piwikEnable = true
 }
-const piwikSiteUrl = process.env.PIWIK_SITE_URL || '//stats.shadoware.org/'
+const piwikSiteUrl = process.env.PIWIK_SITE_URL || 'https://stats.shadoware.org/'
 const piwikSiteId = process.env.PIWIK_SITE_ID || 36
 
 module.exports.environments = {

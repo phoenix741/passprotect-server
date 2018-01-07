@@ -1,4 +1,4 @@
-/* global __GRAPHQL_SCHEMA__ */
+/* global __GRAPHQL_SCHEMA__, __API_PATH__ */
 
 import VueApollo from 'vue-apollo'
 import { ApolloClient } from 'apollo-client'
@@ -11,7 +11,7 @@ const schema = __GRAPHQL_SCHEMA__
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-  uri: '/api/graphql'
+  uri: __API_PATH__ + 'api/graphql'
 })
 
 export const middlewareLink = new ApolloLink((operation, forward) => {

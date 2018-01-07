@@ -3,6 +3,8 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const browserEnv = process.env.BROWSER_ENV || 'browser'
+const isCordova = browserEnv === 'cordova'
 
 module.exports = {
   dev: {
@@ -47,12 +49,13 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
+    index: path.resolve(__dirname, '../www/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsRoot: path.resolve(__dirname, '../www'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: isCordova ? '' : '/',
+    apiPublicPath: isCordova ? 'https://passprotect.shadoware.org/' : '/',
 
     /**
      * Source Maps

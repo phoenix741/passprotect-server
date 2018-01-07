@@ -1,3 +1,5 @@
+/* global __IS_CORDOVA__ */
+
 'use strict'
 
 import 'babel-polyfill'
@@ -19,6 +21,8 @@ import VueApollo from 'vue-apollo'
 import {apolloProvider} from './utils/graphql'
 import {checkAuth} from './components/user/UserService'
 
+import VueCordova from 'vue-cordova'
+
 (async function () {
   Validator.localize('fr', veeDictionaryFr)
 
@@ -27,6 +31,12 @@ import {checkAuth} from './components/user/UserService'
   Vue.use(VueApollo)
   Vue.use(Vuetify)
   Vue.use(VeeValidate, {locale: 'fr'})
+  if (__IS_CORDOVA__) {
+    Vue.use(VueCordova)
+    Vue.cordova.on('deviceready', () => {
+      navigator.splashscreen.hide()
+    })
+  }
 
   const i18nOptions = {
     resources: resBundle,

@@ -25,7 +25,7 @@ MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 COPY docker/nginx-default.conf /etc/nginx/conf.d/default.template
 COPY docker/nginx-proxy.conf /etc/nginx/proxy.conf
 
-COPY --from=builder /src/dist /usr/share/nginx/html
-COPY --from=builder /src/dist/index.html /usr/share/nginx/html/index.html.template
+COPY --from=builder /src/www /usr/share/nginx/html
+COPY --from=builder /src/www/index.html /usr/share/nginx/html/index.html.template
 
 CMD ["/bin/sh", "-c", "envsubst '$UPSTREAM_SERVER $UPSTREAM_PORT' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && envsubst '${PIWIK_SITE_URL} ${PIWIK_SITE_ID}' < /usr/share/nginx/html/index.html.template > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"]
