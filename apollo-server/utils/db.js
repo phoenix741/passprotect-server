@@ -1,14 +1,24 @@
-import Lowdb from 'lowdb'
-import FileSync from 'lowdb/adapters/FileSync'
-import mkdirp from 'mkdirp'
-import { resolve } from 'path'
+import mongodb from 'mongodb'
+import config from 'config'
+import debug from 'debug'
 
-mkdirp(resolve(__dirname, '../../live'))
+const log = debug('App:Utils:Db')
 
-export const db = new Lowdb(new FileSync(resolve(__dirname, '../../live/db.json')))
+let promise = null
 
-// Seed an empty DB
-db.defaults({
-  messages: [],
-  uploads: [],
-}).write()
+export function connection () {
+  if (!promise) {
+    promise = mongodb.MongoClient
+      .connect(config.get('config.mongodb.host'), config.get('config.mongodb.options'))
+      .then(client => {
+        log('Express server connected to mongodb host ' + config.get('config.mongodb.host'))
+        return client.db(config.get('config.mongodb.database'))
+      })
+      .catch(err => {
+        promise = null
+        throw err
+      })
+  }
+
+  return promise
+}

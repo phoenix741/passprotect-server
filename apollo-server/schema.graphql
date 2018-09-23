@@ -1,60 +1,198 @@
-# Included scalars
-scalar JSON
-scalar Upload
+scalar Date
 
-# It will increment!
-type Counter {
-  # Number of increments
-  count: Int!
-  # Full message for testing
-  countStr: String
+# Encrypted content
+type EncryptedContent {
+  # Content encrypted with salt
+  content: String!
+  # Authentification tag
+  authTag: String!
 }
 
-# A text message send by users
-type Message {
-  id: ID!
-  # Message content
-  text: String!
+# Encrypted content
+input EncryptedContentInput {
+  # Content encrypted with salt
+  content: String!
+  # Authentification tag
+  authTag: String!
 }
 
-# Input from user to create a message
-input MessageInput {
-  # Message content
-  text: String!
+type Error {
+  fieldName: String,
+  message: String
 }
 
-type File {
-  id: ID!
-  path: String!
-  filename: String!
-  mimetype: String!
-  encoding: String!
+type Errors {
+  errors: [Error]!
 }
 
-
-type Query {
-  # Test query with a parameter
-  hello(name: String): String!
-  # List of messages sent by users
-  messages: [Message]
-  uploads: [File]
-
+# Master key encrypted for the user
+type EncryptedMasterKey {
+  # Salt added to encrypt the master key
+  salt: String!
+  # Encrypted master key
+  encryptedKey: EncryptedContent!
 }
 
-type Mutation {
-  myMutation: String!
-  # Add a message and publish it on 'messages' subscription channel
-  addMessage (input: MessageInput!): Message!
-  singleUpload (file: Upload!): File!
-  multipleUpload (files: [Upload!]!): [File!]!
-
+# Master key encrypted for the user
+input EncryptedMasterKeyInput {
+  # Salt added to encrypt the master key
+  salt: String!
+  # Encrypted master key
+  encryptedKey: EncryptedContentInput!
 }
 
-type Subscription {
-  mySub: String!
-  # This will update every 2 seconds
-  counter: Counter!
-  # When a new message is added
-  messageAdded: Message!
+# User defined in the application
+type User {
+  # Login of the user
+  _id: ID!,
+  # Encrypted master key
+  encryption: EncryptedMasterKey!,
+  # Creation date of the user
+  creationAt: Date,
+  # Role of the user (can be user or admin)
+  role: String
+  # Wallet lines of the user.
+  lines: [WalletLine]!
+}
 
+input RegistrationUser {
+  # Login of the user
+  _id: ID!,
+  # Password used for registration
+  password: String!
+  # Encrypted master key
+  encryption: EncryptedMasterKeyInput!,
+}
+
+union RegisterUserResult = User | Errors
+
+# Wallet line content encrypted
+type EncryptedWalletLine {
+  # Salt used to encrypt wallet line
+  salt: String!
+  # Information of the wallet encrypted
+  informations: EncryptedContent!
+}
+
+# Wallet line content encrypted
+input EncryptedWalletLineInput {
+  # Salt used to encrypt wallet line
+  salt: String!
+  # Information of the wallet encrypted
+  informations: EncryptedContentInput!
+}
+
+# Wallet
+type WalletLine {
+  # Id of the line
+  _id: ID!
+  # Type of the line (text, password, card)
+  type: String!,
+  # Label of the wallet line
+  label: String!,
+  # Group of the wallet line
+	group: String,
+  # Encrypted content of the line (encrypted client side)
+  encryption: EncryptedWalletLine!,
+  # Owner of the list
+  user: User!,
+  # Last updated date of the line
+  updatedAt: Date,
+  # Revision (modification count) of the line
+  _rev: Int
+}
+
+# Wallet line used as input
+input WalletLineInput {
+  # Id of the line, if not filled application create a new line
+  _id: ID
+  # Type of the line (text, password, card)
+  type: String!,
+  # Label of the wallet line
+  label: String!,
+  # Group of the wallet line
+	group: String,
+  # Encrypted content of the line (encrypted client side)
+  encryption: EncryptedWalletLineInput!,
+  # Revision (modification count) of the line, used to ensure modification of the last line
+  _rev: Int
+}
+
+union CreateUpdateLineResult = WalletLine | Errors
+
+# Information needed to connect to the server and retreive object from database.
+input ConnectionInformationInput {
+  # Login of the user
+  username: String!,
+  # Password used for connection
+  password: String!
+}
+
+# Result of the connection
+type ConnectionInformation {
+  # Token to be used in connection information
+  token: String,
+  # The connected user
+  user: User!
+}
+
+union CreateSessionResult = ConnectionInformation | Errors
+
+# Wallet transaction, used to synchronize lines between devices
+type WalletTransaction {
+  # Id of the transaction
+  _id: ID!,
+  # Type of the object modified (only line)
+  type: String!,
+  # Line
+  line: WalletLine,
+  # Owner of the transaction
+  user: User!,
+  # The line before the modification
+  before: WalletLine,
+  # The line after the modification
+  after: WalletLine,
+  # The modification date
+  updatedAt: Date!,
+  # A SHA-512 calculate on the modification.
+  sha512: String!
+}
+
+type RootQuery {
+  # Request a user
+  user(id: ID!): User,
+
+    # Request the list of lines from the connected users.
+  lines: [WalletLine],
+
+  # Request a wallet line
+  line(id: ID!): WalletLine,
+
+	# Request all groups available on lines
+	groups: [String!]
+
+  # Request the current session
+  session: User
+
+  # Request all transactions that happen since the last synchronisation date.
+  transactions(earliest: Date!): [WalletTransaction]
+}
+
+type RootMutation {
+  registerUser(input: RegistrationUser!): RegisterUserResult
+
+  createUpdateLine(input: WalletLineInput!): CreateUpdateLineResult
+  removeLine(id: ID): Errors
+
+  createSession(input: ConnectionInformationInput!): CreateSessionResult
+}
+
+type RootSubscription {
+  transactionAdded: WalletTransaction!
+}
+
+schema {
+  query: RootQuery
+  mutation: RootMutation
+  subscription: RootSubscription
 }
