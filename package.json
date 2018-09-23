@@ -7,12 +7,19 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "apollo": "vue-cli-service apollo:watch",
+    "apollo:run": "vue-cli-service apollo:run"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
+    "graphql-type-json": "^0.2.1",
+    "lowdb": "^1.0.0",
+    "mkdirp": "^0.5.1",
     "register-service-worker": "^1.0.0",
+    "shortid": "^2.2.8",
     "vue": "^2.5.17",
+    "vue-apollo": "^3.0.0-beta.11",
     "vue-router": "^3.0.1",
     "vuetify": "^1.2.0"
   },
@@ -27,9 +34,12 @@
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-plugin-transform-imports": "^1.5.0",
     "chai": "^4.1.2",
+    "eslint-plugin-graphql": "^2.1.1",
+    "graphql-tag": "^2.9.0",
     "lint-staged": "^7.2.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
+    "vue-cli-plugin-apollo": "^0.16.5",
     "vue-cli-plugin-vuetify": "^0.2.0",
     "vue-template-compiler": "^2.5.17"
   },
@@ -42,10 +52,21 @@
       "plugin:vue/essential",
       "@vue/standard"
     ],
-    "rules": {},
+    "rules": {
+      "graphql/template-strings": [
+        "error",
+        {
+          "env": "literal",
+          "projectName": "app"
+        }
+      ]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
-    }
+    },
+    "plugins": [
+      "graphql"
+    ]
   },
   "postcss": {
     "plugins": {
