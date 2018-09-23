@@ -1,7 +1,0 @@
-config:
-    mongodb:
-        host: 'mongodb://localhost:27017'
-        database: passprotect
-        user: ~
-        password: ~
-        options: ~
