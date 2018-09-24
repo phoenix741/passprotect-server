@@ -1,7 +1,7 @@
 #
 # -------- Base ---------
 
-FROM node:8 as base
+FROM node:10 as base
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 
 WORKDIR /src

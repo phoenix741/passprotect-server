@@ -7,10 +7,10 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 
-import {typeDefs as userTypeDefs, resolvers as userResolvers} from './user'
-import {typeDefs as lineTypeDefs, resolvers as lineResolvers} from './line'
-import {typeDefs as sessionTypeDefs, resolvers as sessionResolvers} from './session'
-import {typeDefs as transactionTypeDefs, resolvers as transactionResolvers} from './transaction'
+import { typeDefs as userTypeDefs, resolvers as userResolvers } from './user'
+import { typeDefs as lineTypeDefs, resolvers as lineResolvers } from './line'
+import { typeDefs as sessionTypeDefs, resolvers as sessionResolvers } from './session'
+import { typeDefs as transactionTypeDefs, resolvers as transactionResolvers } from './transaction'
 
 const log = debug('App:Controllers:GraphQL')
 
@@ -40,10 +40,10 @@ const GraphQLScalarDate = new GraphQLScalarType({
   }
 })
 
-const resolvers = merge({Date: GraphQLScalarDate}, userResolvers, lineResolvers, sessionResolvers, transactionResolvers)
+const resolvers = merge({ Date: GraphQLScalarDate }, userResolvers, lineResolvers, sessionResolvers, transactionResolvers)
 
 log('Create the graphql schema')
-export const schema = makeExecutableSchema({typeDefs, resolvers, logger: {log}})
+export const schema = makeExecutableSchema({ typeDefs, resolvers, logger: { log } })
 
 const graphqlRouter = graphqlExpress((req, res) => ({
   schema,

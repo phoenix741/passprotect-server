@@ -1,11 +1,11 @@
-import {pick, isString, isEmpty} from 'lodash'
+import { pick, isString, isEmpty } from 'lodash'
 import i18n from 'i18next'
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import {checkPermission} from '../utils/authentification'
-import {getLines, getLine, removeLine, saveLine} from '../services/line'
-import {getGroups} from '../services/group'
+import { checkPermission } from '../utils/authentification'
+import { getLines, getLine, removeLine, saveLine } from '../services/line'
+import { getGroups } from '../services/group'
 
 const log = debug('App:Controllers:Line')
 
