@@ -13,8 +13,8 @@ export function bootstrap (environment) {
     lng: 'fr',
     fallbackLng: 'fr',
     backend: {
-      loadPath: path.join(__dirname, '..', '..', 'common', 'locales', '{{lng}}', '{{ns}}.json'),
-      addPath: path.join(__dirname, '..', '..', 'common', 'locales', '{{lng}}', '{{ns}}.missing.json')
+      loadPath: path.join(__dirname, '..', '..', 'config', 'locales', '{{lng}}', '{{ns}}.json'),
+      addPath: path.join(__dirname, '..', '..', 'config', 'locales', '{{lng}}', '{{ns}}.missing.json')
     },
 
     saveMissing: environment === 'development'
