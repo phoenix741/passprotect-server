@@ -6,17 +6,17 @@
   "licence": "MIT",
   "private": true,
   "scripts": {
-    "start": "DEBUG=App:* node -r @std/esm server/app",
-    "start:debug": "DEBUG=App:* node --inspect -r @std/esm server/app",
+    "start": "DEBUG=App:* node --experimental-modules server/app",
+    "start:debug": "DEBUG=App:* node --experimental-modules --inspect server/app",
     "lint": "eslint --ext .js,.mjs server"
   },
   "main": "",
   "engines": {
-    "node": ">= 6.2.1",
-    "npm": ">= 3.0.0"
+    "node": ">= 10.11.0",
+    "npm": ">= 6.4.1"
   },
   "dependencies": {
-    "@std/esm": "^0.26.0",
+    "apollo-server": "^2.1.0",
     "bcrypt": "^3.0.1",
     "body-parser": "~1.18.3",
     "config": "~2.0.1",
@@ -24,27 +24,19 @@
     "debug": "^4.0.1",
     "dotenv": "^6.0.0",
     "errorhandler": "~1.5.0",
-    "express": "~4.16.3",
-    "express-jwt": "^5.3.1",
     "graphql": "^14.0.2",
-    "graphql-server-express": "^1.4.0",
-    "graphql-subscriptions": "^1.0.0",
-    "graphql-tools": "~4.0.0",
     "i18next": "^11.9.0",
-    "i18next-express-middleware": "^1.4.0",
     "i18next-node-fs-backend": "~2.1.0",
     "jsonwebtoken": "~8.3.0",
     "lodash": "~4.17.11",
     "moment": "~2.22.2",
     "mongodb": "^3.1.6",
-    "morgan": "~1.9.1",
-    "morgan-debug": "~2.0.0",
     "serve-favicon": "~2.5.0",
     "stream-to-promise": "~2.2.0",
     "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "eslint": "^5.6.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-friendly-formatter": "^4.0.1",
@@ -55,8 +47,5 @@
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
     "sinon": "^6.3.4"
-  },
-  "@std/esm": {
-    "cjs": true
   }
 }

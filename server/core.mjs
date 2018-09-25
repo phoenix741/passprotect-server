@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import debug from 'debug'
 import config from 'config'
 
@@ -15,6 +14,11 @@ import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { execute, subscribe } from 'graphql'
 
 const log = debug('App:Core')
+const jwtOption = {
+  secret: config.get('config.jwt.secret'),
+  credentialsRequired: false,
+  requestProperty: 'payload'
+}
 
 export class Core {
   constructor (app) {
@@ -25,11 +29,6 @@ export class Core {
   }
 
   initialisation () {
-    const jwtOption = {
-      secret: config.get('config.jwt.secret'),
-      credentialsRequired: false,
-      requestProperty: 'payload'
-    }
     this.app.use((req, res, next) => {
       connection()
       next()

@@ -1,6 +1,6 @@
-import { PubSub } from 'graphql-subscriptions'
+import apolloServer from 'apollo-server'
 
-export const pubsub = new PubSub()
+export const pubsub = new apolloServer.PubSub()
 
 export const TRANSACTION_ADDED_TOPIC = 'transactionAdded'
 

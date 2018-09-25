@@ -1,6 +1,6 @@
 import debug from 'debug'
 import i18n from 'i18next'
-import { pick } from 'lodash'
+import _ from 'lodash'
 import { AuthorizationError } from '../models/exception'
 import { getUsers as getUsersModel, getUser as getUserModel, registerUser as registerUserModel } from '../models/user'
 import { hashPassword, checkPassword } from './crypto'
@@ -10,7 +10,7 @@ const log = debug('App:Service:User')
 export async function getUsers (params = {}) {
   log('Get all users with params ', params)
 
-  const filter = pick(params, 'confirmationToken')
+  const filter = _.pick(params, 'confirmationToken')
 
   return getUsersModel(filter)
 }
@@ -27,7 +27,7 @@ export async function getUser (id) {
  */
 export async function createSessionUser (user) {
   log('Create the session payload for user ', user._id)
-  const payload = pick(user, '_id')
+  const payload = _.pick(user, '_id')
 
   return payload
 }

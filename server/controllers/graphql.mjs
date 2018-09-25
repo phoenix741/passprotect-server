@@ -2,7 +2,7 @@ import { flatten, merge } from 'lodash'
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import { graphqlExpress } from 'graphql-server-express'
+import apolloServer from 'apollo-server'
 import { makeExecutableSchema } from 'graphql-tools'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
@@ -16,7 +16,7 @@ const log = debug('App:Controllers:GraphQL')
 
 log('Load common type definitions')
 const typeDefs = flatten([
-  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'common.graphql'), 'utf-8'),
+  fs.readFileSync(path.join(__dirname, '..', 'graphql', 'common.graphql'), 'utf-8'),
   userTypeDefs,
   lineTypeDefs,
   sessionTypeDefs,
@@ -42,15 +42,13 @@ const GraphQLScalarDate = new GraphQLScalarType({
 
 const resolvers = merge({ Date: GraphQLScalarDate }, userResolvers, lineResolvers, sessionResolvers, transactionResolvers)
 
-log('Create the graphql schema')
-export const schema = makeExecutableSchema({ typeDefs, resolvers, logger: { log } })
-
-const graphqlRouter = graphqlExpress((req, res) => ({
-  schema,
-  context: {
-    user: req.user,
-    res
-  }
-}))
-
-export default graphqlRouter
+export const server = new apolloServer.ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async ({ req, connection }) => {
+    return {
+      user: req.user
+    }
+  },
+  tracing: true
+})

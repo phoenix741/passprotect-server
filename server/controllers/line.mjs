@@ -1,4 +1,4 @@
-import { pick, isString, isEmpty } from 'lodash'
+import _ from 'lodash'
 import i18n from 'i18next'
 import fs from 'fs'
 import path from 'path'
@@ -8,10 +8,11 @@ import { getLines, getLine, removeLine, saveLine } from '../services/line'
 import { getGroups } from '../services/group'
 
 const log = debug('App:Controllers:Line')
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 log('Load line type definition')
 export const typeDefs = [
-  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'line.graphql'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', 'graphql', 'line.graphql'), 'utf-8')
 ]
 
 export const resolvers = {
@@ -96,11 +97,11 @@ export const resolvers = {
  * @returns {Object} The filtered object.
  */
 function filterLine (line) {
-  return pick(line, '_id', 'user', 'type', 'label', 'group', 'encryption', 'updatedAt', '_rev')
+  return _.pick(line, '_id', 'user', 'type', 'label', 'group', 'encryption', 'updatedAt', '_rev')
 }
 
 function sanitizeInput (input) {
-  const data = pick(input, '_id', 'user', 'type', 'label', 'group', 'encryption', '_rev')
+  const data = _.pick(input, '_id', 'user', 'type', 'label', 'group', 'encryption', '_rev')
 
   const validationError = new Error()
   validationError.status = 400
@@ -111,7 +112,7 @@ function sanitizeInput (input) {
     throw validationError
   }
 
-  if (!isString(data.label) || isEmpty(data.label)) {
+  if (!_.isString(data.label) || _.isEmpty(data.label)) {
     validationError.message = i18n.t('error:line.400.label')
     throw validationError
   }

@@ -1,5 +1,5 @@
 import config from 'config'
-import { pick, omit, isString, isEmpty } from 'lodash'
+import _ from 'lodash'
 import i18n from 'i18next'
 import { getUser, createSessionUser, verifyPassword } from '../services/user'
 import jsonwebtoken from 'jsonwebtoken'
@@ -9,12 +9,12 @@ import debug from 'debug'
 import { promisify } from 'util'
 
 const log = debug('App:Controllers:Session')
-
 const jwtSignAsync = promisify(jsonwebtoken.sign)
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 log('Load session type definition')
 export const typeDefs = [
-  fs.readFileSync(path.join(__dirname, '..', '..', 'common', 'graphql', 'session.graphql'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', 'graphql', 'session.graphql'), 'utf-8')
 ]
 
 export const resolvers = {
@@ -25,7 +25,7 @@ export const resolvers = {
   },
 
   RootMutation: {
-    async createSession (obj, { input }, { res }) {
+    async createSession (obj, { input }) {
       try {
         const data = sanitizeInput(input)
         const { user, jwtToken } = await connectSession(data)
@@ -49,16 +49,16 @@ export const resolvers = {
 }
 
 function sanitizeInput (input) {
-  const data = pick(input, 'username', 'password')
+  const data = _.pick(input, 'username', 'password')
 
   const validationError = new Error()
   validationError.status = 401
-  if (!isString(data.username) || isEmpty(data.username)) {
+  if (!_.isString(data.username) || _.isEmpty(data.username)) {
     validationError.message = i18n.t('error:user.401.username')
     throw validationError
   }
 
-  if (!isString(data.password) || isEmpty(data.password)) {
+  if (!_.isString(data.password) || _.isEmpty(data.password)) {
     validationError.message = i18n.t('error:user.401.password')
     throw validationError
   }
@@ -76,7 +76,7 @@ async function connectSession ({ username, password }) {
 }
 
 function filterUser (user) {
-  return user ? omit(user, 'password', 'confirmationToken') : null
+  return user ? _.omit(user, 'password', 'confirmationToken') : null
 }
 
 function parseErrors (err) {

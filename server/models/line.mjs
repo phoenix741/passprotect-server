@@ -1,7 +1,7 @@
-import { isString, omit } from 'lodash'
+import _ from 'lodash'
 import { connection } from '../utils/db'
 import i18n from 'i18next'
-import { ObjectID } from 'mongodb'
+import mongodb from 'mongodb'
 
 import { processMongoException, NotFoundError } from './exception'
 
@@ -21,7 +21,7 @@ import { processMongoException, NotFoundError } from './exception'
 export async function getLines (filter, sort) {
   const find = {}
 
-  if (isString(filter.user)) {
+  if (_.isString(filter.user)) {
     find.user = filter.user
   }
 
@@ -29,7 +29,7 @@ export async function getLines (filter, sort) {
 }
 
 export async function getLine (id, _rev) {
-  const query = { _id: new ObjectID(id) }
+  const query = { _id: new mongodb.ObjectID(id) }
   if (_rev !== undefined) {
     query._rev = _rev
   }
@@ -40,7 +40,7 @@ export async function getLine (id, _rev) {
 }
 
 export async function saveLine (line) {
-  const cleanLine = omit(line, '_rev')
+  const cleanLine = _.omit(line, '_rev')
   const revision = line._rev
   const query = { _id: new ObjectID(line._id) }
   if (revision) {
