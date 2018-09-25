@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import debug from 'debug'
 import config from 'config'
 
@@ -7,8 +8,8 @@ import expressJwt from 'express-jwt'
 import http from 'http'
 
 import { connection } from './utils/db'
-import {websocketVerifyClient as verifyClient, processPayload} from './utils/authentification'
-import graphqlRouter, {schema} from './controllers/graphql'
+import { websocketVerifyClient as verifyClient, processPayload } from './utils/authentification'
+import graphqlRouter, { schema } from './controllers/graphql'
 import { graphiqlExpress } from 'graphql-server-express'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { execute, subscribe } from 'graphql'

@@ -1,9 +1,9 @@
 import debug from 'debug'
 import i18n from 'i18next'
-import {pick} from 'lodash'
-import {AuthorizationError} from '../models/exception'
-import {getUsers as getUsersModel, getUser as getUserModel, registerUser as registerUserModel} from '../models/user'
-import {hashPassword, checkPassword} from './crypto'
+import { pick } from 'lodash'
+import { AuthorizationError } from '../models/exception'
+import { getUsers as getUsersModel, getUser as getUserModel, registerUser as registerUserModel } from '../models/user'
+import { hashPassword, checkPassword } from './crypto'
 
 const log = debug('App:Service:User')
 

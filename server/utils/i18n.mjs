@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import {LanguageDetector} from 'i18next-express-middleware'
+import { LanguageDetector } from 'i18next-express-middleware'
 import i18nBackend from 'i18next-node-fs-backend'
 import i18n from 'i18next'
 

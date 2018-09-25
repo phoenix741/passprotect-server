@@ -1,6 +1,6 @@
 import debug from 'debug'
-import {getGroups as getGroupsModel} from '../models/group'
-import {compact} from 'lodash'
+import { getGroups as getGroupsModel } from '../models/group'
+import { compact } from 'lodash'
 
 const log = debug('App:Service:Group')
 

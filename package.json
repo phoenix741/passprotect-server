@@ -8,9 +8,7 @@
   "scripts": {
     "start": "DEBUG=App:* node -r @std/esm server/app",
     "start:debug": "DEBUG=App:* node --inspect -r @std/esm server/app",
-    "unit": "nyc -e mjs --reporter=text --reporter=text-summary mocha -r @std/esm --recursive test/**/*.mjs",
-    "test": "npm run unit",
-    "lint": "eslint --ext .js,.mjs server test/unit/specs"
+    "lint": "eslint --ext .js,.mjs server"
   },
   "main": "",
   "engines": {
@@ -24,6 +22,7 @@
     "config": "~2.0.1",
     "cookie": "~0.3.1",
     "debug": "~3.1.0",
+    "dotenv": "^6.0.0",
     "errorhandler": "~1.5.0",
     "express": "~4.16.3",
     "express-jwt": "^5.3.1",

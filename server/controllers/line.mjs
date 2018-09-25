@@ -16,27 +16,27 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    async lines (obj, args, {user}) {
+    async lines (obj, args, { user }) {
       checkPermission(user)
       const lines = await getLines(user)
       lines.forEach(line => checkPermission(user, line.user))
       return lines.map(filterLine)
     },
 
-    async line (obj, {id}, {user}) {
+    async line (obj, { id }, { user }) {
       checkPermission(user)
       const line = await getLine(id)
       checkPermission(user, line.user)
       return filterLine(line)
     },
 
-    async groups (obj, args, {user}) {
+    async groups (obj, args, { user }) {
       checkPermission(user)
       return getGroups(user)
     }
   },
   User: {
-    async lines (obj, args, {user}) {
+    async lines (obj, args, { user }) {
       checkPermission(user)
       const line = await getLines(obj._id)
       checkPermission(user, line.user)
@@ -46,7 +46,7 @@ export const resolvers = {
   },
 
   RootMutation: {
-    async createUpdateLine (obj, {input}, {user}) {
+    async createUpdateLine (obj, { input }, { user }) {
       log(`createUpdateLine with id ${input._id}`)
       checkPermission(user)
       try {
@@ -67,13 +67,13 @@ export const resolvers = {
       }
     },
 
-    async removeLine (obj, {id}, {user}) {
+    async removeLine (obj, { id }, { user }) {
       checkPermission(user)
       try {
         const line = await getLine(id)
         checkPermission(user, line.user)
         await removeLine(id)
-        return {errors: []}
+        return { errors: [] }
       } catch (err) {
         return parseErrors(err)
       }
@@ -107,7 +107,7 @@ function sanitizeInput (input) {
 
   const typeChoices = ['card', 'password', 'text']
   if (!typeChoices.includes(data.type)) {
-    validationError.message = i18n.t('error:line.400.type', {choices: typeChoices.join(', ')})
+    validationError.message = i18n.t('error:line.400.type', { choices: typeChoices.join(', ') })
     throw validationError
   }
 

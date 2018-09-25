@@ -1,5 +1,5 @@
-import {isString} from 'lodash'
-import {connection} from '../utils/db'
+import { isString } from 'lodash'
+import { connection } from '../utils/db'
 
 export async function getGroups (filter) {
   const find = {}

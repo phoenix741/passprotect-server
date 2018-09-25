@@ -1,5 +1,5 @@
-import {isString, isDate} from 'lodash'
-import {connection} from '../utils/db'
+import { isString, isDate } from 'lodash'
+import { connection } from '../utils/db'
 
 import { processMongoException } from './exception'
 

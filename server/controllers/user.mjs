@@ -1,10 +1,10 @@
-import {pick, omit, isString, isEmpty, isObject} from 'lodash'
+import { pick, omit, isString, isEmpty, isObject } from 'lodash'
 import i18n from 'i18next'
 import debug from 'debug'
 import fs from 'fs'
 import path from 'path'
-import {checkPermission} from '../utils/authentification'
-import {getUser, registerUser} from '../services/user'
+import { checkPermission } from '../utils/authentification'
+import { getUser, registerUser } from '../services/user'
 
 const log = debug('App:Controllers:User')
 
@@ -15,21 +15,21 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    async user (obj, {id}, {user}) {
+    async user (obj, { id }, { user }) {
       checkPermission(user, id)
       const dbUser = await getUser(id)
       return filterUser(dbUser)
     }
   },
   WalletLine: {
-    async user (obj, args, {user}) {
+    async user (obj, args, { user }) {
       checkPermission(user, obj.user)
       const dbUser = await getUser(obj.user)
       return filterUser(dbUser)
     }
   },
   WalletTransaction: {
-    async user (obj, {id}, {user}) {
+    async user (obj, { id }, { user }) {
       checkPermission(user, id)
       const dbUser = getUser(obj.user)
       return filterUser(dbUser)
@@ -37,7 +37,7 @@ export const resolvers = {
   },
 
   RootMutation: {
-    async registerUser (obj, {input}) {
+    async registerUser (obj, { input }) {
       try {
         const data = sanitizeUser(input)
         const user = await registerUser(data)

@@ -1,5 +1,5 @@
-import {isString} from 'lodash'
-import {connection} from '../utils/db'
+import { isString } from 'lodash'
+import { connection } from '../utils/db'
 import i18n from 'i18next'
 
 import { processMongoException, NotFoundError } from './exception'

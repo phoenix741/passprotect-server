@@ -1,8 +1,8 @@
 import config from 'config'
 import debug from 'debug'
-import {getUserFromSession} from '../services/user'
+import { getUserFromSession } from '../services/user'
 import jsonwebtoken from 'jsonwebtoken'
-import {promisify} from 'util'
+import { promisify } from 'util'
 
 const log = debug('App:Passport')
 const jwtVerifyAsync = promisify(jsonwebtoken.verify)

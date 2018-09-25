@@ -1,12 +1,12 @@
 import config from 'config'
-import {pick, omit, isString, isEmpty} from 'lodash'
+import { pick, omit, isString, isEmpty } from 'lodash'
 import i18n from 'i18next'
-import {getUser, createSessionUser, verifyPassword} from '../services/user'
+import { getUser, createSessionUser, verifyPassword } from '../services/user'
 import jsonwebtoken from 'jsonwebtoken'
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import {promisify} from 'util'
+import { promisify } from 'util'
 
 const log = debug('App:Controllers:Session')
 
@@ -19,18 +19,18 @@ export const typeDefs = [
 
 export const resolvers = {
   RootQuery: {
-    session (obj, args, {user}) {
+    session (obj, args, { user }) {
       return filterUser(user)
     }
   },
 
   RootMutation: {
-    async createSession (obj, {input}, {res}) {
+    async createSession (obj, { input }, { res }) {
       try {
         const data = sanitizeInput(input)
-        const {user, jwtToken} = await connectSession(data)
+        const { user, jwtToken } = await connectSession(data)
 
-        return {token: 'bearer ' + jwtToken, user: filterUser(user)}
+        return { token: 'bearer ' + jwtToken, user: filterUser(user) }
       } catch (err) {
         return parseErrors(err)
       }
@@ -66,13 +66,13 @@ function sanitizeInput (input) {
   return data
 }
 
-async function connectSession ({username, password}) {
+async function connectSession ({ username, password }) {
   const user = await getUser(username)
   await verifyPassword(user, password)
   const payload = await createSessionUser(user)
-  const jwtToken = await jwtSignAsync({user: payload}, config.get('config.jwt.secret'), {})
+  const jwtToken = await jwtSignAsync({ user: payload }, config.get('config.jwt.secret'), {})
 
-  return {user, jwtToken}
+  return { user, jwtToken }
 }
 
 function filterUser (user) {
