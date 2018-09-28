@@ -3,7 +3,7 @@ services:
     nodejs:
         build:
           context: ./
-          dockerfile: Dockerfile.nodejs
+          dockerfile: Dockerfile
         image: phoenix741/passprotect-server:develop
         expose:
             - 3000
