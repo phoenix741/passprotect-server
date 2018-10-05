@@ -44,7 +44,7 @@ export async function removeLine (id) {
 
 async function getLineIfAvailable (id, rev) {
   try {
-    return getLineModel(id, rev)
+    return await getLineModel(id, rev)
   } catch (err) {
     if (err instanceof NotFoundError) {
       return null

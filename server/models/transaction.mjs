@@ -27,7 +27,7 @@ export async function getTransactions (filter) {
 
 export async function createTransaction (transaction) {
   try {
-    const doc = await (await connection()).collection('transactions').insert(transaction)
+    const doc = await (await connection()).collection('transactions').insertOne(transaction)
     return doc.ops[0]
   } catch (err) {
     processMongoException(err)

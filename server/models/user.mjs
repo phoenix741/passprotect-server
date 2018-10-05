@@ -36,7 +36,7 @@ export async function registerUser (user) {
   normalizeUser(user)
 
   try {
-    await (await connection()).collection('users').insert(user)
+    await (await connection()).collection('users').insertOne(user)
     return user
   } catch (err) {
     processMongoException(err)

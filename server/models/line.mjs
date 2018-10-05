@@ -24,8 +24,7 @@ export async function getLines (filter, sort) {
   if (_.isString(filter.user)) {
     find.user = filter.user
   }
-
-  return (await connection()).collection('walletlines').find(find).sort(sort).toArray()
+  return (await (await connection()).collection('walletlines').find(find).sort(sort).toArray()).map(mapLine)
 }
 
 export async function getLine (id, _rev) {
@@ -34,35 +33,42 @@ export async function getLine (id, _rev) {
     query._rev = _rev
   }
 
-  const line = (await connection()).collection('walletlines').findOne(query)
+  const line = await (await connection()).collection('walletlines').findOne(query)
   processNotFound(id, line)
-  return line
+  return mapLine(line)
 }
 
 export async function saveLine (line) {
   const cleanLine = _.omit(line, '_rev')
   const revision = line._rev
-  const query = { _id: new ObjectID(line._id) }
+  const query = { _id: new mongodb.ObjectID(line._id) }
   if (revision) {
     query._rev = revision
   }
 
   try {
     const doc = await (await connection()).collection('walletlines').findOneAndUpdate(query, { $set: cleanLine, $inc: { _rev: 1 } }, { returnOriginal: false, upsert: true })
-    return doc.value
+    return mapLine(doc.value)
   } catch (err) {
     processMongoException(err)
   }
 }
 
 export async function removeLine (id) {
-  const line = await (await connection()).collection('walletlines').deleteOne({ _id: new ObjectID(id) })
-  processNotFound(id, line)
-  return line
+  await (await connection()).collection('walletlines').deleteOne({ _id: new mongodb.ObjectID(id) })
 }
 
 function processNotFound (lineId, line) {
   if (!line) {
     throw new NotFoundError(i18n.t('error:line.404.lineNotFound', { lineId }))
   }
+}
+
+function mapLine (line) {
+  if (line) {
+    const res = Object.assign({}, line)
+    res._id = res._id.toString()
+    return res
+  }
+  return null
 }
