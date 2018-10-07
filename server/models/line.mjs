@@ -12,6 +12,7 @@ import { processMongoException, NotFoundError } from './exception'
  *        label: {type: String},
  *        type: {type: String},
  *        group: {type: String},
+ *        logo: {type: String},
  *        encryption: {type: encrypted Object}
  *        updatedAt: {type: Date}
  *        _rev: {type: Number}
@@ -39,7 +40,7 @@ export async function getLine (id, _rev) {
 }
 
 export async function saveLine (line) {
-  const cleanLine = _.omit(line, '_rev')
+  const cleanLine = _.omit(line, '_rev', '_id')
   const revision = line._rev
   const query = { _id: new mongodb.ObjectID(line._id) }
   if (revision) {

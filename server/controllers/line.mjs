@@ -97,11 +97,11 @@ export const resolvers = {
  * @returns {Object} The filtered object.
  */
 function filterLine (line) {
-  return _.pick(line, '_id', 'user', 'type', 'label', 'group', 'encryption', 'updatedAt', '_rev')
+  return _.pick(line, '_id', 'user', 'type', 'label', 'group', 'logo', 'encryption', 'updatedAt', '_rev')
 }
 
 function sanitizeInput (input) {
-  const data = _.pick(input, '_id', 'user', 'type', 'label', 'group', 'encryption', '_rev')
+  const data = _.pick(input, '_id', 'user', 'type', 'label', 'group', 'logo', 'encryption', '_rev')
 
   const validationError = new Error()
   validationError.status = 400
