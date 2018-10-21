@@ -5,8 +5,8 @@ services:
           context: ./
           dockerfile: Dockerfile
         image: phoenix741/passprotect-server:develop
-        expose:
-            - 3000
+        ports:
+            - 4000:4000
         links:
             - mongodb
         environment:
@@ -15,7 +15,7 @@ services:
             - NODE_ENV=production
             - DEBUG=App:*
     mongodb:
-        image: mongo:3.5
+        image: mongo:4
         ports:
             - '27017:27017'
         volumes:
