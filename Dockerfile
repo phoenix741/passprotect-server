@@ -1,7 +1,7 @@
 #
 # -------- Base ---------
 
-FROM node:8 as base
+FROM node:10 as base
 MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
 
 WORKDIR /src
@@ -18,14 +18,14 @@ RUN npm install --production
 # -------- Dist -----------
 FROM base AS dist
 
-COPY common ./common
 COPY config ./config
 COPY server ./server
 COPY package.json ./
+COPY package-lock.json ./
 COPY --from=dependencies /src/node_modules /src/node_modules
 
 ENV MODE=prod
 ENV NODE_ENV=production
 
 EXPOSE 3000
-CMD ["node", "-r", "@std/esm", "server/app"]
+CMD ["node", "--experimental-modules", "server/app"]

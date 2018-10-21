@@ -1,6 +1,6 @@
 import debug from 'debug'
-import {getGroups as getGroupsModel} from '../models/group'
-import {compact} from 'lodash'
+import { getGroups as getGroupsModel } from '../models/group'
+import _ from 'lodash'
 
 const log = debug('App:Service:Group')
 
@@ -14,5 +14,5 @@ export async function getGroups (user) {
   sort.group = 1
 
   const groups = await getGroupsModel(filter, sort)
-  return compact(groups)
+  return _.compact(groups)
 }

@@ -1,8 +1,0 @@
-query getLines {
-  lines {
-    _id
-    type
-    label
-		group
-  }
-}

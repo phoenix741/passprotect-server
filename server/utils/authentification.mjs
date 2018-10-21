@@ -1,40 +1,25 @@
 import config from 'config'
 import debug from 'debug'
-import {getUserFromSession} from '../services/user'
+import { getUserFromSession } from '../services/user'
 import jsonwebtoken from 'jsonwebtoken'
-import {promisify} from 'util'
+import { promisify } from 'util'
 
 const log = debug('App:Passport')
 const jwtVerifyAsync = promisify(jsonwebtoken.verify)
 
-export async function websocketVerifyClient (info, cb) {
-  const authorization = (info.req.headers.authorization || 'bearer ').substr(7)
-  log('Websocket connection via ' + (authorization ? 'authorization header' : ''))
+export async function getUserFromPayload (payload) {
+  const authorization = (payload || 'bearer ').substr(7)
+  log('Connection via ' + (authorization ? 'authorization header' : ''))
 
   try {
     const payload = await jwtVerifyAsync(authorization, config.get('config.jwt.secret'))
     const user = await getUserFromSession(payload.user)
 
     log(`User ${user._id} connected on the websocket`)
-    info.req.user = user
-    cb(true) // eslint-disable-line standard/no-callback-literal
+    return user
   } catch (err) {
     log('Can\'t connect token ' + authorization + ' because of ' + err.message)
-    cb(false, err.status) // eslint-disable-line standard/no-callback-literal
-  }
-}
-
-export async function processPayload (req, res, next) {
-  log('Process the payload', req.payload)
-  try {
-    if (req.payload) {
-      const user = await getUserFromSession(req.payload.user)
-      log(`The payload will result to the user `, user)
-      req.user = user
-    }
-    next()
-  } catch (err) {
-    next(err)
+    return null
   }
 }
 

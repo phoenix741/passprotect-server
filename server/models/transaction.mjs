@@ -1,5 +1,5 @@
-import {isString, isDate} from 'lodash'
-import {connection} from '../utils/db'
+import _ from 'lodash'
+import { connection } from '../utils/db'
 
 import { processMongoException } from './exception'
 
@@ -15,10 +15,10 @@ import { processMongoException } from './exception'
 export async function getTransactions (filter) {
   const find = {}
 
-  if (isString(filter.user)) {
+  if (_.isString(filter.user)) {
     find.user = filter.user
   }
-  if (isDate(filter.earliest)) {
+  if (_.isDate(filter.earliest)) {
     find.updatedAt = { '$gte': filter.earliest }
   }
 
@@ -27,7 +27,7 @@ export async function getTransactions (filter) {
 
 export async function createTransaction (transaction) {
   try {
-    const doc = await (await connection()).collection('transactions').insert(transaction)
+    const doc = await (await connection()).collection('transactions').insertOne(transaction)
     return doc.ops[0]
   } catch (err) {
     processMongoException(err)

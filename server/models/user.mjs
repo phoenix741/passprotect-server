@@ -1,5 +1,5 @@
-import {isString} from 'lodash'
-import {connection} from '../utils/db'
+import _ from 'lodash'
+import { connection } from '../utils/db'
 import i18n from 'i18next'
 
 import { processMongoException, NotFoundError } from './exception'
@@ -19,7 +19,7 @@ import { processMongoException, NotFoundError } from './exception'
 export async function getUsers (filter = {}) {
   const find = {}
 
-  if (isString(filter.confirmationToken)) {
+  if (_.isString(filter.confirmationToken)) {
     find.confirmationToken = filter.confirmationToken
   }
 
@@ -36,7 +36,7 @@ export async function registerUser (user) {
   normalizeUser(user)
 
   try {
-    await (await connection()).collection('users').insert(user)
+    await (await connection()).collection('users').insertOne(user)
     return user
   } catch (err) {
     processMongoException(err)

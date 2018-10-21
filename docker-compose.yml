@@ -3,10 +3,10 @@ services:
     nodejs:
         build:
           context: ./
-          dockerfile: Dockerfile.nodejs
+          dockerfile: Dockerfile
         image: phoenix741/passprotect-server:develop
-        expose:
-            - 3000
+        ports:
+            - 4000:4000
         links:
             - mongodb
         environment:
@@ -14,22 +14,8 @@ services:
             - MONGODB_DATABASE=passprotect
             - NODE_ENV=production
             - DEBUG=App:*
-    nginx:
-        build:
-          context: ./
-          dockerfile: Dockerfile.nginx
-        image: phoenix741/passprotect-client:develop
-        links:
-            - nodejs
-        environment:
-            - UPSTREAM_SERVER=nodejs
-            - UPSTREAM_PORT=3000
-            - PIWIK_SITE_URL=//stats-demo.shadoware.org/
-            - PIWIK_SITE_ID=3
-        ports:
-            - '8080:80'
     mongodb:
-        image: mongo:3.5
+        image: mongo:4
         ports:
             - '27017:27017'
         volumes:

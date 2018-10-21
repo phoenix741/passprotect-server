@@ -1,7 +1,7 @@
 import debug from 'debug'
-import {NotFoundError} from '../models/exception'
-import {getLines as getLinesModel, getLine as getLineModel, saveLine as saveLineModel, removeLine as removeLineModel} from '../models/line'
-import {createTransaction} from '../services/transaction'
+import { NotFoundError } from '../models/exception'
+import { getLines as getLinesModel, getLine as getLineModel, saveLine as saveLineModel, removeLine as removeLineModel } from '../models/line'
+import { createTransaction } from '../services/transaction'
 
 const log = debug('App:Service:Line')
 
@@ -44,7 +44,7 @@ export async function removeLine (id) {
 
 async function getLineIfAvailable (id, rev) {
   try {
-    return getLineModel(id, rev)
+    return await getLineModel(id, rev)
   } catch (err) {
     if (err instanceof NotFoundError) {
       return null
