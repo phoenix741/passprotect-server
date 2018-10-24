@@ -54,6 +54,9 @@ log('Start apollo server')
 const server = new apolloServer.ApolloServer({
   typeDefs,
   resolvers,
+  subscriptions: {
+    path: '/'
+  },
   context: async ({ req, connection }) => {
     let token;
     if (connection) {
@@ -68,7 +71,8 @@ const server = new apolloServer.ApolloServer({
       user
     }
   },
-  tracing: true
+  tracing: true,
+  introspection: true
 })
 
 export function bootstrap () {
