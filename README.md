@@ -1,108 +1,75 @@
-# Passprotect
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+</p>
 
-[![Build Status](https://ci.shadoware.org/api/badges/phoenix/passprotect-server/status.svg?branch=develop)](https://ci.shadoware.org/phoenix/passprotect-server)
+[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
+[travis-url]: https://travis-ci.org/nestjs/nest
+[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
+[linux-url]: https://travis-ci.org/nestjs/nest
+  
+  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
+<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
+<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
+<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
+<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
+  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-Passprotect is an single page application used to retrieve and store password, credit card, or other text securely.
+## Description
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
-## How data are encrypted
-
-When the application is started you can create a user. When the user is created the application will create 2 keys :
-
-  * the master key used to encrypt (with AES-256-CTR) password, text, card. This key is generated from 32 random bytes,
-  this key is encrypted using the password of the user and salt (of 16 bytes),
-  * the session key used to encrypt JWT token. The key is generated from 32 random bytes. This key is used to encrypt
-  the master key in the JWT token.
-
-Then when the line is saved the master key is used to encrypt the data, and when the line is retrieved the master key is
-used to decrypt the data.
-
-Only the user can encrypt and decrypt it's data. The encryption and decryption is made in the nodejs part.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
 
-### Prerequisites
+```bash
+$ npm install
+```
 
- * NodeJS > 6.2.1
- * MongoDB > 3.2.7
-
-### From source
+## Running the app
 
 ```bash
-    $ hg clone https://bitbucket.org/uvandenhekke/passprotect-server
-    $ npm install
-    $ MODE=prod npm run build
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
 ```
 
-### From docker
+## Test
 
-Using docker-compose you can instantiate the different image with the following `docker-compose.yml` file
+```bash
+# unit tests
+$ npm run test
 
-```yaml
-version: '2'
-services:
-    nodejs:
-        image: phoenix741/passprotect-server:1.0.0
-        expose:
-            - 3000
-        links:
-            - mongodb
-        environment:
-            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
-            - NODE_ENV=production
-            - DEBUG=App:*
-            - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
-            - CRYPTO_SESSIONKEY=xtipKI38GUCvE5cNGtTJxa1wQFvCicF5GDLTWyaBAb5RQqQ8rRBR1yVEq7Jg10cu
-    nginx:
-        image: phoenix741/passprotect-client:1.0.0
-        links:
-            - nodejs
-        environment:
-            - UPSTREAM_SERVER=nodejs
-            - UPSTREAM_PORT=3000
-        ports:
-            - '8080:80'
-    mongodb:
-        image: mongo:3.3.9
-        expose:
-            - 27017
-        volumes:
-            - './mongodb:/data'
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 ```
 
-There is two images :
+## Support
 
- * `phoenix741/passprotect-server:1.0.0`: contains the server part with nodejs.
- * `phoenix741/passprotect-client:1.0.0`: serve the static file of the client and is used as a proxy to the API
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-The third image is used to contains the mongodb database.
+## Stay in touch
 
-## Usage
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-Access to `http://localhost:8080` from your browser.
+## License
+
+  Nest is [MIT licensed](LICENSE).

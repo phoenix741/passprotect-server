@@ -1,7 +1,0 @@
-pipeline:
-    nodejs:
-        group: build
-        image: plugins/docker
-        repo: phoenix741/passprotect-server
-        secrets: [ docker_username, docker_password ]
-        tags: develop

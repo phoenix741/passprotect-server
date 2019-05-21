@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UsersService findAll success: result of find all users 1`] = `
+Array [
+  Object {
+    "_id": "username",
+    "password": "password",
+  },
+]
+`;
+
+exports[`UsersService findById success, with id: result of find user by id 1`] = `
+Object {
+  "_id": "username",
+  "password": "password",
+}
+`;
+
+exports[`UsersService registerUser success: registered user 1`] = `
+Object {
+  "_id": "username",
+  "encryption": Object {
+    "authTag": Object {
+      "data": Array [
+        97,
+        117,
+        116,
+        104,
+        84,
+        97,
+        103,
+      ],
+      "type": "Buffer",
+    },
+    "content": Object {
+      "data": Array [
+        99,
+        111,
+        110,
+        116,
+        101,
+        110,
+        116,
+      ],
+      "type": "Buffer",
+    },
+    "iv": Object {
+      "data": Array [
+        105,
+        118,
+      ],
+      "type": "Buffer",
+    },
+    "salt": Object {
+      "data": Array [
+        115,
+        97,
+        108,
+        116,
+      ],
+      "type": "Buffer",
+    },
+  },
+  "password": "hashedpassword",
+}
+`;
+
+exports[`UsersService registerUser success: user to create 1`] = `
+Object {
+  "_id": "username",
+  "createdAt": Any<Date>,
+  "encryption": Object {
+    "authTag": "YXV0aFRhZw==",
+    "content": "Y29udGVudA==",
+    "iv": "aXY=",
+    "salt": "c2FsdA==",
+  },
+  "password": "hashedpassword",
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`UsersService verifyPassword failed 1`] = `
+Object {
+  "error": "Unauthorized",
+  "message": "error:user.404.userNotFound",
+  "statusCode": 401,
+}
+`;

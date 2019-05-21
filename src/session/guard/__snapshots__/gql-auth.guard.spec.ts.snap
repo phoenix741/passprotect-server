@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GqlAuthGuard getRequest convert express context to graphql: request of the context 1`] = `
+Object {
+  "session": "session",
+  "user": "user",
+}
+`;
