@@ -11,15 +11,12 @@ export class ObjectIDScalar implements CustomScalar<string, ObjectID> {
     return value.toHexString();
   }
 
-  parseValue(value: string | number | ObjectID): ObjectID {
+  parseValue(value: string | ObjectID): ObjectID {
     return new ObjectID(value);
   }
 
   parseLiteral(ast: ValueNode): ObjectID {
     if (ast.kind === Kind.STRING) {
-      return new ObjectID(ast.value);
-    }
-    if (ast.kind === Kind.INT) {
       return new ObjectID(ast.value);
     }
     return null;

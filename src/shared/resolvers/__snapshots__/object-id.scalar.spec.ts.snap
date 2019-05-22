@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ObjectIDScalar parseLiteral parse literal 1`] = `"5ce5b4a58382315c12788ea1"`;
+
+exports[`ObjectIDScalar parseValue parse value 1`] = `"5ce5b4a58382315c12788ea1"`;
+
+exports[`ObjectIDScalar parseValue parse value 2`] = `"5ce5b4a58382315c12788ea1"`;
+
+exports[`ObjectIDScalar serialize convert to hexstring 1`] = `"5ce5b4a58382315c12788ea1"`;

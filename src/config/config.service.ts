@@ -9,8 +9,8 @@ export interface EnvConfig {
 export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory {
   private readonly envConfig: EnvConfig;
 
-  constructor() {
-    this.envConfig = this.validateInput(process.env);
+  constructor(environments: EnvConfig) {
+    this.envConfig = this.validateInput(environments);
   }
 
   /**
@@ -20,13 +20,11 @@ export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory 
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
-        .valid(['development', 'production', 'test', 'provision'])
+        .valid(['development', 'production', 'test'])
         .default('development'),
       MONGODB_HOST: Joi.string().required(),
       MONGODB_DATABASE: Joi.string().optional(),
-      MONGODB_USER: Joi.string().optional(),
-      MONGODB_PASSWORD: Joi.string().optional(),
-      JWT_SECRET: Joi.string().base64().required(),
+      JWT_SECRET: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -46,14 +44,6 @@ export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory 
 
   get mongodbDatabase(): string {
     return this.envConfig.MONGODB_DATABASE;
-  }
-
-  get mongodbUser(): string {
-    return this.envConfig.MONGODB_USER;
-  }
-
-  get mongodbPassword(): string {
-    return this.envConfig.MONGODB_PASSWORD;
   }
 
   get jwtSecret(): string {
