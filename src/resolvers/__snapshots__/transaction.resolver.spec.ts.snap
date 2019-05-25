@@ -1,5 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`TransactionResolver line success 1`] = `
+Object {
+  "_id": "line",
+  "type": "card",
+  "user": "userline",
+}
+`;
+
+exports[`TransactionResolver transactionAdded publish with one element filtered and another one not filtered 1`] = `
+Object {
+  "done": false,
+  "value": Object {
+    "transactionAdded": Object {
+      "_id": "5ce934e817517d7fb63cc425",
+      "after": Object {
+        "_id": "5ce934e817517d7fb63cc428",
+        "label": "after",
+        "type": "text",
+      },
+      "before": Object {
+        "_id": "5ce934e817517d7fb63cc428",
+        "label": "before",
+        "type": "text",
+      },
+      "createdAt": 2019-05-25T12:28:24.941Z,
+      "line": "5ce934e817517d7fb63cc428",
+      "sha512": "sha512",
+      "toObject": [Function],
+      "type": "line",
+      "updatedAt": 2019-05-25T12:28:24.941Z,
+      "user": "username",
+    },
+  },
+}
+`;
+
 exports[`TransactionResolver transactions success 1`] = `
 Array [
   Object {
@@ -23,4 +59,10 @@ Array [
     "user": "usertransaction",
   },
 ]
+`;
+
+exports[`TransactionResolver user success 1`] = `
+Object {
+  "_id": "username",
+}
 `;

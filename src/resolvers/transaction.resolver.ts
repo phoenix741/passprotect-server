@@ -58,7 +58,7 @@ export class TransactionResolver {
 
   @ResolveProperty('line', returns => WalletLine, { description: 'Request a wallet line' })
   async line(@Parent() transaction: TransactionEntity, @UserContext() user: UserEntity): Promise<WalletLine> {
-    this.authorizationService.checkPermission(user);
+    this.authorizationService.checkPermission(user, transaction.user);
     return exposeWalletLine(await this.lineService.findById(new ObjectID(transaction.line)));
   }
 }
