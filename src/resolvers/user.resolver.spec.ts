@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { UserResolver } from './user.resolver';
-import { UsersService } from 'src/users/users.service';
-import { LinesService } from 'src/lines/lines.service';
-import { AuthorizationService } from 'src/shared/services/authorization.service';
-import { User } from 'src/users/dto/user.dto';
-import { LineEntity } from 'src/lines/models/line.entity';
-import { RegistrationUserInput } from 'src/users/dto/registration-user.dto';
-import { FunctionalError } from 'src/shared/models/functional-error';
+import { UsersService } from '../users/users.service';
+import { LinesService } from '../lines/lines.service';
+import { AuthorizationService } from '../shared/services/authorization.service';
+import { User } from '../users/dto/user.dto';
+import { LineEntity } from '../lines/models/line.entity';
+import { RegistrationUserInput } from '../users/dto/registration-user.dto';
+import { FunctionalError } from '../shared/models/functional-error';
 
 describe('UserResolver', () => {
   let userResolver: UserResolver;
@@ -15,9 +15,7 @@ describe('UserResolver', () => {
   let authorizationService;
 
   const user: User = new User();
-  const lines: LineEntity[] = [
-    { _id: 'lineId' } as any as LineEntity,
-  ];
+  const lines: LineEntity[] = [({ _id: 'lineId' } as any) as LineEntity];
 
   beforeEach(async () => {
     userService = {
@@ -48,8 +46,7 @@ describe('UserResolver', () => {
           useValue: authorizationService,
         },
       ],
-    })
-    .compile();
+    }).compile();
 
     userResolver = module.get<UserResolver>(UserResolver);
   });
@@ -58,7 +55,10 @@ describe('UserResolver', () => {
     it('success', async () => {
       userService.findById.mockImplementation(() => user);
       expect(await userResolver.user('username', user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'username');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'username',
+      );
       expect(userService.findById).toHaveBeenCalledWith('username');
     });
   });
@@ -67,7 +67,10 @@ describe('UserResolver', () => {
     it('success', async () => {
       linesService.findAll.mockImplementation(() => lines);
       expect(await userResolver.lines(user, user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'username');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'username',
+      );
       expect(linesService.findAll).toHaveBeenCalledWith('username');
     });
   });

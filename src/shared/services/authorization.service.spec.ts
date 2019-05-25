@@ -9,12 +9,15 @@ describe('AuthorizationService', () => {
 
   describe('checkPermission', () => {
     it('no user', () => {
-      expect(() => authorizationService.checkPermission(null, null)).toThrowError('The user should be authentified to view this resource');
+      expect(() =>
+        authorizationService.checkPermission(null, null),
+      ).toThrowError('The user should be authentified to view this resource');
     });
 
     it('user, userId <>', () => {
-      expect(() => authorizationService.checkPermission({ _id: 'username' }, 'username2'))
-        .toThrowError('The user isn\'t authorized to view this resource');
+      expect(() =>
+        authorizationService.checkPermission({ _id: 'username' }, 'username2'),
+      ).toThrowError("The user isn't authorized to view this resource");
     });
 
     it('user, no userId', () => {

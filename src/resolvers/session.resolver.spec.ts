@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { SessionResolver } from './session.resolver';
-import { SessionsService } from 'src/session/sessions.service';
-import { User } from 'src/users/dto/user.dto';
-import { ConnectionInformationInput } from 'src/session/dto/connection-information-input.dto';
-import { FunctionalError } from 'src/shared/models/functional-error';
+import { SessionsService } from '../session/sessions.service';
+import { User } from '../users/dto/user.dto';
+import { ConnectionInformationInput } from '../session/dto/connection-information-input.dto';
+import { FunctionalError } from '../shared/models/functional-error';
 
 describe('SessionResolver', () => {
   let sessionResolver: SessionResolver;
@@ -25,8 +25,7 @@ describe('SessionResolver', () => {
           useValue: sessionService,
         },
       ],
-    })
-    .compile();
+    }).compile();
 
     sessionResolver = module.get<SessionResolver>(SessionResolver);
   });
@@ -42,9 +41,15 @@ describe('SessionResolver', () => {
       const input = new ConnectionInformationInput();
       input.username = 'myUsername';
       input.password = 'password';
-      sessionService.signIn.mockImplementation(() => ({ jwtToken: 'myToken', user }));
+      sessionService.signIn.mockImplementation(() => ({
+        jwtToken: 'myToken',
+        user,
+      }));
       expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
+      expect(sessionService.signIn).toHaveBeenCalledWith(
+        'myUsername',
+        'password',
+      );
     });
 
     it('error - signin', async () => {
@@ -55,7 +60,10 @@ describe('SessionResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
+      expect(sessionService.signIn).toHaveBeenCalledWith(
+        'myUsername',
+        'password',
+      );
     });
 
     it('error - no username', async () => {

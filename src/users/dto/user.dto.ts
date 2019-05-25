@@ -10,9 +10,15 @@ export class User {
   @Field(type => EncryptedBlock, { description: 'Encrypted master key' })
   encryption: EncryptedBlock;
 
-  @Field(type => Date, { description: 'Creation date of the user', nullable: true })
+  @Field(type => Date, {
+    description: 'Creation date of the user',
+    nullable: true,
+  })
   createdAt?: Date;
 
-  @Field(type => [WalletLine], { description: 'Wallet lines of the user.', nullable: true })
+  @Field(type => [WalletLine], {
+    description: 'Wallet lines of the user.',
+    nullable: true,
+  })
   lines?: WalletLine[];
 }

@@ -11,10 +11,12 @@ export class FunctionalError extends Error {
 
   toGraphQL(defaultLabel = 'label') {
     return {
-      errors: [{
-        fieldName: this.field || defaultLabel,
-        message: this.message,
-      }],
+      errors: [
+        {
+          fieldName: this.field || defaultLabel,
+          message: this.message,
+        },
+      ],
     };
   }
 }

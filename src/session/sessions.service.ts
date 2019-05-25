@@ -11,7 +11,10 @@ export class SessionsService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, password: string): Promise<{user: UserEntity, jwtToken: string}> {
+  async signIn(
+    username: string,
+    password: string,
+  ): Promise<{ user: UserEntity; jwtToken: string }> {
     const user = await this.userService.findById(username);
     if (!user) {
       throw new UnauthorizedException('error:user.404.userNotFound');

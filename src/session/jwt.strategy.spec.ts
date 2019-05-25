@@ -27,8 +27,7 @@ describe('JwtStrategy', () => {
           useValue: configService,
         },
       ],
-    })
-    .compile();
+    }).compile();
 
     strategy = module.get<JwtStrategy>(JwtStrategy);
   });
@@ -36,12 +35,16 @@ describe('JwtStrategy', () => {
   describe('validate', () => {
     it('user authorized', async () => {
       sessionService.validateUser.mockImplementation(() => 'username1');
-      expect(await strategy.validate({ _id: 'username1'})).toMatchSnapshot('username1');
+      expect(await strategy.validate({ _id: 'username1' })).toMatchSnapshot(
+        'username1',
+      );
     });
 
     it('user refused', async () => {
       sessionService.validateUser.mockImplementation(() => null);
-      expect(strategy.validate({ _id: 'username2'})).rejects.toThrowErrorMatchingSnapshot();
+      expect(
+        strategy.validate({ _id: 'username2' }),
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 });

@@ -23,7 +23,10 @@ export class LinesService {
     if (userId) {
       const filter: IFindAllFilter = { user: userId };
       const sort = { group: 1, label: 1 };
-      return await this.lineModel.find(filter).sort(sort).exec();
+      return await this.lineModel
+        .find(filter)
+        .sort(sort)
+        .exec();
     }
     return [];
   }
@@ -35,25 +38,40 @@ export class LinesService {
   async createLine(line: LineToCreate): Promise<LineEntity> {
     const lineToCreate = new this.lineModel(line);
     const newLine = await lineToCreate.save();
-    await this.transactionService.createTransaction(TransactionTypeEnum.line, null, newLine);
+    await this.transactionService.createTransaction(
+      TransactionTypeEnum.line,
+      null,
+      newLine,
+    );
     return newLine;
   }
 
-  async updateLine(originalLine: LineEntity, line: LineToUpdate): Promise<LineEntity> {
+  async updateLine(
+    originalLine: LineEntity,
+    line: LineToUpdate,
+  ): Promise<LineEntity> {
     const { _id, ...cleanLine } = line;
 
     const oldLine = new this.lineModel(originalLine.toObject());
     originalLine.set(cleanLine);
     const newLine = await originalLine.save();
 
-    await this.transactionService.createTransaction(TransactionTypeEnum.line, oldLine, newLine);
+    await this.transactionService.createTransaction(
+      TransactionTypeEnum.line,
+      oldLine,
+      newLine,
+    );
     return newLine;
   }
 
   async removeLine(id: ObjectID): Promise<TransactionEntity> {
     const oldLine = await this.lineModel.findById(id);
     await this.lineModel.deleteOne({ _id: id });
-    return this.transactionService.createTransaction(TransactionTypeEnum.line, oldLine, null);
+    return this.transactionService.createTransaction(
+      TransactionTypeEnum.line,
+      oldLine,
+      null,
+    );
   }
 
   async getGroups(userId: string): Promise<string[]> {

@@ -16,18 +16,29 @@ export class TransactionsService {
   public transactionPubSub = new PubSub();
 
   constructor(
-    @InjectModel('Transaction') private readonly transactionModel: Model<TransactionEntity>,
+    @InjectModel('Transaction')
+    private readonly transactionModel: Model<TransactionEntity>,
   ) {}
 
-  async findAll(userId: string, params: IFindAllTransactionParams = {}): Promise<TransactionEntity[]> {
+  async findAll(
+    userId: string,
+    params: IFindAllTransactionParams = {},
+  ): Promise<TransactionEntity[]> {
     const filter: IFindAllTransactionDto = { user: userId };
     if (params.earliest) {
       filter.updatedAt = { $gte: params.earliest };
     }
-    return await this.transactionModel.find(filter).sort({ updatedAt: 1 }).exec();
+    return await this.transactionModel
+      .find(filter)
+      .sort({ updatedAt: 1 })
+      .exec();
   }
 
-  async createTransaction(type: TransactionTypeEnum, before?: LineEntity, after?: LineEntity): Promise<TransactionEntity> {
+  async createTransaction(
+    type: TransactionTypeEnum,
+    before?: LineEntity,
+    after?: LineEntity,
+  ): Promise<TransactionEntity> {
     const base = after || before;
     if (!base) {
       throw new Error('Transaction: before or after should be defined');
@@ -40,10 +51,16 @@ export class TransactionsService {
       user: base.user,
       before,
       after,
-      sha512: after && crypto
-        .createHash('sha512')
-        .update(after.encryption.content instanceof Binary ? after.encryption.content.buffer : after.encryption.content)
-        .digest('hex'),
+      sha512:
+        after &&
+        crypto
+          .createHash('sha512')
+          .update(
+            after.encryption.content instanceof Binary
+              ? after.encryption.content.buffer
+              : after.encryption.content,
+          )
+          .digest('hex'),
     };
 
     const createdTransaction = await this.transactionModel.create(transaction);
@@ -57,14 +74,16 @@ export class TransactionsService {
    * @param {Object} transaction Transaction object
    */
   private transactionAdded(transaction: TransactionEntity) {
-    this.transactionPubSub.publish(TRANSACTION_ADDED_TOPIC, { transactionAdded: transaction });
+    this.transactionPubSub.publish(TRANSACTION_ADDED_TOPIC, {
+      transactionAdded: transaction,
+    });
   }
 }
 
 interface IFindAllTransactionDto {
   user: string;
   updatedAt?: {
-    '$gte': Date;
+    $gte: Date;
   };
 }
 

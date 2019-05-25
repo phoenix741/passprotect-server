@@ -4,7 +4,9 @@ import { LineTypeEnum } from '../../shared/interfaces/line-type-enum.interface';
 
 @InputType({ description: 'Wallet line used for creation' })
 export class WalletLineCreateInput {
-  @Field(type => LineTypeEnum, { description: 'Type of the line (text, password, card)' })
+  @Field(type => LineTypeEnum, {
+    description: 'Type of the line (text, password, card)',
+  })
   type: LineTypeEnum;
 
   @Field({ description: 'Label of the wallet line' })
@@ -16,6 +18,8 @@ export class WalletLineCreateInput {
   @Field({ description: 'Logo of the line', nullable: true })
   logo?: string;
 
-  @Field(type => EncryptedBlockInput, { description: 'Encrypted content of the line (encrypted client side)' })
+  @Field(type => EncryptedBlockInput, {
+    description: 'Encrypted content of the line (encrypted client side)',
+  })
   encryption: EncryptedBlockInput;
 }

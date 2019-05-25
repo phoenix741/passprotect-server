@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
-    "start:dev": "nodemon",
+    "start:dev": "concurrently --handle-input \"wait-on dist/main.js && nodemon\" \"tsc -w -p tsconfig.build.json\" ",
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && npm run build",
     "start:prod": "node dist/main.js",
@@ -42,7 +42,8 @@
     "rimraf": "^2.6.2",
     "rxjs": "^6.5.2",
     "type-graphql": "^0.17.4",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "wait-on": "^3.2.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.2.4",
@@ -54,6 +55,7 @@
     "@types/mongoose": "^5.5.3",
     "@types/node": "^12.0.2",
     "@types/supertest": "^2.0.5",
+    "concurrently": "^4.1.0",
     "jest": "^24.8.0",
     "mockingoose": "^2.13.0",
     "nodemon": "^1.19.0",
@@ -78,11 +80,8 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "moduleNameMapper": {
-      "src/(.*)$": "<rootDir>/$1"
-    },
     "setupFiles": [
-      "./jest-setup-file.ts"
+      "../test/jest-setup-file.ts"
     ]
   }
 }

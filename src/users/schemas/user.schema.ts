@@ -1,16 +1,19 @@
 import * as mongoose from 'mongoose';
 import { UserEntity } from '../../users/models/user.entity';
 
-export const UserSchema = new mongoose.Schema<UserEntity>({
-  _id: { type: String, required: true, lowercase: true },
-  password: { type: String, required: true },
-  encryption: {
-    salt: Buffer,
-    iv: Buffer,
-    authTag: Buffer,
-    content: Buffer,
+export const UserSchema = new mongoose.Schema<UserEntity>(
+  {
+    _id: { type: String, required: true, lowercase: true },
+    password: { type: String, required: true },
+    encryption: {
+      salt: Buffer,
+      iv: Buffer,
+      authTag: Buffer,
+      content: Buffer,
+    },
   },
-}, { collection: 'users', timestamps: true });
+  { collection: 'users', timestamps: true },
+);
 
 UserSchema.post('init', migrateV1toV2);
 

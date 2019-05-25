@@ -16,8 +16,8 @@ export class UsersService {
     return await this.userModel.find().exec();
   }
 
-  async findById(id: string): Promise<UserEntity|null> {
-    return id && await this.userModel.findById(id.toLowerCase());
+  async findById(id: string): Promise<UserEntity | null> {
+    return id && (await this.userModel.findById(id.toLowerCase()));
   }
 
   async registerUser(user: UserToRegister): Promise<UserEntity> {
@@ -26,8 +26,14 @@ export class UsersService {
     return await this.userModel.create(user);
   }
 
-  async verifyPassword(user: UserEntity, password: string): Promise<UserEntity> {
-    const isValid = await this.cryptoService.checkPassword(password, user.password);
+  async verifyPassword(
+    user: UserEntity,
+    password: string,
+  ): Promise<UserEntity> {
+    const isValid = await this.cryptoService.checkPassword(
+      password,
+      user.password,
+    );
     if (!isValid) {
       throw new UnauthorizedException('error:user.404.userNotFound');
     }

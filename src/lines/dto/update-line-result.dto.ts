@@ -7,7 +7,8 @@ export const UpdateLineResultUnion = createUnionType({
   description: 'Result of creation or update of the line',
   types: [WalletLine, Errors],
   resolveType: (obj: WalletLine | Errors): string => {
-    const hasError = (tbd: WalletLine | Errors): tbd is Errors => !!(tbd as Errors).errors;
+    const hasError = (tbd: WalletLine | Errors): tbd is Errors =>
+      !!(tbd as Errors).errors;
     if (hasError(obj)) {
       return 'Errors';
     }

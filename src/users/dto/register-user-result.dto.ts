@@ -7,7 +7,8 @@ export const RegisterUserResultUnion = createUnionType({
   description: 'Result of registered user',
   types: [User, Errors],
   resolveType: (obj: User | Errors): string => {
-    const hasError = (tbd: User | Errors): tbd is Errors => !!(tbd as Errors).errors;
+    const hasError = (tbd: User | Errors): tbd is Errors =>
+      !!(tbd as Errors).errors;
     if (hasError(obj)) {
       return 'Errors';
     }

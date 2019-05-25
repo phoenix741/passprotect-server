@@ -11,8 +11,12 @@ describe('BufferScalar', () => {
 
   describe('serialize', () => {
     it('convert to base64', () => {
-      expect(scalar.serialize(Buffer.from('ceci est un test'))).toMatchSnapshot();
-      expect(scalar.serialize(new Binary(Buffer.from('ceci est un test')))).toMatchSnapshot();
+      expect(
+        scalar.serialize(Buffer.from('ceci est un test')),
+      ).toMatchSnapshot();
+      expect(
+        scalar.serialize(new Binary(Buffer.from('ceci est un test'))),
+      ).toMatchSnapshot();
     });
   });
 
@@ -24,14 +28,18 @@ describe('BufferScalar', () => {
 
   describe('parseLiteral', () => {
     it('parse literal', () => {
-      expect(scalar.parseLiteral({
-        kind: Kind.STRING,
-        value: 'Y2VjaSBlc3QgdW4gdGVzdA==',
-      })).toMatchSnapshot();
-      expect(scalar.parseLiteral({
-        kind: Kind.INT,
-        value: 'Y2VjaSBlc3QgdW4gdGVzdA==',
-      })).toBeNull();
+      expect(
+        scalar.parseLiteral({
+          kind: Kind.STRING,
+          value: 'Y2VjaSBlc3QgdW4gdGVzdA==',
+        }),
+      ).toMatchSnapshot();
+      expect(
+        scalar.parseLiteral({
+          kind: Kind.INT,
+          value: 'Y2VjaSBlc3QgdW4gdGVzdA==',
+        }),
+      ).toBeNull();
     });
   });
 });

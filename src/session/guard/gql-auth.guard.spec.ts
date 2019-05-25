@@ -22,7 +22,9 @@ describe('GqlAuthGuard', () => {
           };
         },
       };
-      expect(guard.getRequest(context)).toMatchSnapshot('request of the context');
+      expect(guard.getRequest(context)).toMatchSnapshot(
+        'request of the context',
+      );
     });
   });
 });

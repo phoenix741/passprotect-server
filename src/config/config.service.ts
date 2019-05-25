@@ -1,12 +1,16 @@
 import * as Joi from 'joi';
-import { MongooseOptionsFactory, MongooseModuleOptions } from '@nestjs/mongoose';
+import {
+  MongooseOptionsFactory,
+  MongooseModuleOptions,
+} from '@nestjs/mongoose';
 import { JwtOptionsFactory, JwtModuleOptions } from '@nestjs/jwt';
 
 export interface EnvConfig {
   [key: string]: string;
 }
 
-export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory {
+export class ConfigService
+  implements MongooseOptionsFactory, JwtOptionsFactory {
   private readonly envConfig: EnvConfig;
 
   constructor(environments: EnvConfig) {

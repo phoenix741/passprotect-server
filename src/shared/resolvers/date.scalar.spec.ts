@@ -22,14 +22,18 @@ describe('DateScalar', () => {
 
   describe('parseLiteral', () => {
     it('parse literal', () => {
-      expect(scalar.parseLiteral({
-        kind: Kind.STRING,
-        value: '1558557861',
-      })).toBeNull();
-      expect(scalar.parseLiteral({
-        kind: Kind.INT,
-        value: '1558557861',
-      })).toMatchSnapshot();
+      expect(
+        scalar.parseLiteral({
+          kind: Kind.STRING,
+          value: '1558557861',
+        }),
+      ).toBeNull();
+      expect(
+        scalar.parseLiteral({
+          kind: Kind.INT,
+          value: '1558557861',
+        }),
+      ).toMatchSnapshot();
     });
   });
 });

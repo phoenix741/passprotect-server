@@ -61,13 +61,13 @@ describe('LineSchema', () => {
 
     it('migrateV1toV2 - migration', async () => {
       const newDoc = Object.assign({}, gettersSetters, docV1);
-      migrateV1toV2(newDoc as any as UserEntity);
+      migrateV1toV2((newDoc as any) as UserEntity);
       expect(newDoc).toMatchSnapshot('user migration, with migration');
     });
 
     it('migrateV1toV2 - no migration', async () => {
       const newDoc = Object.assign({}, gettersSetters, docV2);
-      migrateV1toV2(newDoc as any as UserEntity);
+      migrateV1toV2((newDoc as any) as UserEntity);
       expect(newDoc).toMatchSnapshot('user migration, without migration');
     });
   });

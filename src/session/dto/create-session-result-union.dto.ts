@@ -6,7 +6,8 @@ export const CreateSessionResultUnion = createUnionType({
   name: 'CreateSessionResult',
   types: [ConnectionInformation, Errors],
   resolveType: (obj: ConnectionInformation | Errors): string => {
-    const hasError = (tbd: ConnectionInformation | Errors): tbd is Errors => !!(tbd as Errors).errors;
+    const hasError = (tbd: ConnectionInformation | Errors): tbd is Errors =>
+      !!(tbd as Errors).errors;
     if (hasError(obj)) {
       return 'Errors';
     }

@@ -12,13 +12,13 @@ import { ConfigModule } from '../config/config.module';
   imports: [
     SharedModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
-    JwtModule.registerAsync({ useClass: ConfigService, imports: [ConfigModule] }),
+    JwtModule.registerAsync({
+      useExisting: ConfigService,
+      imports: [ConfigModule],
+    }),
     UsersModule,
   ],
-  providers: [
-    SessionsService,
-    JwtStrategy,
-  ],
+  providers: [SessionsService, JwtStrategy],
   exports: [SessionsService],
 })
 export class SessionsModule {}

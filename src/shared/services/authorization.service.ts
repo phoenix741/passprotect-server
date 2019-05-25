@@ -11,7 +11,7 @@ export class AuthorizationService {
   checkPermission(user?: AuthenticatedUser, userId?: string) {
     if (user) {
       if (userId && userId !== user._id) {
-        throw new Error('The user isn\'t authorized to view this resource');
+        throw new Error("The user isn't authorized to view this resource");
       }
     } else {
       throw new Error('The user should be authentified to view this resource');

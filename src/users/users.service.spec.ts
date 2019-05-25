@@ -22,24 +22,25 @@ describe('UsersService', () => {
   beforeEach(async () => {
     userModel = mongoose.model('User', UserSchema);
     cryptoService = {
-      hashPassword: jest.fn().mockImplementation(password => `hashed${password}`),
+      hashPassword: jest
+        .fn()
+        .mockImplementation(password => `hashed${password}`),
       checkPassword: jest.fn().mockImplementation((p1, p2) => p1 === p2),
     };
 
     const module = await Test.createTestingModule({
-        providers: [
-          UsersService,
-          {
-            provide: CryptoService,
-            useValue: cryptoService,
-          },
-          {
-            provide: getModelToken('User'),
-            useValue: userModel,
-          },
-        ],
-      })
-      .compile();
+      providers: [
+        UsersService,
+        {
+          provide: CryptoService,
+          useValue: cryptoService,
+        },
+        {
+          provide: getModelToken('User'),
+          useValue: userModel,
+        },
+      ],
+    }).compile();
 
     usersService = module.get<UsersService>(UsersService);
   });
@@ -48,7 +49,9 @@ describe('UsersService', () => {
     it('success', async () => {
       mockingoose(userModel).toReturn([doc], 'find');
       const users = await usersService.findAll();
-      expect(users.map(user => user.toObject())).toMatchSnapshot('result of find all users');
+      expect(users.map(user => user.toObject())).toMatchSnapshot(
+        'result of find all users',
+      );
     });
   });
 
@@ -79,7 +82,10 @@ describe('UsersService', () => {
         },
       };
       mockingoose(userModel).toReturn((userToCreate: UserEntity) => {
-        expect(userToCreate.toObject()).toMatchSnapshot({ createdAt: expect.any(Date), updatedAt: expect.any(Date) }, 'user to create');
+        expect(userToCreate.toObject()).toMatchSnapshot(
+          { createdAt: expect.any(Date), updatedAt: expect.any(Date) },
+          'user to create',
+        );
         return user;
       }, 'save');
       const userCreated = await usersService.registerUser(user);
@@ -102,7 +108,9 @@ describe('UsersService', () => {
         _id: 'username',
         password: 'password',
       } as UserEntity;
-      await expect(usersService.verifyPassword(user, 'failed')).rejects.toThrowErrorMatchingSnapshot();
+      await expect(
+        usersService.verifyPassword(user, 'failed'),
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 });

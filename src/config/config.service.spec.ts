@@ -16,7 +16,9 @@ describe('ConfigService', () => {
         JWT_SECRET: 'zaealsdfjklsklsdklEAZER13E31',
       });
 
-      expect(configService.createMongooseOptions()).toMatchSnapshot('mongooseOptions');
+      expect(configService.createMongooseOptions()).toMatchSnapshot(
+        'mongooseOptions',
+      );
       expect(configService.createJwtOptions()).toMatchSnapshot('jwtOptions');
     });
   });

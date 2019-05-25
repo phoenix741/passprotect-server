@@ -1,29 +1,29 @@
 import { Test } from '@nestjs/testing';
 import { LineResolver } from './line.resolver';
-import { UsersService } from 'src/users/users.service';
-import { LinesService } from 'src/lines/lines.service';
-import { AuthorizationService } from 'src/shared/services/authorization.service';
-import { WalletLineCreateInput } from 'src/lines/dto/wallet-line-create-input.dto';
-import { LineTypeEnum } from 'src/shared/interfaces/line-type-enum.interface';
-import { UserEntity } from 'src/users/models/user.entity';
-import { FunctionalError } from 'src/shared/models/functional-error';
-import { WalletLineUpdateInput } from 'src/lines/dto/wallet-line-update-input.dto';
+import { UsersService } from '../users/users.service';
+import { LinesService } from '../lines/lines.service';
+import { AuthorizationService } from '../shared/services/authorization.service';
+import { WalletLineCreateInput } from '../lines/dto/wallet-line-create-input.dto';
+import { LineTypeEnum } from '../shared/interfaces/line-type-enum.interface';
+import { UserEntity } from '../users/models/user.entity';
+import { FunctionalError } from '../shared/models/functional-error';
+import { WalletLineUpdateInput } from '../lines/dto/wallet-line-update-input.dto';
 import { ObjectID } from 'bson';
-import { LineEntity } from 'src/lines/models/line.entity';
+import { LineEntity } from '../lines/models/line.entity';
 
 describe('LineResolver', () => {
   let lineResolver: LineResolver;
   let userService;
   let linesService;
   let authorizationService;
-  const user: UserEntity = {
+  const user: UserEntity = ({
     _id: 'username',
-  } as any as UserEntity;
-  const line: LineEntity = {
+  } as any) as UserEntity;
+  const line: LineEntity = ({
     _id: 'line',
     user: 'userline',
     type: LineTypeEnum.card,
-  } as any as LineEntity;
+  } as any) as LineEntity;
 
   beforeEach(async () => {
     userService = {
@@ -57,8 +57,7 @@ describe('LineResolver', () => {
           useValue: authorizationService,
         },
       ],
-    })
-    .compile();
+    }).compile();
 
     lineResolver = module.get<LineResolver>(LineResolver);
   });
@@ -67,7 +66,10 @@ describe('LineResolver', () => {
     it('success', async () => {
       userService.findById.mockImplementation(() => user);
       expect(await lineResolver.user(line, user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
       expect(userService.findById).toHaveBeenCalledWith('userline');
     });
   });
@@ -85,8 +87,13 @@ describe('LineResolver', () => {
     it('success', async () => {
       linesService.findById.mockImplementation(() => line);
       expect(await lineResolver.line('123456789012', user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
-      expect(linesService.findById).toHaveBeenCalledWith(new ObjectID('123456789012'));
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
+      expect(linesService.findById).toHaveBeenCalledWith(
+        new ObjectID('123456789012'),
+      );
     });
 
     it('failed', async () => {
@@ -96,9 +103,16 @@ describe('LineResolver', () => {
           throw new Error('not authorized exception');
         }
       });
-      await expect(lineResolver.line('123456789012', user)).rejects.toThrowErrorMatchingSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
-      expect(linesService.findById).toHaveBeenCalledWith(new ObjectID('123456789012'));
+      await expect(
+        lineResolver.line('123456789012', user),
+      ).rejects.toThrowErrorMatchingSnapshot();
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
+      expect(linesService.findById).toHaveBeenCalledWith(
+        new ObjectID('123456789012'),
+      );
     });
   });
 
@@ -117,9 +131,16 @@ describe('LineResolver', () => {
       input.label = 'label';
       input.type = LineTypeEnum.text;
       input.group = 'group';
-      linesService.createLine.mockImplementation(() => ({ _id: 'lineEntityId' }));
+      linesService.createLine.mockImplementation(() => ({
+        _id: 'lineEntityId',
+      }));
       expect(await lineResolver.createLine(input, user)).toMatchSnapshot();
-      expect(linesService.createLine).toHaveBeenCalledWith({group: 'group', label: 'label', type: 'text', user: 'username'});
+      expect(linesService.createLine).toHaveBeenCalledWith({
+        group: 'group',
+        label: 'label',
+        type: 'text',
+        user: 'username',
+      });
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
     });
 
@@ -132,7 +153,12 @@ describe('LineResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await lineResolver.createLine(input, user)).toMatchSnapshot();
-      expect(linesService.createLine).toHaveBeenCalledWith({group: 'group', label: 'label', type: 'text', user: 'username'});
+      expect(linesService.createLine).toHaveBeenCalledWith({
+        group: 'group',
+        label: 'label',
+        type: 'text',
+        user: 'username',
+      });
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
     });
   });
@@ -146,11 +172,19 @@ describe('LineResolver', () => {
       input.group = 'group';
 
       linesService.findById.mockImplementation(() => line);
-      linesService.updateLine.mockImplementation(() => ({ _id: 'lineEntityId' }));
+      linesService.updateLine.mockImplementation(() => ({
+        _id: 'lineEntityId',
+      }));
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
-      expect(linesService.updateLine).toHaveBeenCalledWith({_id: 'line', type: 'card', user: 'userline'}, input);
+      expect(linesService.updateLine).toHaveBeenCalledWith(
+        { _id: 'line', type: 'card', user: 'userline' },
+        input,
+      );
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
 
     it('error - line not found', async () => {
@@ -164,7 +198,10 @@ describe('LineResolver', () => {
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
       expect(linesService.updateLine).not.toHaveBeenCalled();
-      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
 
     it('error - update', async () => {
@@ -179,9 +216,15 @@ describe('LineResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
-      expect(linesService.updateLine).toHaveBeenCalledWith({_id: 'line', type: 'card', user: 'userline'}, input);
+      expect(linesService.updateLine).toHaveBeenCalledWith(
+        { _id: 'line', type: 'card', user: 'userline' },
+        input,
+      );
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
   });
 
@@ -190,11 +233,18 @@ describe('LineResolver', () => {
       const id = '5ce85e3daa2aa003aea7b6d0';
 
       linesService.findById.mockImplementation(() => line);
-      linesService.removeLine.mockImplementation(() => ({ _id: 'lineEntityId' }));
+      linesService.removeLine.mockImplementation(() => ({
+        _id: 'lineEntityId',
+      }));
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
-      expect(linesService.removeLine).toHaveBeenCalledWith(new ObjectID('5ce85e3daa2aa003aea7b6d0'));
+      expect(linesService.removeLine).toHaveBeenCalledWith(
+        new ObjectID('5ce85e3daa2aa003aea7b6d0'),
+      );
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
 
     it('error - line not found', async () => {
@@ -204,7 +254,10 @@ describe('LineResolver', () => {
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
       expect(linesService.removeLine).not.toHaveBeenCalled();
-      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
 
     it('error - update', async () => {
@@ -215,9 +268,14 @@ describe('LineResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
-      expect(linesService.removeLine).toHaveBeenCalledWith(new ObjectID('5ce85e3daa2aa003aea7b6d0'));
+      expect(linesService.removeLine).toHaveBeenCalledWith(
+        new ObjectID('5ce85e3daa2aa003aea7b6d0'),
+      );
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
+        user,
+        'userline',
+      );
     });
   });
 });

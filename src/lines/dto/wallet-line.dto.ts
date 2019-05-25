@@ -8,7 +8,9 @@ export class WalletLine {
   @Field(type => ObjectID, { description: 'Id of the line' })
   _id: ObjectID;
 
-  @Field(type => LineTypeEnum, { description: 'Type of the line (text, password, card)' })
+  @Field(type => LineTypeEnum, {
+    description: 'Type of the line (text, password, card)',
+  })
   type: LineTypeEnum;
 
   @Field({ description: 'Label of the wallet line' })
@@ -20,15 +22,25 @@ export class WalletLine {
   @Field(type => Buffer, { description: 'Logo of the line', nullable: true })
   logo?: Buffer;
 
-  @Field(type => EncryptedBlock, { description: 'Encrypted content of the line (encrypted client side)' })
+  @Field(type => EncryptedBlock, {
+    description: 'Encrypted content of the line (encrypted client side)',
+  })
   encryption: EncryptedBlock;
 
-  @Field(type => Date, { description: 'Created date of the line', nullable: true })
+  @Field(type => Date, {
+    description: 'Created date of the line',
+    nullable: true,
+  })
   createdAt?: Date;
 
-  @Field(type => Date, { description: 'Last updated date of the line', nullable: true })
+  @Field(type => Date, {
+    description: 'Last updated date of the line',
+    nullable: true,
+  })
   updatedAt?: Date;
 
-  @Field(type => Int, { description: 'Revision (modification count) of the line' })
+  @Field(type => Int, {
+    description: 'Revision (modification count) of the line',
+  })
   _rev?: number;
 }

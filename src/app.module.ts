@@ -23,7 +23,9 @@ import { ConfigService } from './config/config.service';
       autoSchemaFile: 'schema.gql',
       context: ({ req, connection }) => {
         if (connection) {
-          req = { headers: { authorization: connection.context.Authorization } };
+          req = {
+            headers: { authorization: connection.context.Authorization },
+          };
         }
 
         return { req };

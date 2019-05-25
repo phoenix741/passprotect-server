@@ -1,5 +1,12 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Args, Query, ResolveProperty, Parent, Mutation } from '@nestjs/graphql';
+import {
+  Resolver,
+  Args,
+  Query,
+  ResolveProperty,
+  Parent,
+  Mutation,
+} from '@nestjs/graphql';
 import { UsersService } from '../users/users.service';
 import { AuthorizationService } from '../shared/services/authorization.service';
 import { GqlAuthGuard } from '../session/guard/gql-auth.guard';
@@ -32,8 +39,12 @@ export class UserResolver {
     return await this.lineService.findAll(parentUser._id);
   }
 
-  @Mutation(returns => RegisterUserResultUnion, { description: 'Register a new user' })
-  async registerUser(@Args('input') input: RegistrationUserInput): Promise<typeof RegisterUserResultUnion> {
+  @Mutation(returns => RegisterUserResultUnion, {
+    description: 'Register a new user',
+  })
+  async registerUser(
+    @Args('input') input: RegistrationUserInput,
+  ): Promise<typeof RegisterUserResultUnion> {
     try {
       return await this.userService.registerUser(input);
     } catch (err) {

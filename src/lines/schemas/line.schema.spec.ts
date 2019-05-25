@@ -18,7 +18,12 @@ describe('LineSchema', () => {
       try {
         await line.validate();
       } catch (err) {
-        expect(Object.keys(err.errors)).toEqual(['user', 'group', 'type', 'label']);
+        expect(Object.keys(err.errors)).toEqual([
+          'user',
+          'group',
+          'type',
+          'label',
+        ]);
       }
     });
 
@@ -75,13 +80,13 @@ describe('LineSchema', () => {
 
     it('migrateV1toV2 - migration', async () => {
       const newDoc = Object.assign({}, gettersSetters, docV1);
-      migrateV1toV2(newDoc as any as LineEntity);
+      migrateV1toV2((newDoc as any) as LineEntity);
       expect(newDoc).toMatchSnapshot('line migration, with migration');
     });
 
     it('migrateV1toV2 - no migration', async () => {
       const newDoc = Object.assign({}, gettersSetters, docV2);
-      migrateV1toV2(newDoc as any as LineEntity);
+      migrateV1toV2((newDoc as any) as LineEntity);
       expect(newDoc).toMatchSnapshot('line migration, without migration');
     });
   });
