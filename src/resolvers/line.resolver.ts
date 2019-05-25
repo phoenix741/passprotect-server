@@ -40,7 +40,9 @@ export class LineResolver {
   @Query(type => WalletLine, { description: 'Request a wallet line' })
   async line(@Args('id') id: string, @UserContext() user: UserEntity): Promise<WalletLine> {
     this.authorizationService.checkPermission(user);
-    return exposeWalletLine(await this.lineService.findById(new ObjectID(id)));
+    const line = await this.lineService.findById(new ObjectID(id));
+    this.authorizationService.checkPermission(user, line.user);
+    return exposeWalletLine(line);
   }
 
   @Query(type => [String], { description: 'Request all groups available on lines' })
@@ -81,7 +83,11 @@ export class LineResolver {
     this.authorizationService.checkPermission(user);
     try {
       const line = await this.lineService.findById(new ObjectID(id));
+      if (!line) {
+        throw new FunctionalError('_id', 'error:line.404.lineNotFound');
+      }
       this.authorizationService.checkPermission(user, line.user);
+
       await this.lineService.removeLine(new ObjectID(id));
       return { errors: [] };
     } catch (err) {

@@ -36,6 +36,10 @@ export class TransactionResolver {
   @Subscription(returns => WalletTransaction, {
     name: 'transactionAdded',
     description: 'Stream of update to wallet line',
+    filter: (payload, variables) => {
+      console.log(payload, variables);
+      return true;
+    },
   })
   transactionAdded(@UserContext() user: UserEntity): AsyncIterator<WalletTransaction> {
     return asyncFilter(
@@ -44,7 +48,6 @@ export class TransactionResolver {
         return (payload as any).transactionAdded.user === user._id;
       },
     );
-    return ;
   }
 
   @ResolveProperty('user', returns => UserDto, { description: 'Owner of the transaction' })

@@ -8,7 +8,7 @@ export class AuthorizationService {
    * @param {Object} user User used to check permission
    * @param {String} userId User ID to compare to the user
    */
-  checkPermission(user: AuthenticatedUser, userId?: string) {
+  checkPermission(user?: AuthenticatedUser, userId?: string) {
     if (user) {
       if (userId && userId !== user._id) {
         throw new Error('The user isn\'t authorized to view this resource');

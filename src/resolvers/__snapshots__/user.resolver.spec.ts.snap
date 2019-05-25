@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserResolver lines success 1`] = `
+Array [
+  Object {
+    "_id": "lineId",
+  },
+]
+`;
+
+exports[`UserResolver registerUser error 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`UserResolver registerUser success 1`] = `
+User {
+  "_id": "username",
+}
+`;
+
+exports[`UserResolver user success 1`] = `
+User {
+  "_id": "username",
+}
+`;
