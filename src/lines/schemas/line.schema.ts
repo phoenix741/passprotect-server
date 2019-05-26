@@ -3,7 +3,6 @@ import { LineEntity } from '../../lines/models/line.entity';
 
 export const LineSchema = new mongoose.Schema<LineEntity>(
   {
-    _id: mongoose.Schema.Types.ObjectId,
     _rev: Number,
     label: { type: String, required: true },
     type: { type: String, required: true, enum: ['card', 'password', 'text'] },

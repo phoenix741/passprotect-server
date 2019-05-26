@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppController (e2e) Create line, card 1`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
+exports[`AppController (e2e) Create line, password 1`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
+exports[`AppController (e2e) Create line, text 1`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
+exports[`AppController (e2e) Get lines, no lines 1`] = `
+Object {
+  "groups": Array [],
+  "lines": Array [],
+  "session": Object {
+    "_id": "demo",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+    "lines": Array [],
+  },
+  "transactions": Array [],
+  "user": Object {
+    "_id": "demo",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+    "lines": Array [],
+  },
+}
+`;
+
+exports[`AppController (e2e) Get lines, three lines 1`] = `
+Object {
+  "groups": Array [
+    "Mon groupe",
+    "Mon groupe de mot de passe",
+  ],
+  "lines": Array [
+    Object {
+      "_rev": 0,
+      "encryption": Object {
+        "authTag": "dGVzdA==",
+        "content": "dGVzdA==",
+        "iv": "dGVzdA==",
+        "salt": "dGVzdA==",
+      },
+      "group": "Mon groupe",
+      "label": "Ma carte",
+      "logo": null,
+      "type": "card",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+    Object {
+      "_rev": 0,
+      "encryption": Object {
+        "authTag": "dGVzdA==",
+        "content": "dGVzdA==",
+        "iv": "dGVzdA==",
+        "salt": "dGVzdA==",
+      },
+      "group": "Mon groupe",
+      "label": "Mon texte",
+      "logo": null,
+      "type": "text",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+    Object {
+      "_rev": 0,
+      "encryption": Object {
+        "authTag": "dGVzdA==",
+        "content": "dGVzdA==",
+        "iv": "dGVzdA==",
+        "salt": "dGVzdA==",
+      },
+      "group": "Mon groupe de mot de passe",
+      "label": "Mon mot de passe",
+      "logo": null,
+      "type": "password",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+  ],
+  "session": Object {
+    "_id": "demo",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+    "lines": Array [
+      Object {
+        "label": "Ma carte",
+      },
+      Object {
+        "label": "Mon texte",
+      },
+      Object {
+        "label": "Mon mot de passe",
+      },
+    ],
+  },
+  "transactions": Array [
+    Object {
+      "after": Object {
+        "label": "Mon texte",
+      },
+      "before": null,
+      "line": Object {
+        "label": "Mon texte",
+      },
+      "type": "line",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+    Object {
+      "after": Object {
+        "label": "Ma carte",
+      },
+      "before": null,
+      "line": Object {
+        "label": "Ma carte",
+      },
+      "type": "line",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+    Object {
+      "after": Object {
+        "label": "Mon mot de passe",
+      },
+      "before": null,
+      "line": Object {
+        "label": "Mon mot de passe",
+      },
+      "type": "line",
+      "user": Object {
+        "_id": "demo",
+      },
+    },
+  ],
+  "user": Object {
+    "_id": "demo",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+    "lines": Array [
+      Object {
+        "label": "Ma carte",
+      },
+      Object {
+        "label": "Mon texte",
+      },
+      Object {
+        "label": "Mon mot de passe",
+      },
+    ],
+  },
+}
+`;
+
+exports[`AppController (e2e) Login the user 1`] = `
+Object {
+  "__typename": "ConnectionInformation",
+  "token": Any<String>,
+  "user": Object {
+    "_id": "demo",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) Register user 1`] = `
+Object {
+  "__typename": "User",
+  "_id": "demo",
+}
+`;

@@ -36,8 +36,7 @@ export class LinesService {
   }
 
   async createLine(line: LineToCreate): Promise<LineEntity> {
-    const lineToCreate = new this.lineModel(line);
-    const newLine = await lineToCreate.save();
+    const newLine = await this.lineModel.create(line);
     await this.transactionService.createTransaction(
       TransactionTypeEnum.line,
       null,
