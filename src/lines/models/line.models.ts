@@ -11,9 +11,9 @@ export interface LineToCreate {
 }
 
 export interface LineToUpdate {
-  _id?: ObjectID;
-  label: string;
-  type: LineTypeEnum;
-  group: string;
-  encryption: EncryptedContent;
+  _id: ObjectID;
+  label?: string;
+  type?: LineTypeEnum;
+  group?: string;
+  encryption?: EncryptedContent;
 }

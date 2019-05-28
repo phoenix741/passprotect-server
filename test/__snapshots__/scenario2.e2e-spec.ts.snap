@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppController (e2e) Login the user 1 1`] = `
+Object {
+  "__typename": "ConnectionInformation",
+  "token": Any<String>,
+  "user": Object {
+    "_id": "demo2",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) Login the user 2 1`] = `
+Object {
+  "__typename": "ConnectionInformation",
+  "token": Any<String>,
+  "user": Object {
+    "_id": "demo3",
+    "encryption": Object {
+      "authTag": "dGVzdA==",
+      "content": "dGVzdA==",
+      "iv": "dGVzdA==",
+      "salt": "dGVzdA==",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) Register user 1 1`] = `
+Object {
+  "__typename": "User",
+  "_id": "demo2",
+}
+`;
+
+exports[`AppController (e2e) Register user 2 1`] = `
+Object {
+  "__typename": "User",
+  "_id": "demo3",
+}
+`;

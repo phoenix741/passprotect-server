@@ -118,6 +118,17 @@ query getLines {
 
 export const LINES_VARIABLE = {};
 
+export const LINES_WITH_ID_QUERY = `
+query getLinesWithId {
+  lines {
+    _id
+    type
+    label
+  }
+}`;
+
+export const LINES_WITH_ID_VARIABLE = {};
+
 export const CREATE_LINE_QUERY = `
 mutation createLine($input: WalletLineCreateInput!) {
   createLine(input: $input) {
@@ -171,4 +182,26 @@ export const CREATE_LINE_PASSWORD_VARIABLES = {
       authTag: 'dGVzdA==',
     },
   },
+};
+
+export const UPDATE_LINE_QUERY = `
+mutation updateLine($input: WalletLineUpdateInput!) {
+  updateLine(input: $input) {
+    __typename
+    ... on Errors {
+      errors {
+        fieldName
+        message
+      }
+    }
+    ... on WalletLine {
+      type
+      label
+    }
+  }
+}
+`;
+
+export const UPDATE_LINE_VARIABLES = {
+  label: 'Nouveau texte',
 };
