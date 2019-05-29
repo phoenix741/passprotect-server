@@ -79,3 +79,23 @@ export const LOGIN_USER_2_VARIABLES = {
     password: 'demodemo',
   },
 };
+
+export const SUBSCRIPTION_QUERY = `
+subscription transactionSubscription {
+  transactionAdded {
+    type
+    before {
+      type
+      label
+    }
+    after {
+      type
+      label
+    }
+    updatedAt
+    user {
+      _id
+    }
+  }
+}
+`;

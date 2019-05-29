@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
@@ -9,19 +10,24 @@ import {
   LOGIN_USER_QUERY,
   LOGIN_USER_1_VARIABLES,
   LOGIN_USER_2_VARIABLES,
+  SUBSCRIPTION_QUERY,
 } from './scenario2.data';
 import { Model } from 'mongoose';
 import { UserEntity } from '../src/users/models/user.entity';
 import { getModelToken } from '@nestjs/mongoose';
 import { LineEntity } from '../src/lines/models/line.entity';
 import { TransactionEntity } from '../src/transactions/models/transaction.entity';
+import * as WebSocket from 'ws';
 
 describe('AppController (e2e)', () => {
-  let app;
+  let app: INestApplication;
   let userModel: Model<UserEntity>;
   let lineModel: Model<LineEntity>;
   let transactionModel: Model<TransactionEntity>;
-  let connectionToken: string;
+  let connectionTokenUser1: string;
+  let connectionTokenUser2: string;
+  let ws: WebSocket;
+  const messages: string[] = [];
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -38,7 +44,7 @@ describe('AppController (e2e)', () => {
     );
   });
 
-  function createRequest(query, variables) {
+  function createRequest(query: string, variables: object, connectionToken?: string) {
     return request(app.getHttpServer())
       .post('/graphql')
       .set('authorization', connectionToken || '')
@@ -83,8 +89,24 @@ describe('AppController (e2e)', () => {
         expect(res.body.data.createSession).toMatchSnapshot({
           token: expect.any(String),
         });
-        connectionToken = res.body.data.createSession.token;
+        connectionTokenUser1 = res.body.data.createSession.token;
       });
+  });
+
+  it('Create subscription', async () => {
+    console.log(app.getHttpServer());
+    ws = new WebSocket(app.getHttpServer().replace('http', 'ws') + '/graphql');
+    await new Promise(resolve => ws.on('open', resolve));
+    ws.on('message', data => {
+      messages.push(data.toString());
+      console.log(data.toString());
+    }),
+    ws.send(JSON.stringify({ type: 'connection_init', payload: { Authorization: connectionTokenUser1 } }));
+    ws.send(JSON.stringify({ id: 1, type: 'start', payload: {
+      variables: {},
+      operationName: 'transactionSubscription',
+      query: SUBSCRIPTION_QUERY,
+    }}));
   });
 
   it('Login the user 2', () => {
@@ -94,11 +116,13 @@ describe('AppController (e2e)', () => {
         expect(res.body.data.createSession).toMatchSnapshot({
           token: expect.any(String),
         });
-        connectionToken = res.body.data.createSession.token;
+        connectionTokenUser2 = res.body.data.createSession.token;
       });
   });
 
   afterAll(async () => {
+    ws.send(JSON.stringify({ id: 1, type: 'stop' }));
+    ws.close();
     await app.close();
   });
 });
