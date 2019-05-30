@@ -5,10 +5,9 @@ import { User } from '../../users/dto/user.dto';
 export class ConnectionInformation {
   @Field({
     description: 'Token to be used in connection information',
-    nullable: true,
   })
   token: string;
 
-  @Field(type => User, { description: 'The connected user', nullable: true })
-  user?: User;
+  @Field(type => User, { description: 'The connected user' })
+  user: User;
 }
