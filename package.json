@@ -1,6 +1,6 @@
 {
   "name": "passprotect-server-2",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "Server used to keep password of the user in a secure stor",
   "author": "Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>",
   "license": "MIT",
@@ -35,7 +35,7 @@
     "dotenv": "^8.0.0",
     "graphql": "^14.3.1",
     "graphql-tools": "^4.0.4",
-    "joi": "^14.3.1",
+    "@hapi/joi": "^15.0.3",
     "mongoose": "^5.5.11",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",

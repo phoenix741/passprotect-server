@@ -1,0 +1,12 @@
+.directory
+.dockerignore
+.editorconfig
+.env
+.vscode
+coverage
+dist
+docker-compose*
+Dockerfile*
+mongodb
+node_modules
+schema.gql

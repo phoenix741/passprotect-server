@@ -1,0 +1,24 @@
+pipeline:
+    unit:
+        group: test
+        image: node:10
+        commands:
+            - npm install
+            - npm run lint
+            - npm run test
+            - npm run test:e2e
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017
+            - MONGODB_DATABASE=passprotect
+            - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
+
+    nodejs:
+        group: build
+        image: plugins/docker
+        repo: phoenix741/passprotect-server
+        secrets: [ docker_username, docker_password ]
+        tags: develop
+
+services:
+    mongodb:
+        image: mongo:4

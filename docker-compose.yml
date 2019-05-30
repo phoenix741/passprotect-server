@@ -1,0 +1,21 @@
+version: '2'
+services:
+    nodejs:
+        build:
+          context: ./
+          dockerfile: Dockerfile
+        image: phoenix741/passprotect-server:develop
+        ports:
+            - 3000:3000
+        links:
+            - mongodb
+        environment:
+            - MONGODB_HOST=mongodb://mongodb:27017
+            - MONGODB_DATABASE=passprotect
+            - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
+    mongodb:
+        image: mongo:4
+        ports:
+            - '27017:27017'
+        volumes:
+            - './mongodb:/data'
