@@ -46,10 +46,7 @@ describe('SessionResolver', () => {
         user,
       }));
       expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith(
-        'myUsername',
-        'password',
-      );
+      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
     });
 
     it('error - signin', async () => {
@@ -60,10 +57,7 @@ describe('SessionResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith(
-        'myUsername',
-        'password',
-      );
+      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
     });
 
     it('error - no username', async () => {

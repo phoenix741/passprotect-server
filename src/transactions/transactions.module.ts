@@ -5,12 +5,7 @@ import { TransactionsService } from './transactions.service';
 import { SharedModule } from '../shared/shared.module';
 
 @Module({
-  imports: [
-    SharedModule,
-    MongooseModule.forFeature([
-      { name: 'Transaction', schema: TransactionSchema },
-    ]),
-  ],
+  imports: [SharedModule, MongooseModule.forFeature([{ name: 'Transaction', schema: TransactionSchema }])],
   providers: [TransactionsService],
   exports: [TransactionsService],
 })

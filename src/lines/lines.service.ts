@@ -14,10 +14,7 @@ interface IFindAllFilter {
 
 @Injectable()
 export class LinesService {
-  constructor(
-    @InjectModel('Line') private readonly lineModel: Model<LineEntity>,
-    private readonly transactionService: TransactionsService,
-  ) {}
+  constructor(@InjectModel('Line') private readonly lineModel: Model<LineEntity>, private readonly transactionService: TransactionsService) {}
 
   async findAll(userId: string): Promise<LineEntity[]> {
     if (userId) {
@@ -37,40 +34,25 @@ export class LinesService {
 
   async createLine(line: LineToCreate): Promise<LineEntity> {
     const newLine = await this.lineModel.create(line);
-    await this.transactionService.createTransaction(
-      TransactionTypeEnum.line,
-      null,
-      newLine,
-    );
+    await this.transactionService.createTransaction(TransactionTypeEnum.line, null, newLine);
     return newLine;
   }
 
-  async updateLine(
-    originalLine: LineEntity,
-    line: LineToUpdate,
-  ): Promise<LineEntity> {
+  async updateLine(originalLine: LineEntity, line: LineToUpdate): Promise<LineEntity> {
     const { _id, ...cleanLine } = line;
 
     const oldLine = new this.lineModel(originalLine.toObject());
     originalLine.set(cleanLine);
     const newLine = await originalLine.save();
 
-    await this.transactionService.createTransaction(
-      TransactionTypeEnum.line,
-      oldLine,
-      newLine,
-    );
+    await this.transactionService.createTransaction(TransactionTypeEnum.line, oldLine, newLine);
     return newLine;
   }
 
   async removeLine(id: ObjectID): Promise<TransactionEntity> {
     const oldLine = await this.lineModel.findById(id);
     await this.lineModel.deleteOne({ _id: id });
-    return this.transactionService.createTransaction(
-      TransactionTypeEnum.line,
-      oldLine,
-      null,
-    );
+    return this.transactionService.createTransaction(TransactionTypeEnum.line, oldLine, null);
   }
 
   async getGroups(userId: string): Promise<string[]> {

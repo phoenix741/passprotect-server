@@ -11,12 +11,8 @@ describe('BufferScalar', () => {
 
   describe('serialize', () => {
     it('convert to base64', () => {
-      expect(
-        scalar.serialize(Buffer.from('ceci est un test')),
-      ).toMatchSnapshot();
-      expect(
-        scalar.serialize(new Binary(Buffer.from('ceci est un test'))),
-      ).toMatchSnapshot();
+      expect(scalar.serialize(Buffer.from('ceci est un test'))).toMatchSnapshot();
+      expect(scalar.serialize(new Binary(Buffer.from('ceci est un test')))).toMatchSnapshot();
     });
   });
 

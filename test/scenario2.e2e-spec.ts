@@ -11,6 +11,10 @@ import {
   LOGIN_USER_1_VARIABLES,
   LOGIN_USER_2_VARIABLES,
   SUBSCRIPTION_QUERY,
+  CREATE_LINE_TEXT_VARIABLES_1,
+  CREATE_LINE_QUERY,
+  CREATE_LINE_TEXT_VARIABLES_3,
+  CREATE_LINE_TEXT_VARIABLES_2,
 } from './scenario2.data';
 import { Model } from 'mongoose';
 import { UserEntity } from '../src/users/models/user.entity';
@@ -35,13 +39,11 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init();
+    await app.listenAsync(3000);
 
     userModel = moduleFixture.get<Model<UserEntity>>(getModelToken('User'));
     lineModel = moduleFixture.get<Model<LineEntity>>(getModelToken('Line'));
-    transactionModel = moduleFixture.get<Model<TransactionEntity>>(
-      getModelToken('Transaction'),
-    );
+    transactionModel = moduleFixture.get<Model<TransactionEntity>>(getModelToken('Transaction'));
   });
 
   function createRequest(query: string, variables: object, connectionToken?: string) {
@@ -58,7 +60,7 @@ describe('AppController (e2e)', () => {
 
   it('Remove old user', async () => {
     await Promise.all(
-      ['demo2', 'demo3'].map(async (user) => {
+      ['demo2', 'demo3'].map(async user => {
         await userModel.deleteMany({ _id: user });
         await lineModel.deleteMany({ user });
         await transactionModel.deleteMany({ user });
@@ -86,38 +88,55 @@ describe('AppController (e2e)', () => {
     return createRequest(LOGIN_USER_QUERY, LOGIN_USER_1_VARIABLES)
       .expect(200)
       .expect(res => {
-        expect(res.body.data.createSession).toMatchSnapshot({
-          token: expect.any(String),
-        });
+        expect(res.body.data.createSession).toMatchSnapshot({ token: expect.any(String) });
         connectionTokenUser1 = res.body.data.createSession.token;
       });
   });
 
   it('Create subscription', async () => {
-    console.log(app.getHttpServer());
-    ws = new WebSocket(app.getHttpServer().replace('http', 'ws') + '/graphql');
+    ws = new WebSocket('ws://localhost:3000/graphql', 'graphql-ws');
     await new Promise(resolve => ws.on('open', resolve));
     ws.on('message', data => {
-      messages.push(data.toString());
-      console.log(data.toString());
-    }),
+      messages.push(JSON.parse(data.toString()));
+    });
     ws.send(JSON.stringify({ type: 'connection_init', payload: { Authorization: connectionTokenUser1 } }));
-    ws.send(JSON.stringify({ id: 1, type: 'start', payload: {
-      variables: {},
-      operationName: 'transactionSubscription',
-      query: SUBSCRIPTION_QUERY,
-    }}));
+    ws.send(JSON.stringify({ id: 1, type: 'start', payload: { operationName: 'transactionSubscription', query: SUBSCRIPTION_QUERY } }));
   });
 
   it('Login the user 2', () => {
     return createRequest(LOGIN_USER_QUERY, LOGIN_USER_2_VARIABLES)
       .expect(200)
       .expect(res => {
-        expect(res.body.data.createSession).toMatchSnapshot({
-          token: expect.any(String),
-        });
+        expect(res.body.data.createSession).toMatchSnapshot({ token: expect.any(String) });
         connectionTokenUser2 = res.body.data.createSession.token;
       });
+  });
+
+  it('Create line, text', async () => {
+    await Promise.all([
+      createRequest(CREATE_LINE_QUERY, CREATE_LINE_TEXT_VARIABLES_1, connectionTokenUser1)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.data).toMatchSnapshot();
+        })
+        .then(() => {
+          return createRequest(CREATE_LINE_QUERY, CREATE_LINE_TEXT_VARIABLES_3, connectionTokenUser1)
+            .expect(200)
+            .expect(res => {
+              expect(res.body.data).toMatchSnapshot();
+            });
+        }),
+      createRequest(CREATE_LINE_QUERY, CREATE_LINE_TEXT_VARIABLES_2, connectionTokenUser2)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.data).toMatchSnapshot();
+        }),
+    ]);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  });
+
+  it('Check that all message receive are good', async () => {
+    expect(messages).toMatchSnapshot();
   });
 
   afterAll(async () => {

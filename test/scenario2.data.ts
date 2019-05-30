@@ -92,10 +92,64 @@ subscription transactionSubscription {
       type
       label
     }
-    updatedAt
     user {
       _id
     }
   }
 }
 `;
+
+export const CREATE_LINE_QUERY = `
+mutation createLine($input: WalletLineCreateInput!) {
+  createLine(input: $input) {
+    __typename
+    ... on Errors {
+      errors {
+        fieldName
+        message
+      }
+    }
+  }
+}`;
+
+export const CREATE_LINE_TEXT_VARIABLES_1 = {
+  input: {
+    type: 'text',
+    label: 'Mon texte 1',
+    group: 'Mon groupe',
+    encryption: {
+      salt: 'dGVzdA==',
+      iv: 'dGVzdA==',
+      content: 'dGVzdA==',
+      authTag: 'dGVzdA==',
+    },
+  },
+};
+
+export const CREATE_LINE_TEXT_VARIABLES_2 = {
+  input: {
+    type: 'text',
+    label: 'Mon texte 2',
+    group: 'Mon groupe',
+    encryption: {
+      salt: 'dGVzdA==',
+      iv: 'dGVzdA==',
+      content: 'dGVzdA==',
+      authTag: 'dGVzdA==',
+    },
+  },
+};
+
+export const CREATE_LINE_TEXT_VARIABLES_3 = {
+  input: {
+    type: 'text',
+    label: 'Mon texte 3',
+    group: 'Mon groupe',
+    encryption: {
+      salt: 'dGVzdA==',
+      iv: 'dGVzdA==',
+      content: 'dGVzdA==',
+      authTag: 'dGVzdA==',
+    },
+  },
+};

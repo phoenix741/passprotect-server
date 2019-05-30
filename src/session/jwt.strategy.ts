@@ -7,10 +7,7 @@ import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    readonly configService: ConfigService,
-    private readonly sessionService: SessionsService,
-  ) {
+  constructor(readonly configService: ConfigService, private readonly sessionService: SessionsService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.jwtSecret,

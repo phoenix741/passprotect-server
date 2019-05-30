@@ -1,12 +1,4 @@
-import {
-  Resolver,
-  ResolveProperty,
-  Mutation,
-  Parent,
-  Context,
-  Args,
-  Query,
-} from '@nestjs/graphql';
+import { Resolver, ResolveProperty, Mutation, Parent, Context, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../session/guard/gql-auth.guard';
 import { LineEntity } from '../lines/models/line.entity';
@@ -15,17 +7,11 @@ import { UsersService } from '../users/users.service';
 import { LinesService } from '../lines/lines.service';
 import { AuthorizationService } from '../shared/services/authorization.service';
 import { ObjectID } from 'bson';
-import {
-  toFunctionalError,
-  FunctionalError,
-} from '../shared/models/functional-error';
+import { toFunctionalError, FunctionalError } from '../shared/models/functional-error';
 import { WalletLine } from '../lines/dto/wallet-line.dto';
 import { WalletLineUpdateInput } from '../lines/dto/wallet-line-update-input.dto';
 import { WalletLineCreateInput } from '../lines/dto/wallet-line-create-input.dto';
-import {
-  UpdateLineResultUnion,
-  UpdateLineResult,
-} from '../lines/dto/update-line-result.dto';
+import { UpdateLineResultUnion, UpdateLineResult } from '../lines/dto/update-line-result.dto';
 import { Errors } from '../shared/dto/errors.dto';
 import { User as UserDto } from '../users/dto/user.dto';
 import { UserContext } from '../session/guard/user-context.decorator';
@@ -42,10 +28,7 @@ export class LineResolver {
   @ResolveProperty('user', returns => UserDto, {
     description: 'Owner of the list',
   })
-  async user(
-    @Parent() line: LineEntity,
-    @UserContext() user: UserEntity,
-  ): Promise<UserDto> {
+  async user(@Parent() line: LineEntity, @UserContext() user: UserEntity): Promise<UserDto> {
     this.authorizationService.checkPermission(user, line.user);
     return await this.userService.findById(line.user);
   }
@@ -59,10 +42,7 @@ export class LineResolver {
   }
 
   @Query(type => WalletLine, { description: 'Request a wallet line' })
-  async line(
-    @Args('id') id: string,
-    @UserContext() user: UserEntity,
-  ): Promise<WalletLine> {
+  async line(@Args('id') id: string, @UserContext() user: UserEntity): Promise<WalletLine> {
     this.authorizationService.checkPermission(user);
     const line = await this.lineService.findById(new ObjectID(id));
     this.authorizationService.checkPermission(user, line.user);
@@ -80,10 +60,7 @@ export class LineResolver {
   @Mutation(returns => UpdateLineResultUnion, {
     description: 'Create or Update a WalletLine',
   })
-  async createLine(
-    @Args('input') input: WalletLineCreateInput,
-    @UserContext() user: UserEntity,
-  ): Promise<UpdateLineResult> {
+  async createLine(@Args('input') input: WalletLineCreateInput, @UserContext() user: UserEntity): Promise<UpdateLineResult> {
     this.authorizationService.checkPermission(user);
     try {
       const data = Object.assign({ user: user._id }, input);
@@ -96,10 +73,7 @@ export class LineResolver {
   @Mutation(returns => UpdateLineResultUnion, {
     description: 'Create or Update a WalletLine',
   })
-  async updateLine(
-    @Args('input') input: WalletLineUpdateInput,
-    @UserContext() user: UserEntity,
-  ): Promise<UpdateLineResult> {
+  async updateLine(@Args('input') input: WalletLineUpdateInput, @UserContext() user: UserEntity): Promise<UpdateLineResult> {
     this.authorizationService.checkPermission(user);
     try {
       const line = await this.lineService.findById(new ObjectID(input._id));
@@ -115,10 +89,7 @@ export class LineResolver {
   }
 
   @Mutation(returns => Errors, { description: 'Remove the line' })
-  async removeLine(
-    @Args('id') id: string,
-    @UserContext() user: UserEntity,
-  ): Promise<Errors> {
+  async removeLine(@Args('id') id: string, @UserContext() user: UserEntity): Promise<Errors> {
     this.authorizationService.checkPermission(user);
     try {
       const line = await this.lineService.findById(new ObjectID(id));

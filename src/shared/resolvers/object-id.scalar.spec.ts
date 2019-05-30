@@ -11,18 +11,14 @@ describe('ObjectIDScalar', () => {
 
   describe('serialize', () => {
     it('convert to hexstring', () => {
-      expect(
-        scalar.serialize(new ObjectID('5ce5b4a58382315c12788ea1')),
-      ).toMatchSnapshot();
+      expect(scalar.serialize(new ObjectID('5ce5b4a58382315c12788ea1'))).toMatchSnapshot();
     });
   });
 
   describe('parseValue', () => {
     it('parse value', () => {
       expect(scalar.parseValue('5ce5b4a58382315c12788ea1')).toMatchSnapshot();
-      expect(
-        scalar.parseValue(new ObjectID('5ce5b4a58382315c12788ea1')),
-      ).toMatchSnapshot();
+      expect(scalar.parseValue(new ObjectID('5ce5b4a58382315c12788ea1'))).toMatchSnapshot();
     });
   });
 

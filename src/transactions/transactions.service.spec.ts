@@ -3,10 +3,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import mockingoose from 'mockingoose';
 import { TransactionSchema } from './schemas/transaction.schema';
-import {
-  TransactionsService,
-  TRANSACTION_ADDED_TOPIC,
-} from './transactions.service';
+import { TransactionsService, TRANSACTION_ADDED_TOPIC } from './transactions.service';
 import { ObjectID } from 'bson';
 import { TransactionTypeEnum } from '../shared/interfaces/transaction-type-enum.interface';
 import { LineEntity } from '../lines/models/line.entity';
@@ -80,9 +77,7 @@ describe('TransactionsService', () => {
       };
       mockingoose(transactionModel).toReturn(finderMock, 'find');
       const lines = await transactionsService.findAll(userId);
-      expect(lines.map(line => line.toObject())).toMatchSnapshot(
-        'result of find all without date',
-      );
+      expect(lines.map(l => l.toObject())).toMatchSnapshot('result of find all without date');
     });
 
     it('with date', async () => {
@@ -95,9 +90,7 @@ describe('TransactionsService', () => {
       const lines = await transactionsService.findAll(userId, {
         earliest: new Date(1558224000),
       });
-      expect(lines.map(line => line.toObject())).toMatchSnapshot(
-        'result of find all with date',
-      );
+      expect(lines.map(l => l.toObject())).toMatchSnapshot('result of find all with date');
     });
   });
 
@@ -115,54 +108,31 @@ describe('TransactionsService', () => {
         return transaction;
       };
       mockingoose(transactionModel).toReturn(createMock, 'save');
-      const createdTransaction = await transactionsService.createTransaction(
-        TransactionTypeEnum.line,
-        null,
-        line,
-      );
-      expect(createdTransaction.toObject()).toMatchSnapshot(
-        'transaction created',
-      );
+      const createdTransaction = await transactionsService.createTransaction(TransactionTypeEnum.line, null, line);
+      expect(createdTransaction.toObject()).toMatchSnapshot('transaction created');
     });
 
     it('failed', async () => {
       mockingoose(transactionModel).toReturn(new Error('failed'), 'save');
-      await expect(
-        transactionsService.createTransaction(
-          TransactionTypeEnum.line,
-          null,
-          line,
-        ),
-      ).rejects.toThrow('failed');
+      await expect(transactionsService.createTransaction(TransactionTypeEnum.line, null, line)).rejects.toThrow('failed');
     });
 
     it('failed - no line', async () => {
-      await expect(
-        transactionsService.createTransaction(
-          TransactionTypeEnum.line,
-          null,
-          null,
-        ),
-      ).rejects.toThrow('Transaction: before or after should be defined');
+      await expect(transactionsService.createTransaction(TransactionTypeEnum.line, null, null)).rejects.toThrow(
+        'Transaction: before or after should be defined',
+      );
     });
   });
 
   describe('transactionPubSub', () => {
     it('publish', async done => {
       mockingoose(transactionModel).toReturn(transaction, 'save');
-      const unsubscribeId = await transactionsService.transactionPubSub.subscribe(
-        TRANSACTION_ADDED_TOPIC,
-        t => {
-          expect(t).toMatchSnapshot('result of published transaction');
-          transactionsService.transactionPubSub.unsubscribe(unsubscribeId);
-          done();
-        },
-      );
-      transactionsService.createTransaction(
-        TransactionTypeEnum.line,
-        null,
-        line,
-      );
+      const unsubscribeId = await transactionsService.transactionPubSub.subscribe(TRANSACTION_ADDED_TOPIC, t => {
+        expect(t).toMatchSnapshot('result of published transaction');
+        transactionsService.transactionPubSub.unsubscribe(unsubscribeId);
+        done();
+      });
+      transactionsService.createTransaction(TransactionTypeEnum.line, null, line);
     });
   });
 });

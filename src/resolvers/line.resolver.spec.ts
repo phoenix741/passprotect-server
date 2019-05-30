@@ -66,10 +66,7 @@ describe('LineResolver', () => {
     it('success', async () => {
       userService.findById.mockImplementation(() => user);
       expect(await lineResolver.user(line, user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
       expect(userService.findById).toHaveBeenCalledWith('userline');
     });
   });
@@ -87,32 +84,20 @@ describe('LineResolver', () => {
     it('success', async () => {
       linesService.findById.mockImplementation(() => line);
       expect(await lineResolver.line('123456789012', user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
-      expect(linesService.findById).toHaveBeenCalledWith(
-        new ObjectID('123456789012'),
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(linesService.findById).toHaveBeenCalledWith(new ObjectID('123456789012'));
     });
 
     it('failed', async () => {
       linesService.findById.mockImplementation(() => line);
-      authorizationService.checkPermission.mockImplementation((user, id) => {
+      authorizationService.checkPermission.mockImplementation((_, id) => {
         if (id) {
           throw new Error('not authorized exception');
         }
       });
-      await expect(
-        lineResolver.line('123456789012', user),
-      ).rejects.toThrowErrorMatchingSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
-      expect(linesService.findById).toHaveBeenCalledWith(
-        new ObjectID('123456789012'),
-      );
+      await expect(lineResolver.line('123456789012', user)).rejects.toThrowErrorMatchingSnapshot();
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
+      expect(linesService.findById).toHaveBeenCalledWith(new ObjectID('123456789012'));
     });
   });
 
@@ -176,15 +161,9 @@ describe('LineResolver', () => {
         _id: 'lineEntityId',
       }));
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
-      expect(linesService.updateLine).toHaveBeenCalledWith(
-        { _id: 'line', type: 'card', user: 'userline' },
-        input,
-      );
+      expect(linesService.updateLine).toHaveBeenCalledWith({ _id: 'line', type: 'card', user: 'userline' }, input);
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
     });
 
     it('error - line not found', async () => {
@@ -198,10 +177,7 @@ describe('LineResolver', () => {
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
       expect(linesService.updateLine).not.toHaveBeenCalled();
-      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(user, 'userline');
     });
 
     it('error - update', async () => {
@@ -216,15 +192,9 @@ describe('LineResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await lineResolver.updateLine(input, user)).toMatchSnapshot();
-      expect(linesService.updateLine).toHaveBeenCalledWith(
-        { _id: 'line', type: 'card', user: 'userline' },
-        input,
-      );
+      expect(linesService.updateLine).toHaveBeenCalledWith({ _id: 'line', type: 'card', user: 'userline' }, input);
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
     });
   });
 
@@ -237,14 +207,9 @@ describe('LineResolver', () => {
         _id: 'lineEntityId',
       }));
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
-      expect(linesService.removeLine).toHaveBeenCalledWith(
-        new ObjectID('5ce85e3daa2aa003aea7b6d0'),
-      );
+      expect(linesService.removeLine).toHaveBeenCalledWith(new ObjectID('5ce85e3daa2aa003aea7b6d0'));
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
     });
 
     it('error - line not found', async () => {
@@ -254,10 +219,7 @@ describe('LineResolver', () => {
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
       expect(linesService.removeLine).not.toHaveBeenCalled();
-      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).not.toHaveBeenCalledWith(user, 'userline');
     });
 
     it('error - update', async () => {
@@ -268,14 +230,9 @@ describe('LineResolver', () => {
         throw new FunctionalError('myfield', 'mymessage');
       });
       expect(await lineResolver.removeLine(id, user)).toMatchSnapshot();
-      expect(linesService.removeLine).toHaveBeenCalledWith(
-        new ObjectID('5ce85e3daa2aa003aea7b6d0'),
-      );
+      expect(linesService.removeLine).toHaveBeenCalledWith(new ObjectID('5ce85e3daa2aa003aea7b6d0'));
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'userline',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'userline');
     });
   });
 });

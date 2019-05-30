@@ -6,11 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
-  imports: [
-    SharedModule,
-    MongooseModule.forFeature([{ name: 'Line', schema: LineSchema }]),
-    TransactionsModule,
-  ],
+  imports: [SharedModule, MongooseModule.forFeature([{ name: 'Line', schema: LineSchema }]), TransactionsModule],
   providers: [LinesService],
   exports: [LinesService],
 })

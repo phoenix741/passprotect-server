@@ -37,6 +37,8 @@ describe('LinesService', () => {
     },
   };
 
+  const docToUpdate = Object.assign({ _id: new ObjectID(), docToCreate });
+
   beforeEach(async () => {
     lineModel = mongoose.model('Line', LineSchema);
     transactionsService = {
@@ -65,9 +67,7 @@ describe('LinesService', () => {
       const userId = 'userId';
       mockingoose(lineModel).toReturn([doc], 'find');
       const lines = await linesService.findAll(userId);
-      expect(lines.map(line => line.toObject())).toMatchSnapshot(
-        'result of find all with userId',
-      );
+      expect(lines.map(line => line.toObject())).toMatchSnapshot('result of find all with userId');
     });
 
     it('call find all - without userId', async () => {
@@ -90,26 +90,14 @@ describe('LinesService', () => {
     it('call create line - no error', async () => {
       mockingoose(lineModel).toReturn(doc, 'save');
       const line = await linesService.createLine(docToCreate);
-      expect(transactionsService.createTransaction).toHaveBeenCalledWith(
-        TransactionTypeEnum.line,
-        null,
-        expect.objectContaining(doc),
-      );
-      expect(line.toObject()).toMatchSnapshot(
-        'result after the creation of the line',
-      );
+      expect(transactionsService.createTransaction).toHaveBeenCalledWith(TransactionTypeEnum.line, null, expect.objectContaining(doc));
+      expect(line.toObject()).toMatchSnapshot('result after the creation of the line');
     });
 
     it('call create line - with error', async () => {
       mockingoose(lineModel).toReturn(new Error('My Error'), 'save');
-      await expect(linesService.createLine(docToCreate)).rejects.toThrow(
-        'My Error',
-      );
-      expect(transactionsService.createTransaction).not.toHaveBeenCalledWith(
-        TransactionTypeEnum.line,
-        null,
-        expect.objectContaining(doc),
-      );
+      await expect(linesService.createLine(docToCreate)).rejects.toThrow('My Error');
+      expect(transactionsService.createTransaction).not.toHaveBeenCalledWith(TransactionTypeEnum.line, null, expect.objectContaining(doc));
     });
   });
 
@@ -119,7 +107,7 @@ describe('LinesService', () => {
       const oldLine = await linesService.findById(doc._id);
 
       mockingoose(lineModel).toReturn(doc, 'save');
-      const line = await linesService.updateLine(oldLine, docToCreate);
+      const line = await linesService.updateLine(oldLine, docToUpdate);
       expect(transactionsService.createTransaction).toHaveBeenCalledWith(
         TransactionTypeEnum.line,
         expect.objectContaining(doc),
@@ -133,9 +121,7 @@ describe('LinesService', () => {
       const oldLine = await linesService.findById(doc._id);
 
       mockingoose(lineModel).toReturn(new Error('My Error'), 'save');
-      await expect(
-        linesService.updateLine(oldLine, docToCreate),
-      ).rejects.toThrow('My Error');
+      await expect(linesService.updateLine(oldLine, docToUpdate)).rejects.toThrow('My Error');
       expect(transactionsService.createTransaction).not.toHaveBeenCalledWith(
         TransactionTypeEnum.line,
         expect.objectContaining(doc),
@@ -148,23 +134,13 @@ describe('LinesService', () => {
     it('call remove line - no error', async () => {
       mockingoose(lineModel).toReturn(doc, 'deleteOne');
       await linesService.removeLine(doc._id);
-      expect(transactionsService.createTransaction).toHaveBeenCalledWith(
-        TransactionTypeEnum.line,
-        expect.objectContaining(doc),
-        null,
-      );
+      expect(transactionsService.createTransaction).toHaveBeenCalledWith(TransactionTypeEnum.line, expect.objectContaining(doc), null);
     });
 
     it('call remove line - with error', async () => {
       mockingoose(lineModel).toReturn(new Error('My Error'), 'deleteOne');
-      await expect(linesService.removeLine(doc._id)).rejects.toThrow(
-        'My Error',
-      );
-      expect(transactionsService.createTransaction).not.toHaveBeenCalledWith(
-        TransactionTypeEnum.line,
-        expect.objectContaining(doc),
-        null,
-      );
+      await expect(linesService.removeLine(doc._id)).rejects.toThrow('My Error');
+      expect(transactionsService.createTransaction).not.toHaveBeenCalledWith(TransactionTypeEnum.line, expect.objectContaining(doc), null);
     });
   });
 
@@ -172,9 +148,7 @@ describe('LinesService', () => {
     it('call get groups', async () => {
       const groups = ['group1', 'group2', 'group3'];
       mockingoose(lineModel).toReturn(groups, 'distinct');
-      expect(await linesService.getGroups('userId')).toMatchSnapshot(
-        'result for getting groups',
-      );
+      expect(await linesService.getGroups('userId')).toMatchSnapshot('result for getting groups');
     });
   });
 });

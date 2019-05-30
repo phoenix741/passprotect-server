@@ -6,13 +6,7 @@ import { BufferScalar } from './resolvers/buffer.scalar';
 import { ObjectIDScalar } from './resolvers/object-id.scalar';
 
 @Module({
-  providers: [
-    CryptoService,
-    AuthorizationService,
-    DateScalar,
-    BufferScalar,
-    ObjectIDScalar,
-  ],
+  providers: [CryptoService, AuthorizationService, DateScalar, BufferScalar, ObjectIDScalar],
   exports: [CryptoService, AuthorizationService],
 })
 export class SharedModule {}

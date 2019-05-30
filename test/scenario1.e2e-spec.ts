@@ -41,9 +41,7 @@ describe('AppController (e2e)', () => {
 
     userModel = moduleFixture.get<Model<UserEntity>>(getModelToken('User'));
     lineModel = moduleFixture.get<Model<LineEntity>>(getModelToken('Line'));
-    transactionModel = moduleFixture.get<Model<TransactionEntity>>(
-      getModelToken('Transaction'),
-    );
+    transactionModel = moduleFixture.get<Model<TransactionEntity>>(getModelToken('Transaction'));
   });
 
   function createRequest(query, variables) {
@@ -51,11 +49,7 @@ describe('AppController (e2e)', () => {
       .post('/graphql')
       .set('authorization', connectionToken || '')
       .set('content-type', 'application/json')
-      .send({
-        operationName: null,
-        variables,
-        query,
-      });
+      .send({ operationName: null, variables, query });
   }
 
   it('Remove old user', async () => {

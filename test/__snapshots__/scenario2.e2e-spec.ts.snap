@@ -1,5 +1,75 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AppController (e2e) Check that all message receive are good 1`] = `
+Array [
+  Object {
+    "type": "connection_ack",
+  },
+  Object {
+    "id": 1,
+    "payload": Object {
+      "data": Object {
+        "transactionAdded": Object {
+          "after": Object {
+            "label": "Mon texte 1",
+            "type": "text",
+          },
+          "before": null,
+          "type": "line",
+          "user": Object {
+            "_id": "demo2",
+          },
+        },
+      },
+    },
+    "type": "data",
+  },
+  Object {
+    "id": 1,
+    "payload": Object {
+      "data": Object {
+        "transactionAdded": Object {
+          "after": Object {
+            "label": "Mon texte 3",
+            "type": "text",
+          },
+          "before": null,
+          "type": "line",
+          "user": Object {
+            "_id": "demo2",
+          },
+        },
+      },
+    },
+    "type": "data",
+  },
+]
+`;
+
+exports[`AppController (e2e) Create line, text 1`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
+exports[`AppController (e2e) Create line, text 2`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
+exports[`AppController (e2e) Create line, text 3`] = `
+Object {
+  "createLine": Object {
+    "__typename": "WalletLine",
+  },
+}
+`;
+
 exports[`AppController (e2e) Login the user 1 1`] = `
 Object {
   "__typename": "ConnectionInformation",

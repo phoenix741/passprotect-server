@@ -50,32 +50,24 @@ describe('SessionsService', () => {
   describe('signIn', () => {
     it('user not found', async () => {
       userService.findById.mockImplementation(() => null);
-      await expect(
-        sessionsService.signIn('username', 'password'),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      await expect(sessionsService.signIn('username', 'password')).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it('wrong password', async () => {
       userService.verifyPassword.mockImplementation(async () => {
         throw new Error('wrong password');
       });
-      await expect(
-        sessionsService.signIn('username', 'password'),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      await expect(sessionsService.signIn('username', 'password')).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it('user found', async () => {
-      expect(
-        await sessionsService.signIn('username', 'password'),
-      ).toMatchSnapshot('user sign in');
+      expect(await sessionsService.signIn('username', 'password')).toMatchSnapshot('user sign in');
     });
   });
 
   describe('validateUser', () => {
     it('success', async () => {
-      await expect(
-        sessionsService.validateUser({ _id: 'username' }),
-      ).toMatchSnapshot('user validation');
+      await expect(sessionsService.validateUser({ _id: 'username' })).toMatchSnapshot('user validation');
       expect(userService.findById).toHaveBeenCalledWith('username');
     });
   });

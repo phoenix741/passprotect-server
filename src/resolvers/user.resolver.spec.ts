@@ -55,10 +55,7 @@ describe('UserResolver', () => {
     it('success', async () => {
       userService.findById.mockImplementation(() => user);
       expect(await userResolver.user('username', user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'username',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'username');
       expect(userService.findById).toHaveBeenCalledWith('username');
     });
   });
@@ -67,10 +64,7 @@ describe('UserResolver', () => {
     it('success', async () => {
       linesService.findAll.mockImplementation(() => lines);
       expect(await userResolver.lines(user, user)).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'username',
-      );
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'username');
       expect(linesService.findAll).toHaveBeenCalledWith('username');
     });
   });

@@ -7,10 +7,7 @@ import { isString } from '../shared/utils/lodash';
 import { UserContext } from '../session/guard/user-context.decorator';
 import { User } from '../users/dto/user.dto';
 import { ConnectionInformationInput } from '../session/dto/connection-information-input.dto';
-import {
-  CreateSessionResultUnion,
-  CreateSessionResult,
-} from '../session/dto/create-session-result-union.dto';
+import { CreateSessionResultUnion, CreateSessionResult } from '../session/dto/create-session-result-union.dto';
 
 @Injectable()
 export class SessionResolver {
@@ -25,15 +22,10 @@ export class SessionResolver {
   @Mutation(returns => CreateSessionResultUnion, {
     description: 'Create a new session, return the authorization token',
   })
-  async createSession(
-    @Args('input') input: ConnectionInformationInput,
-  ): Promise<CreateSessionResult> {
+  async createSession(@Args('input') input: ConnectionInformationInput): Promise<CreateSessionResult> {
     try {
       check(input);
-      const { jwtToken, user } = await this.sessionService.signIn(
-        input.username,
-        input.password,
-      );
+      const { jwtToken, user } = await this.sessionService.signIn(input.username, input.password);
       return { token: 'bearer ' + jwtToken, user };
     } catch (err) {
       return toFunctionalError(err).toGraphQL('username');

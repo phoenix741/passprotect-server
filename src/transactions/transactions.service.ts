@@ -20,10 +20,7 @@ export class TransactionsService {
     private readonly transactionModel: Model<TransactionEntity>,
   ) {}
 
-  async findAll(
-    userId: string,
-    params: IFindAllTransactionParams = {},
-  ): Promise<TransactionEntity[]> {
+  async findAll(userId: string, params: IFindAllTransactionParams = {}): Promise<TransactionEntity[]> {
     const filter: IFindAllTransactionDto = { user: userId };
     if (params.earliest) {
       filter.updatedAt = { $gte: params.earliest };
@@ -34,11 +31,7 @@ export class TransactionsService {
       .exec();
   }
 
-  async createTransaction(
-    type: TransactionTypeEnum,
-    before?: LineEntity,
-    after?: LineEntity,
-  ): Promise<TransactionEntity> {
+  async createTransaction(type: TransactionTypeEnum, before?: LineEntity, after?: LineEntity): Promise<TransactionEntity> {
     const base = after || before;
     if (!base) {
       throw new Error('Transaction: before or after should be defined');
@@ -55,11 +48,7 @@ export class TransactionsService {
         after &&
         crypto
           .createHash('sha512')
-          .update(
-            after.encryption.content instanceof Binary
-              ? after.encryption.content.buffer
-              : after.encryption.content,
-          )
+          .update(after.encryption.content instanceof Binary ? after.encryption.content.buffer : after.encryption.content)
           .digest('hex'),
     };
 

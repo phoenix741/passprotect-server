@@ -18,12 +18,7 @@ describe('LineSchema', () => {
       try {
         await line.validate();
       } catch (err) {
-        expect(Object.keys(err.errors)).toEqual([
-          'user',
-          'group',
-          'type',
-          'label',
-        ]);
+        expect(Object.keys(err.errors)).toEqual(['user', 'group', 'type', 'label']);
       }
     });
 

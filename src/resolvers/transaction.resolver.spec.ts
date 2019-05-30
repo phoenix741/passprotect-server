@@ -96,12 +96,7 @@ describe('TransactionResolver', () => {
   describe('transactions', () => {
     it('success', async () => {
       transactionService.findAll.mockImplementation(() => [transaction]);
-      expect(
-        await transactionResolver.transactions(
-          new Date('2019-05-25T12:28:24.941Z'),
-          user,
-        ),
-      ).toMatchSnapshot();
+      expect(await transactionResolver.transactions(new Date('2019-05-25T12:28:24.941Z'), user)).toMatchSnapshot();
       expect(authorizationService.checkPermission).toHaveBeenCalledWith(user);
       expect(transactionService.findAll).toHaveBeenCalledWith('username', {
         earliest: new Date('2019-05-25T12:28:24.941Z'),
@@ -112,13 +107,8 @@ describe('TransactionResolver', () => {
   describe('user', () => {
     it('success', async () => {
       userService.findById.mockImplementation(() => user);
-      expect(
-        await transactionResolver.user(transaction, user),
-      ).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'usertransaction',
-      );
+      expect(await transactionResolver.user(transaction, user)).toMatchSnapshot();
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'usertransaction');
       expect(userService.findById).toHaveBeenCalledWith('usertransaction');
     });
   });
@@ -126,16 +116,9 @@ describe('TransactionResolver', () => {
   describe('line', () => {
     it('success', async () => {
       linesService.findById.mockImplementation(() => line);
-      expect(
-        await transactionResolver.line(transaction, user),
-      ).toMatchSnapshot();
-      expect(authorizationService.checkPermission).toHaveBeenCalledWith(
-        user,
-        'usertransaction',
-      );
-      expect(linesService.findById).toHaveBeenCalledWith(
-        new ObjectID('5ce934e817517d7fb63cc428'),
-      );
+      expect(await transactionResolver.line(transaction, user)).toMatchSnapshot();
+      expect(authorizationService.checkPermission).toHaveBeenCalledWith(user, 'usertransaction');
+      expect(linesService.findById).toHaveBeenCalledWith(new ObjectID('5ce934e817517d7fb63cc428'));
     });
   });
 

@@ -5,10 +5,7 @@ import { UsersService } from './users.service';
 import { SharedModule } from '../shared/shared.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-    SharedModule,
-  ],
+  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), SharedModule],
   providers: [UsersService],
   exports: [UsersService],
 })

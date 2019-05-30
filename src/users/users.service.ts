@@ -7,10 +7,7 @@ import { CryptoService } from '../shared/services/crypto.service';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly cryptoService: CryptoService,
-    @InjectModel('User') private readonly userModel: Model<UserEntity>,
-  ) {}
+  constructor(private readonly cryptoService: CryptoService, @InjectModel('User') private readonly userModel: Model<UserEntity>) {}
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userModel.find().exec();
@@ -26,14 +23,8 @@ export class UsersService {
     return await this.userModel.create(user);
   }
 
-  async verifyPassword(
-    user: UserEntity,
-    password: string,
-  ): Promise<UserEntity> {
-    const isValid = await this.cryptoService.checkPassword(
-      password,
-      user.password,
-    );
+  async verifyPassword(user: UserEntity, password: string): Promise<UserEntity> {
+    const isValid = await this.cryptoService.checkPassword(password, user.password);
     if (!isValid) {
       throw new UnauthorizedException('error:user.404.userNotFound');
     }

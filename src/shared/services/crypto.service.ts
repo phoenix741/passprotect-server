@@ -8,10 +8,7 @@ export class CryptoService {
     return bcrypt.hash(password, salt);
   }
 
-  async checkPassword(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
+  async checkPassword(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
   }
 }

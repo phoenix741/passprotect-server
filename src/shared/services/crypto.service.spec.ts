@@ -10,16 +10,12 @@ describe('CryptoService', () => {
   describe('hashPassword, checkPassword', () => {
     it('success', async () => {
       const password = await cryptoService.hashPassword('mon mot de passe');
-      expect(
-        await cryptoService.checkPassword('mon mot de passe', password),
-      ).toBeTruthy();
+      expect(await cryptoService.checkPassword('mon mot de passe', password)).toBeTruthy();
     });
 
     it('failed', async () => {
       const password = await cryptoService.hashPassword('mon mot de passe');
-      expect(
-        await cryptoService.checkPassword('mon mot de passe 2', password),
-      ).toBeFalsy();
+      expect(await cryptoService.checkPassword('mon mot de passe 2', password)).toBeFalsy();
     });
   });
 });

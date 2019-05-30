@@ -4,16 +4,12 @@ import { NotImplementedException } from '@nestjs/common';
 describe('FunctionalError', () => {
   describe('toFunctionalError', () => {
     it('Create the functional error, from functional error', () => {
-      const error = toFunctionalError(
-        new FunctionalError('field', 'mymessage'),
-      );
+      const error = toFunctionalError(new FunctionalError('field', 'mymessage'));
       expect(error).toMatchSnapshot('functional error');
     });
 
     it('Create the functional error, from http exception', () => {
-      const error = toFunctionalError(
-        new NotImplementedException('not implemented'),
-      );
+      const error = toFunctionalError(new NotImplementedException('not implemented'));
       expect(error).toMatchSnapshot('http exception');
     });
 
@@ -31,9 +27,7 @@ describe('FunctionalError', () => {
 
     it('generate error for graphql 2', () => {
       const error = new FunctionalError(null, 'mymessage');
-      expect(error.toGraphQL('my default field')).toMatchSnapshot(
-        'functionnal error graphql',
-      );
+      expect(error.toGraphQL('my default field')).toMatchSnapshot('functionnal error graphql');
     });
   });
 });

@@ -24,8 +24,7 @@ describe('TransactionSchema', () => {
       const line = new TransactionModel({
         type: 'line',
         user: 'toto',
-        sha512:
-          'a044bb3c3b775b47952c980c389d23e71ac48b1958555b444eb7c8eee5dcba0268490cd63db4240fd45dace78e66e2b63d612d31d4f6531e14000cfe853796e2',
+        sha512: 'a044bb3c3b775b47952c980c389d23e71ac48b1958555b444eb7c8eee5dcba0268490cd63db4240fd45dace78e66e2b63d612d31d4f6531e14000cfe853796e2',
       });
 
       await line.validate();
