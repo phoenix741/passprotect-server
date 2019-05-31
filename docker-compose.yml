@@ -6,7 +6,7 @@ services:
           dockerfile: Dockerfile
         image: phoenix741/passprotect-server:develop
         ports:
-            - 3000:3000
+            - 4000:4000
         links:
             - mongodb
         environment:

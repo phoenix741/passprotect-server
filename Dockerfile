@@ -30,5 +30,5 @@ COPY --from=dependencies /src/node_modules /src/node_modules
 ENV MODE=prod
 ENV NODE_ENV=production
 
-EXPOSE 3000
+EXPOSE 4000
 CMD ["node", "/src/main.js"]
