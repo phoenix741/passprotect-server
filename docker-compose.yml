@@ -10,6 +10,7 @@ services:
         links:
             - mongodb
         environment:
+            - NODE_ENV=development
             - MONGODB_HOST=mongodb://mongodb:27017
             - MONGODB_DATABASE=passprotect
             - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
