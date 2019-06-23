@@ -26,7 +26,7 @@ export class UsersService {
   async verifyPassword(user: UserEntity, password: string): Promise<UserEntity> {
     const isValid = await this.cryptoService.checkPassword(password, user.password);
     if (!isValid) {
-      throw new UnauthorizedException('error:user.404.userNotFound');
+      throw new UnauthorizedException('error.user.404.userNotFound');
     }
     return user;
   }

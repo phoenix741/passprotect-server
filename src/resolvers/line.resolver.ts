@@ -78,7 +78,7 @@ export class LineResolver {
     try {
       const line = await this.lineService.findById(new ObjectID(input._id));
       if (!line) {
-        throw new FunctionalError('_id', 'error:line.404.lineNotFound');
+        throw new FunctionalError('_id', 'error.line.404.lineNotFound');
       }
       this.authorizationService.checkPermission(user, line.user);
 
@@ -94,7 +94,7 @@ export class LineResolver {
     try {
       const line = await this.lineService.findById(new ObjectID(id));
       if (!line) {
-        throw new FunctionalError('_id', 'error:line.404.lineNotFound');
+        throw new FunctionalError('_id', 'error.line.404.lineNotFound');
       }
       this.authorizationService.checkPermission(user, line.user);
 

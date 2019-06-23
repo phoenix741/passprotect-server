@@ -11,7 +11,7 @@ export class SessionsService {
   async signIn(username: string, password: string): Promise<{ user: UserEntity; jwtToken: string }> {
     const user = await this.userService.findById(username);
     if (!user) {
-      throw new UnauthorizedException('error:user.404.userNotFound');
+      throw new UnauthorizedException('error.user.404.userNotFound');
     }
 
     await this.userService.verifyPassword(user, password);

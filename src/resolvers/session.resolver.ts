@@ -35,10 +35,10 @@ export class SessionResolver {
 
 function check(data: ConnectionInformationInput) {
   if (!isString(data.username)) {
-    throw new BadRequestException('error:user.401.username');
+    throw new BadRequestException('error.user.401.username');
   }
 
   if (!isString(data.password) || data.password.length < 8) {
-    throw new BadRequestException('error:user.401.password');
+    throw new BadRequestException('error.user.401.password');
   }
 }
