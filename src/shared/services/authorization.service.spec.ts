@@ -14,7 +14,7 @@ describe('AuthorizationService', () => {
 
     it('user, userId <>', () => {
       expect(() => authorizationService.checkPermission({ _id: 'username' }, 'username2')).toThrowError(
-        'The user isn\'t authorized to view this resource',
+        "The user isn't authorized to view this resource",
       );
     });
 

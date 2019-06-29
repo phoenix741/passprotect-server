@@ -16,6 +16,7 @@ import { ConfigModule } from '../config/config.module';
       useExisting: ConfigService,
       imports: [ConfigModule],
     }),
+    ConfigModule,
     UsersModule,
   ],
   providers: [SessionsService, JwtStrategy],

@@ -83,7 +83,7 @@ Object {
 exports[`UsersService verifyPassword failed 1`] = `
 Object {
   "error": "Unauthorized",
-  "message": "error:user.404.userNotFound",
+  "message": "error.user.404.userNotFound",
   "statusCode": 401,
 }
 `;

@@ -14,6 +14,8 @@ services:
             - MONGODB_HOST=mongodb://mongodb:27017
             - MONGODB_DATABASE=passprotect
             - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
+            - ENGINE_API_KEY=service:passprotect:MXL3nFT4FbnEkWgMPkmYkQ
+            - ENGINE_SCHEMA_TAG=dev
     mongodb:
         image: mongo:4
         ports:
