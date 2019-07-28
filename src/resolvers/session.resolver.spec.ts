@@ -45,8 +45,8 @@ describe('SessionResolver', () => {
         jwtToken: 'myToken',
         user,
       }));
-      expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
+      expect(await sessionResolver.createSession(input, 'fingerprint1')).toMatchSnapshot();
+      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password', 'fingerprint1');
     });
 
     it('error - signin', async () => {
@@ -56,15 +56,15 @@ describe('SessionResolver', () => {
       sessionService.signIn.mockImplementation(() => {
         throw new FunctionalError('myfield', 'mymessage');
       });
-      expect(await sessionResolver.createSession(input)).toMatchSnapshot();
-      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password');
+      expect(await sessionResolver.createSession(input, 'fingerprint1')).toMatchSnapshot();
+      expect(sessionService.signIn).toHaveBeenCalledWith('myUsername', 'password', 'fingerprint1');
     });
 
     it('error - no username', async () => {
       const input = new ConnectionInformationInput();
       input.username = '';
       input.password = 'password';
-      expect(await sessionResolver.createSession(input)).toMatchSnapshot();
+      expect(await sessionResolver.createSession(input, 'fingerprint1')).toMatchSnapshot();
       expect(sessionService.signIn).not.toHaveBeenCalled();
     });
 
@@ -72,7 +72,7 @@ describe('SessionResolver', () => {
       const input = new ConnectionInformationInput();
       input.username = 'myUsername';
       input.password = '';
-      expect(await sessionResolver.createSession(input)).toMatchSnapshot();
+      expect(await sessionResolver.createSession(input, 'fingerprint1')).toMatchSnapshot();
       expect(sessionService.signIn).not.toHaveBeenCalled();
     });
   });

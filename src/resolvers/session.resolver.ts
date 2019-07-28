@@ -8,6 +8,7 @@ import { UserContext } from '../session/guard/user-context.decorator';
 import { User } from '../users/dto/user.dto';
 import { ConnectionInformationInput } from '../session/dto/connection-information-input.dto';
 import { CreateSessionResultUnion, CreateSessionResult } from '../session/dto/create-session-result-union.dto';
+import { FingerprintContext } from '../session/guard/fingerprint.decorator';
 
 @Injectable()
 export class SessionResolver {
@@ -22,10 +23,10 @@ export class SessionResolver {
   @Mutation(returns => CreateSessionResultUnion, {
     description: 'Create a new session, return the authorization token',
   })
-  async createSession(@Args('input') input: ConnectionInformationInput): Promise<CreateSessionResult> {
+  async createSession(@Args('input') input: ConnectionInformationInput, @FingerprintContext() fingerprint: string): Promise<CreateSessionResult> {
     try {
       check(input);
-      const { jwtToken, user } = await this.sessionService.signIn(input.username, input.password);
+      const { jwtToken, user } = await this.sessionService.signIn(input.username, input.password, fingerprint);
       return { token: 'bearer ' + jwtToken, user };
     } catch (err) {
       return toFunctionalError(err).toGraphQL('username');

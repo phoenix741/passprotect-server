@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { TransactionSchema } from './transaction.schema';
 import { TransactionEntity } from '../models/transaction.entity';
+import { TransactionTypeEnum } from '../../shared/interfaces/transaction-type-enum.interface';
 
 describe('TransactionSchema', () => {
   let TransactionModel: mongoose.Model<TransactionEntity>;
@@ -22,7 +23,7 @@ describe('TransactionSchema', () => {
 
     it('should create a transaction - all field fill', async () => {
       const line = new TransactionModel({
-        type: 'line',
+        type: TransactionTypeEnum.line,
         user: 'toto',
         sha512: 'a044bb3c3b775b47952c980c389d23e71ac48b1958555b444eb7c8eee5dcba0268490cd63db4240fd45dace78e66e2b63d612d31d4f6531e14000cfe853796e2',
       });

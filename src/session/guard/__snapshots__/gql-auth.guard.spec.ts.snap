@@ -2,6 +2,12 @@
 
 exports[`GqlAuthGuard getRequest convert express context to graphql: request of the context 1`] = `
 Object {
+  "fingerprint": Object {
+    "hash": "fingerprint1",
+  },
+  "headers": Object {
+    "authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJJRElEIiwiaXNzdWVyIjoiMjRhNzM1MmM5MTlkMzUyMzNlNWQ4M2RhYWZmNDQzNmMiLCJpYXQiOjE1NjQzMzc2MDMsImV4cCI6MTU2NDMzODUwMywianRpIjoiNWQzZGU1YzMyNWU3NjIzNzE1NGQ3MjMxIn0.xAlbFEAh9Sk3ck47D54y6jB6Qy9d6pgof7jkn8OELFo",
+  },
   "session": "session",
   "user": "user",
 }

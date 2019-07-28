@@ -26,7 +26,7 @@ describe('LineSchema', () => {
       const line = new LineModel({
         label: 'Test',
         group: 'Group Test',
-        type: 'password',
+        type: LineTypeEnum.password,
         user: 'toto',
       });
 

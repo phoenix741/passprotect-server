@@ -7,5 +7,6 @@ export interface UserToRegister {
 }
 
 export interface JwtPayload {
-  _id: string;
+  sub: string;
+  issuer: string;
 }

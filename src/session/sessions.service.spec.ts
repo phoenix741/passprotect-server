@@ -50,24 +50,25 @@ describe('SessionsService', () => {
   describe('signIn', () => {
     it('user not found', async () => {
       userService.findById.mockImplementation(() => null);
-      await expect(sessionsService.signIn('username', 'password')).rejects.toThrowErrorMatchingSnapshot();
+      await expect(sessionsService.signIn('username', 'password', 'fingerprint')).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it('wrong password', async () => {
       userService.verifyPassword.mockImplementation(async () => {
         throw new Error('wrong password');
       });
-      await expect(sessionsService.signIn('username', 'password')).rejects.toThrowErrorMatchingSnapshot();
+      await expect(sessionsService.signIn('username', 'password', 'fingerprint')).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it('user found', async () => {
-      expect(await sessionsService.signIn('username', 'password')).toMatchSnapshot('user sign in');
+      expect(await sessionsService.signIn('username', 'password', 'fingerprint')).toMatchSnapshot('user sign in');
+      expect(jwtService.sign).toHaveBeenCalledWith({ sub: 'username', issuer: 'fingerprint' }, {expiresIn: '15m', jwtid: expect.any(String)});
     });
   });
 
   describe('validateUser', () => {
     it('success', async () => {
-      await expect(sessionsService.validateUser({ _id: 'username' })).toMatchSnapshot('user validation');
+      await expect(await sessionsService.validateUser({ sub: 'username' })).toMatchSnapshot('user validation');
       expect(userService.findById).toHaveBeenCalledWith('username');
     });
   });
