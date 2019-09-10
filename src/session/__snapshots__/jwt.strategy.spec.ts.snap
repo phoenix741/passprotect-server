@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JwtStrategy validate user authorized: username1 1`] = `"username1"`;
+
+exports[`JwtStrategy validate user refused 1`] = `
+Object {
+  "error": "Unauthorized",
+  "statusCode": 401,
+}
+`;

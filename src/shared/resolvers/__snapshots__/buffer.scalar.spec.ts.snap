@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BufferScalar parseLiteral parse literal 1`] = `
+Object {
+  "data": Array [
+    99,
+    101,
+    99,
+    105,
+    32,
+    101,
+    115,
+    116,
+    32,
+    117,
+    110,
+    32,
+    116,
+    101,
+    115,
+    116,
+  ],
+  "type": "Buffer",
+}
+`;
+
+exports[`BufferScalar parseValue parse value 1`] = `
+Object {
+  "data": Array [
+    99,
+    101,
+    99,
+    105,
+    32,
+    101,
+    115,
+    116,
+    32,
+    117,
+    110,
+    32,
+    116,
+    101,
+    115,
+    116,
+  ],
+  "type": "Buffer",
+}
+`;
+
+exports[`BufferScalar serialize convert to base64 1`] = `"Y2VjaSBlc3QgdW4gdGVzdA=="`;
+
+exports[`BufferScalar serialize convert to base64 2`] = `"Y2VjaSBlc3QgdW4gdGVzdA=="`;

@@ -1,31 +1,34 @@
 #
 # -------- Base ---------
 
-FROM node:10 as base
-MAINTAINER Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>
+FROM node:10-alpine as dependencies
+LABEL MAINTAINER="Ulrich Van Den Hekke <ulrich.vdh@shadoware.org>"
+
+RUN apk --no-cache add --virtual builds-deps build-base python
 
 WORKDIR /src
 COPY package.json /src
-
-#
-# -------- Dependencies --------
-FROM base as dependencies
-
-RUN apt install make gcc g++ python
+COPY package-lock.json /src
 RUN npm install --production
 
 #
-# -------- Dist -----------
-FROM base AS dist
+# -------- Build --------
+FROM dependencies as build
 
-COPY config ./config
-COPY server ./server
-COPY package.json ./
-COPY package-lock.json ./
+RUN npm install
+COPY . /src/
+RUN npm run build
+
+#
+# -------- Dist -----------
+FROM node:10-alpine AS dist
+
+WORKDIR /src
+COPY --from=build /src/dist/ /src/
 COPY --from=dependencies /src/node_modules /src/node_modules
 
 ENV MODE=prod
 ENV NODE_ENV=production
 
-EXPOSE 3000
-CMD ["node", "--experimental-modules", "server/app"]
+EXPOSE 4000
+CMD ["node", "/src/main.js"]

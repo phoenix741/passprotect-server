@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionsService createTransaction success: transaction created 1`] = `
+Object {
+  "_id": "5ce15929f02fc23595ec38f0",
+  "after": Object {
+    "_id": "5ce15929f02fc23595ec38f1",
+    "createdAt": 1970-01-19T00:50:24.000Z,
+    "encryption": Object {
+      "authTag": Object {
+        "data": Array [
+          97,
+          117,
+          116,
+          104,
+          84,
+          97,
+          103,
+        ],
+        "type": "Buffer",
+      },
+      "content": Object {
+        "data": Array [
+          99,
+          111,
+          110,
+          116,
+          101,
+          110,
+          116,
+        ],
+        "type": "Buffer",
+      },
+      "iv": Object {
+        "data": Array [
+          105,
+          118,
+        ],
+        "type": "Buffer",
+      },
+      "salt": Object {
+        "data": Array [
+          115,
+          97,
+          108,
+          116,
+        ],
+        "type": "Buffer",
+      },
+    },
+    "group": "Mon group",
+    "label": "Mon label",
+    "type": "card",
+    "updatedAt": 1970-01-19T00:50:24.000Z,
+    "user": "userId",
+  },
+  "before": null,
+  "createdAt": 1970-01-19T00:50:24.000Z,
+  "line": "5ce15929f02fc23595ec38f1",
+  "sha512": "sha512",
+  "type": "line",
+  "updatedAt": 1970-01-19T00:50:24.000Z,
+  "user": "userId",
+}
+`;
+
+exports[`TransactionsService createTransaction success: transaction to create 1`] = `
+Object {
+  "_id": Any<ObjectID>,
+  "after": Object {
+    "_id": "5ce15929f02fc23595ec38f1",
+    "createdAt": 1970-01-19T00:50:24.000Z,
+    "encryption": Object {
+      "authTag": Object {
+        "data": Array [
+          97,
+          117,
+          116,
+          104,
+          84,
+          97,
+          103,
+        ],
+        "type": "Buffer",
+      },
+      "content": Object {
+        "data": Array [
+          99,
+          111,
+          110,
+          116,
+          101,
+          110,
+          116,
+        ],
+        "type": "Buffer",
+      },
+      "iv": Object {
+        "data": Array [
+          105,
+          118,
+        ],
+        "type": "Buffer",
+      },
+      "salt": Object {
+        "data": Array [
+          115,
+          97,
+          108,
+          116,
+        ],
+        "type": "Buffer",
+      },
+    },
+    "group": "Mon group",
+    "label": "Mon label",
+    "type": "card",
+    "updatedAt": 1970-01-19T00:50:24.000Z,
+    "user": "userId",
+  },
+  "before": null,
+  "createdAt": Any<Date>,
+  "line": "5ce15929f02fc23595ec38f1",
+  "sha512": "b2d1d285b5199c85f988d03649c37e44fd3dde01e5d69c50fef90651962f48110e9340b60d49a479c4c0b53f5f07d690686dd87d2481937a512e8b85ee7c617f",
+  "type": "line",
+  "updatedAt": Any<Date>,
+  "user": "userId",
+}
+`;
+
+exports[`TransactionsService findAll with date: find query without date 1`] = `
+Object {
+  "updatedAt": Object {
+    "$gte": 1970-01-19T00:50:24.000Z,
+  },
+  "user": "userId",
+}
+`;
+
+exports[`TransactionsService findAll with date: result of find all with date 1`] = `
+Array [
+  Object {
+    "_id": "5ce15929f02fc23595ec38f0",
+    "createdAt": 1970-01-19T00:50:24.000Z,
+    "line": "5ce15929f02fc23595ec38f1",
+    "sha512": "sha512",
+    "type": "line",
+    "updatedAt": 1970-01-19T00:50:24.000Z,
+    "user": "userId",
+  },
+]
+`;
+
+exports[`TransactionsService findAll without date: find query without date 1`] = `
+Object {
+  "user": "userId",
+}
+`;
+
+exports[`TransactionsService findAll without date: result of find all without date 1`] = `
+Array [
+  Object {
+    "_id": "5ce15929f02fc23595ec38f0",
+    "createdAt": 1970-01-19T00:50:24.000Z,
+    "line": "5ce15929f02fc23595ec38f1",
+    "sha512": "sha512",
+    "type": "line",
+    "updatedAt": 1970-01-19T00:50:24.000Z,
+    "user": "userId",
+  },
+]
+`;
+
+exports[`TransactionsService transactionPubSub publish: result of published transaction 1`] = `
+Object {
+  "transactionAdded": Object {
+    "_id": "5ce15929f02fc23595ec38f0",
+    "after": Object {
+      "_id": "5ce15929f02fc23595ec38f1",
+      "createdAt": 1970-01-19T00:50:24.000Z,
+      "encryption": Object {
+        "authTag": Object {
+          "data": Array [
+            97,
+            117,
+            116,
+            104,
+            84,
+            97,
+            103,
+          ],
+          "type": "Buffer",
+        },
+        "content": Object {
+          "data": Array [
+            99,
+            111,
+            110,
+            116,
+            101,
+            110,
+            116,
+          ],
+          "type": "Buffer",
+        },
+        "iv": Object {
+          "data": Array [
+            105,
+            118,
+          ],
+          "type": "Buffer",
+        },
+        "salt": Object {
+          "data": Array [
+            115,
+            97,
+            108,
+            116,
+          ],
+          "type": "Buffer",
+        },
+      },
+      "group": "Mon group",
+      "label": "Mon label",
+      "type": "card",
+      "updatedAt": 1970-01-19T00:50:24.000Z,
+      "user": "userId",
+    },
+    "before": null,
+    "createdAt": 1970-01-19T00:50:24.000Z,
+    "line": "5ce15929f02fc23595ec38f1",
+    "sha512": "sha512",
+    "type": "line",
+    "updatedAt": 1970-01-19T00:50:24.000Z,
+    "user": "userId",
+  },
+}
+`;

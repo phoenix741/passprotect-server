@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LineResolver createLine error - signin 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`LineResolver createLine success 1`] = `
+Object {
+  "_id": "lineEntityId",
+}
+`;
+
+exports[`LineResolver groups success 1`] = `
+Array [
+  "group1",
+  "group2",
+]
+`;
+
+exports[`LineResolver line failed 1`] = `"not authorized exception"`;
+
+exports[`LineResolver line success 1`] = `
+Object {
+  "_id": "line",
+  "type": "card",
+  "user": "userline",
+}
+`;
+
+exports[`LineResolver lines success 1`] = `
+Array [
+  Object {
+    "_id": "line",
+    "type": "card",
+    "user": "userline",
+  },
+]
+`;
+
+exports[`LineResolver removeLine error - line not found 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "_id",
+      "message": "error.line.404.lineNotFound",
+    },
+  ],
+}
+`;
+
+exports[`LineResolver removeLine error - update 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`LineResolver removeLine success 1`] = `
+Object {
+  "errors": Array [],
+}
+`;
+
+exports[`LineResolver updateLine error - line not found 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "_id",
+      "message": "error.line.404.lineNotFound",
+    },
+  ],
+}
+`;
+
+exports[`LineResolver updateLine error - update 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`LineResolver updateLine success 1`] = `
+Object {
+  "_id": "lineEntityId",
+}
+`;
+
+exports[`LineResolver user success 1`] = `
+Object {
+  "_id": "username",
+}
+`;

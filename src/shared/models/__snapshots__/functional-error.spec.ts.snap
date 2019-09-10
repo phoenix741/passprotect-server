@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FunctionalError toFunctionalError Create the functional error, from functional error: functional error 1`] = `[Error: mymessage]`;
+
+exports[`FunctionalError toFunctionalError Create the functional error, from http exception: http exception 1`] = `[Error: not implemented]`;
+
+exports[`FunctionalError toFunctionalError Create the functional error, from other exception: other exception 1`] = `[Error: my error]`;
+
+exports[`FunctionalError toGraphQL generate error for graphql 2: functionnal error graphql 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "my default field",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`FunctionalError toGraphQL generate error for graphql: functionnal error graphql 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;

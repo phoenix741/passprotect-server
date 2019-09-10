@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LinesService createLine call create line - no error: result after the creation of the line 1`] = `
+Object {
+  "_id": "5ce1ae737786b25be429b81f",
+  "group": "group",
+  "label": "label",
+  "type": "card",
+  "user": "user",
+}
+`;
+
+exports[`LinesService findAll call find all - with userId: result of find all with userId 1`] = `
+Array [
+  Object {
+    "_id": "5ce1ae737786b25be429b81f",
+    "group": "group",
+    "label": "label",
+    "type": "card",
+    "user": "user",
+  },
+]
+`;
+
+exports[`LinesService findAll call find all - without userId: result of find all without userId 1`] = `Array []`;
+
+exports[`LinesService findById call find by id: result of find by id 1`] = `
+Object {
+  "_id": "5ce1ae737786b25be429b81f",
+  "group": "group",
+  "label": "label",
+  "type": "card",
+  "user": "user",
+}
+`;
+
+exports[`LinesService getGroups call get groups: result for getting groups 1`] = `
+Array [
+  "group1",
+  "group2",
+  "group3",
+]
+`;
+
+exports[`LinesService updateLine call update line - no error: result after updating the line 1`] = `
+Object {
+  "_id": "5ce1ae737786b25be429b81f",
+  "group": "group",
+  "label": "label",
+  "type": "card",
+  "user": "user",
+}
+`;

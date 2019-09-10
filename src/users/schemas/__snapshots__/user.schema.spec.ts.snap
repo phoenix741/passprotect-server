@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LineSchema migrateV1toV2 migrateV1toV2 - migration: user migration, with migration 1`] = `
+Object {
+  "encryption": Object {
+    "authTag": "authTag",
+    "content": "content",
+    "iv": null,
+    "salt": "salt",
+  },
+  "get": [Function],
+  "set": [Function],
+}
+`;
+
+exports[`LineSchema migrateV1toV2 migrateV1toV2 - no migration: user migration, without migration 1`] = `
+Object {
+  "encryption": Object {
+    "authTag": "authTag",
+    "content": "content",
+    "iv": null,
+    "salt": "salt",
+  },
+  "get": [Function],
+  "set": [Function],
+}
+`;

@@ -10,10 +10,12 @@ services:
         links:
             - mongodb
         environment:
-            - MONGODB_HOST=mongodb://mongodb:27017/passprotect
+            - NODE_ENV=development
+            - MONGODB_HOST=mongodb://mongodb:27017
             - MONGODB_DATABASE=passprotect
-            - NODE_ENV=production
-            - DEBUG=App:*
+            - JWT_SECRET=dnLUMtULQsNmNbmGV3Lx8SxrxEtaxTc8aPdRh8YMemj515Faip7wQYueSaBFYm5r
+            - ENGINE_API_KEY=service:passprotect:MXL3nFT4FbnEkWgMPkmYkQ
+            - ENGINE_SCHEMA_TAG=dev
     mongodb:
         image: mongo:4
         ports:

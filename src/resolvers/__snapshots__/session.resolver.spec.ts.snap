@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SessionResolver createSession error - no password 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "username",
+      "message": "error.user.401.password",
+    },
+  ],
+}
+`;
+
+exports[`SessionResolver createSession error - no username 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "username",
+      "message": "error.user.401.username",
+    },
+  ],
+}
+`;
+
+exports[`SessionResolver createSession error - signin 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "fieldName": "myfield",
+      "message": "mymessage",
+    },
+  ],
+}
+`;
+
+exports[`SessionResolver createSession success 1`] = `
+Object {
+  "token": "bearer myToken",
+  "user": User {
+    "_id": "username",
+  },
+}
+`;
+
+exports[`SessionResolver session success 1`] = `
+User {
+  "_id": "username",
+}
+`;

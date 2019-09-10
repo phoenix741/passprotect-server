@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigService constructor all variables defined: jwtOptions 1`] = `
+Object {
+  "secret": "zaealsdfjklsklsdklEAZER13E31",
+  "signOptions": Object {
+    "expiresIn": 3600,
+  },
+}
+`;
+
+exports[`ConfigService constructor all variables defined: mongooseOptions 1`] = `
+Object {
+  "uri": "mongodb://localhost:27017/passprotect",
+  "useNewUrlParser": true,
+}
+`;
