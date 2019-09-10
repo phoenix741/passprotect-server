@@ -1,7 +1,24 @@
-pipeline:
-    nodejs:
-        group: build
-        image: plugins/docker
-        repo: phoenix741/passprotect-server
-        secrets: [ docker_username, docker_password ]
-        tags: develop
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: nodejs
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: phoenix741/passprotect-server
+      auto_tag: true
+
+  - name: notify
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: webhook
+      channel: ci
+    when:
+      status: [ success, failure ]
