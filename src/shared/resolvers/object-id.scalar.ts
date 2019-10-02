@@ -1,5 +1,4 @@
-import { Scalar } from '@nestjs/graphql';
-import { CustomScalar } from '@nestjs/graphql/dist/interfaces';
+import { Scalar, CustomScalar } from '@nestjs/graphql';
 import { Kind, ValueNode } from 'graphql';
 import { ObjectID } from 'bson';
 

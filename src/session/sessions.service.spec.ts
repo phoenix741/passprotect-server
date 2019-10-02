@@ -62,7 +62,7 @@ describe('SessionsService', () => {
 
     it('user found', async () => {
       expect(await sessionsService.signIn('username', 'password', 'fingerprint')).toMatchSnapshot('user sign in');
-      expect(jwtService.sign).toHaveBeenCalledWith({ sub: 'username', issuer: 'fingerprint' }, {expiresIn: '15m', jwtid: expect.any(String)});
+      expect(jwtService.sign).toHaveBeenCalledWith({ sub: 'username', issuer: 'fingerprint' }, { expiresIn: '15m', jwtid: expect.any(String) });
     });
   });
 

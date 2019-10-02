@@ -14,7 +14,8 @@ describe('GqlAuthGuard', () => {
         hash: 'fingerprint1',
       },
       headers: {
-        authorization: 'bearer ' +
+        authorization:
+          'bearer ' +
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
           'eyJzdWIiOiJJRElEIiwiaXNzdWVyIjoiMjRhNzM1MmM5MTlkMzUyMzNlNWQ4M2RhYWZmNDQzNmMiLCJpY' +
           'XQiOjE1NjQzMzc2MDMsImV4cCI6MTU2NDMzODUwMywianRpIjoiNWQzZGU1YzMyNWU3NjIzNzE1NGQ3MjM' +
