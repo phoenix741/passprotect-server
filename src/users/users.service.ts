@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserToRegister } from './models/user.models';
 import { UserEntity } from './models/user.entity';
 import { CryptoService } from '../shared/services/crypto.service';
+import { DeviceEntity } from '../users/models/user.entity';
 
 @Injectable()
 export class UsersService {

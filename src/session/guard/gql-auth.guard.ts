@@ -2,7 +2,7 @@ import { decode } from 'jsonwebtoken';
 import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { JwtPayload } from '../../users/models/user.models';
+import { JwtPayload, PayloadScopeEnum } from '../../users/models/user.models';
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
@@ -13,8 +13,11 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
       headers: { authorization },
     } = ctx.getContext().req;
     const payload = decode(authorization.substr(7)) as JwtPayload;
-    if (payload.issuer !== hash) {
-      throw new UnauthorizedException(`The requester ${hash} is incompatible with the issuer ${payload.issuer}`);
+    if (payload.iss !== hash) {
+      throw new UnauthorizedException(`The requester ${hash} is incompatible with the issuer ${payload.iss}`);
+    }
+    if (payload.scope !== PayloadScopeEnum.USER) {
+      throw new UnauthorizedException(`Only token with the user scope is authorized, get ${payload.scope}`);
     }
     return super.canActivate(context);
   }

@@ -6,7 +6,7 @@ import { TransactionTypeEnum } from '../shared/interfaces/transaction-type-enum.
 import { TransactionEntity } from './models/transaction.entity';
 import { IFindAllTransactionParams } from './models/transaction.models';
 import { LineEntity } from '../lines/models/line.entity';
-import * as crypto from 'crypto';
+import { createHash } from 'crypto';
 import { ObjectID, Binary } from 'bson';
 
 export const TRANSACTION_ADDED_TOPIC = 'transactionAdded';
@@ -46,8 +46,7 @@ export class TransactionsService {
       after,
       sha512:
         after &&
-        crypto
-          .createHash('sha512')
+        createHash('sha512')
           .update(after.encryption.content instanceof Binary ? after.encryption.content.buffer : after.encryption.content)
           .digest('hex'),
     };

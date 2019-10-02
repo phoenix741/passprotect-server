@@ -9,6 +9,7 @@ import { User } from '../users/dto/user.dto';
 import { ConnectionInformationInput } from '../session/dto/connection-information-input.dto';
 import { CreateSessionResultUnion, CreateSessionResult } from '../session/dto/create-session-result-union.dto';
 import { FingerprintContext } from '../session/guard/fingerprint.decorator';
+import { CreateSessionFromRefreshTokenInput } from '../session/dto/create-session-from-refresh-token-input.dto';
 
 @Injectable()
 export class SessionResolver {
@@ -25,21 +26,25 @@ export class SessionResolver {
   })
   async createSession(@Args('input') input: ConnectionInformationInput, @FingerprintContext() fingerprint: string): Promise<CreateSessionResult> {
     try {
-      check(input);
       const { jwtToken, user } = await this.sessionService.signIn(input.username, input.password, fingerprint);
       return { token: 'bearer ' + jwtToken, user };
     } catch (err) {
       return toFunctionalError(err).toGraphQL('username');
     }
   }
-}
 
-function check(data: ConnectionInformationInput) {
-  if (!isString(data.username)) {
-    throw new BadRequestException('error.user.401.username');
-  }
-
-  if (!isString(data.password) || data.password.length < 8) {
-    throw new BadRequestException('error.user.401.password');
+  @Mutation(returns => CreateSessionResultUnion, {
+    description: 'Create a new session from a refresh token, return the authorization token',
+  })
+  async createSessionFromRefreshToken(
+    @Args('input') input: CreateSessionFromRefreshTokenInput,
+    @FingerprintContext() fingerprint: string,
+  ): Promise<CreateSessionResult> {
+    try {
+      const { jwtToken, user } = await this.sessionService.signInFromRefreshToken(input.token, fingerprint);
+      return { token: 'bearer ' + jwtToken, user };
+    } catch (err) {
+      return toFunctionalError(err).toGraphQL('username');
+    }
   }
 }

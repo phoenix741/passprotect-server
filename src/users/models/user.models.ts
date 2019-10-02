@@ -1,5 +1,10 @@
 import { EncryptedContent } from '../../shared/interfaces/encrypted-content.interface';
 
+export enum PayloadScopeEnum {
+  REFRESH_TOKEN,
+  USER,
+}
+
 export interface UserToRegister {
   _id: string;
   password: string;
@@ -8,5 +13,7 @@ export interface UserToRegister {
 
 export interface JwtPayload {
   sub: string;
-  issuer: string;
+  iss: string;
+  scope: PayloadScopeEnum;
+  device?: string;
 }

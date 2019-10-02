@@ -11,6 +11,12 @@ export const UserSchema = new mongoose.Schema<UserEntity>(
       authTag: Buffer,
       content: Buffer,
     },
+    devices: [
+      {
+        name: { type: String, required: true },
+        id: { type: String, required: true },
+      },
+    ],
   },
   { collection: 'users', timestamps: true },
 );

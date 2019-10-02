@@ -12,6 +12,7 @@ import { SessionResolver } from './resolvers/session.resolver';
 import { LineResolver } from './resolvers/line.resolver';
 import { TransactionResolver } from './resolvers/transaction.resolver';
 import { ConfigService } from './config/config.service';
+import { DeviceResolver } from './resolvers/device.resolver';
 
 @Module({
   imports: [
@@ -38,6 +39,6 @@ import { ConfigService } from './config/config.service';
     LinesModule,
     TransactionsModule,
   ],
-  providers: [UserResolver, SessionResolver, LineResolver, TransactionResolver],
+  providers: [UserResolver, SessionResolver, LineResolver, TransactionResolver, DeviceResolver],
 })
 export class AppModule {}

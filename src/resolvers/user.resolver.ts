@@ -7,7 +7,7 @@ import { LinesService } from '../lines/lines.service';
 import { toFunctionalError } from '../shared/models/functional-error';
 import { RegistrationUserInput } from '../users/dto/registration-user.dto';
 import { User } from '../users/dto/user.dto';
-import { RegisterUserResultUnion } from '../users/dto/register-user-result.dto';
+import { RegisterUserResultUnion, RegisterUserResult } from '../users/dto/register-user-result.dto';
 import { UserContext } from '../session/guard/user-context.decorator';
 
 @Resolver(of => User)
@@ -35,7 +35,7 @@ export class UserResolver {
   @Mutation(returns => RegisterUserResultUnion, {
     description: 'Register a new user',
   })
-  async registerUser(@Args('input') input: RegistrationUserInput): Promise<typeof RegisterUserResultUnion> {
+  async registerUser(@Args('input') input: RegistrationUserInput): Promise<RegisterUserResult> {
     try {
       return await this.userService.registerUser(input);
     } catch (err) {

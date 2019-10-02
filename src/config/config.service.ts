@@ -20,14 +20,14 @@ export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory 
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
-        .valid(['development', 'production', 'test'])
+        .valid('development', 'production', 'test')
         .default('development'),
       MONGODB_HOST: Joi.string().required(),
       MONGODB_DATABASE: Joi.string().optional(),
       JWT_SECRET: Joi.string().required(),
     });
 
-    const { error, value: validatedEnvConfig } = Joi.validate(envConfig, envVarsSchema, { allowUnknown: true });
+    const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig, { allowUnknown: true });
     if (error) {
       throw new Error(`Config validation error: ${error.message}`);
     }
@@ -50,6 +50,7 @@ export class ConfigService implements MongooseOptionsFactory, JwtOptionsFactory 
     return {
       uri: this.mongodbHost + '/' + this.mongodbDatabase,
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     };
   }
 
