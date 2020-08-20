@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "apollo-server": "^2.1.0",
-    "bcrypt": "^3.0.1",
+    "bcrypt": "^5.0.0",
     "config": "~2.0.1",
     "debug": "^4.0.1",
     "dotenv": "^6.0.0",
