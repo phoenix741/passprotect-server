@@ -16,7 +16,7 @@
     "npm": ">= 6.4.1"
   },
   "dependencies": {
-    "apollo-server": "^2.1.0",
+    "apollo-server": "^2.25.3",
     "bcrypt": "^3.0.1",
     "config": "~2.0.1",
     "debug": "^4.0.1",
